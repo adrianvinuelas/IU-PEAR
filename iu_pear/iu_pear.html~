@@ -1,9 +1,13 @@
 <head>
-  <title>iu_pear</title>
-</head>
+    <title>iu_pear</title>
 
+    <script src='client/game.js'></script>
+</head>
 <body>
   <h1>Welcome to Meteor!</h1>
-        Haciendo la IU del carcassone
+        Haciendo la IU del carcassone.Prueba de que se puede cambiar 
+        <div id='container'>
+            <canvas id='game' width='1220' height='780'></canvas>
+        </div>
 </body>
 
