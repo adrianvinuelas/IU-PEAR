@@ -1,47 +1,64 @@
 function startGame() {
-    var canvas = $('#game')[0];
-
-    var ctx = canvas.getContext && canvas.getContext('2d');
-
-    if(!ctx) {
-	// Si no hay contexto 2d informamos al usuario
-	alert('Please upgrade your browser');
-	return;
-    }
-    
-   
-    // Dibujar rectangulo marron
-    ctx.fillStyle = "#775C18";
-    ctx.fillRect(50,50,850,650);
 
 
+ var canvas = $('#game')[0];
 
-    // Cargar la hoja de sprites de images/sprites.png 
-  //  var img = new Image();
-    // Cuando el fichero asignado a img.src mas abajo haya sido
-    // cargado, se ejecutara esta callback:
-   // img.onload = function() {
-	// Dibuja toda la hoja de sprites en el destino dx dy
-	//                dx  dy
-	//ctx.drawImage(img,100,100);
 
-	// Escala a dWidth dHeight la hoja de sprites, y la dibuja en dx dy
-	//                    dx dy   dWidth dHeight
-	//ctx.drawImage(img,    0, 250, 300,   100);
+ var ctx = canvas.getContext && canvas.getContext('2d');
 
-	// Coge de la hoja de sprites el rectangulo
-        // sx,sy,sWidth,sHeight y lo coloca en dx,dy escalado a dWidth
-        // y dHeight
-        //                sx sy sWidth sHeight dx   dy   dWidth dHeight
-	//ctx.drawImage(img,0, 0, 37,    42,     200, 400, 37,    42);
-        // En este caso hemos pintado el sprite de la nave
-  //  }
+ if(!ctx) {
+    // Si no hay contexto 2d informamos al usuario
+    alert('Please upgrade your browser');
+    return;
+ }
 
-   
-   // img.src = 'images/sprites.png'; //Aqui deberiamos coger nuestros sprites 
+ // Dibujar rectangulo azul
+ ctx.fillStyle = "#775C18";
+ ctx.fillRect(50,50,850,650);
 
+// C = Ciudad , campo = campo ,
+
+SpriteSheet.load({
+     ccurvo: { sx: 0, sy: 0, w: 64, h: 64}, //camino de izquierda a abajo
+     Cec: { sx: 330, sy: 459, w: 64, h: 64}, //ciudad centro campo a los lados 
+     CDiagonal: { sx: 264, sy: 459, w: 64, h: 64}, //Ciudad diagonal con un campo
+     Cce: { sx: 657, sy: 525, w: 64, h: 64}, //Ciudad a la que le lleva un camino(escudo) 
+     Cc: { sx: 133, sy: 591, w: 64, h: 64}, //Ciudad que tiene un camino pero el camino no le lleva a ella, mirando desde C esta hacia arriba izq
+     ce2C: { sx: 788, sy: 66, w: 64, h: 64}, //Campo entre dos ciudades
+     Ccampo: { sx: 460, sy: 590, w: 64, h: 64}, //Ciudad que tiene casas y un campo a un lado el cual no 
+     Cladoccentro: { sx: 198, sy: 458, w: 64, h: 64}, //Ciudad a un lado y en el centro un camino atravesando
+     Cccurvo: { sx: 918, sy: 264, w: 64, h: 64}, //Ciudad a un lado y camino curvo sin atravesar
+     Ccamporesto: { sx: 65, sy: 195, w: 64, h: 64}, //Ciudad a un lado y campo el resto
+     Cady: { sx:722 , sy: 525, w: 64, h: 64}, //Ciudades adayacentes resto campo
+     crucecC: { sx:722 , sy: 394, w: 64, h: 64}, //Cruce 3 caminos mas ciudad
+     Ccarribadcha: { sx:0 , sy: 64, w: 64, h: 64}, //Mirando desde ciudad camino hacia arriba y derecha
+     m: { sx:526 , sy: 458, w: 64, h: 64}, //Monasterio 
+     C: { sx:723 , sy: 65, w: 64, h: 64}, //Todo ciudad con escudo
+     cruce4c: { sx:590 , sy: 590, w: 64, h: 64}, //Cruce de 4 caminos con casas en medio
+     cruce3c: { sx:786 , sy: 460, w: 64, h: 64}, //Cruce de 3 caminos sin ciudad
+     mc: { sx:852 , sy: 460, w: 64, h: 64}, //Monasterio con camino
+     c: { sx:918 , sy: 394, w: 64, h: 64}, //Camino recto
+ }, function() {
+     SpriteSheet.draw(ctx,"ccurvo",50,50);
+     SpriteSheet.draw(ctx,"Cec",150,50);
+     SpriteSheet.draw(ctx,"CDiagonal",250,50);
+     SpriteSheet.draw(ctx,"Cce",350,50);
+     SpriteSheet.draw(ctx,"Cc",450,50);
+     SpriteSheet.draw(ctx,"ce2C",550,50);
+     SpriteSheet.draw(ctx,"Ccampo",650,50);
+     SpriteSheet.draw(ctx,"Cladoccentro",750,50);
+     SpriteSheet.draw(ctx,"Cccurvo",50,150);
+     SpriteSheet.draw(ctx,"Ccamporesto",150,150);
+     SpriteSheet.draw(ctx,"Cady",250,150);
+     SpriteSheet.draw(ctx,"crucecC",350,150);
+     SpriteSheet.draw(ctx,"Ccarribadcha",450,150);
+     SpriteSheet.draw(ctx,"m",550,150);
+     SpriteSheet.draw(ctx,"C",650,150);
+     SpriteSheet.draw(ctx,"cruce4c",750,150);
+     SpriteSheet.draw(ctx,"cruce3c",50,250);
+     SpriteSheet.draw(ctx,"mc",150,250);
+     SpriteSheet.draw(ctx,"c",250,250);
+
+ });
 }
-
-
 $(startGame);
-
