@@ -69,6 +69,9 @@ var sprites = {
 
 var startGame = function() {
     
+    Game.setBoard(0,new TitleScreen("Juego Carcassone", "Pulsa espacio para empezar a jugar",playGame));
+    
+    /*                              
     SpriteSheet.draw(Game.ctx,"ccurvo",1*64,1*64);
     SpriteSheet.draw(Game.ctx,"crucecC",1*64,2*64);
     /*
@@ -97,6 +100,34 @@ var startGame = function() {
      SpriteSheet.draw(Game.ctx,"sblue",750,250);
     */
 }
+
+
+var playGame = function() {
+  Game.setBoard(0,new tablero());
+}
+
+var tablero = function(){
+  	
+    this.step = function(dt) {
+        //De momento lo pongo vacio porque solo quiero probar tittle scream
+    };
+    
+    this.draw = function(ctx) {
+	    for (i=1;i<9;i++){
+            for (j=1;j<10;j++){
+              Game.ctx.strokeStyle = "#ffffff";
+              Game.ctx.strokeRect(j*64,i*64,64,64);
+              Game.ctx.fillStyle = "#775C18";
+              Game.ctx.fillRect(j*64,i*64,64,64);
+            }
+        }
+        
+        SpriteSheet.draw(Game.ctx,"ccurvo",1*64,1*64);
+        SpriteSheet.draw(Game.ctx,"crucecC",1*64,2*64);
+    };	
+  
+}
+
 
 $(function() {
     Game.initialize("game",sprites,startGame);
