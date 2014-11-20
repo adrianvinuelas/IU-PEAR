@@ -10,11 +10,19 @@ Game = new function() {
 
 	this.ctx = this.canvas.getContext && this.canvas.getContext('2d');
 	if(!this.ctx) { return alert("Please upgrade your browser to play"); }
-
+  for (i=1;i<9;i++){
+    for (j=1;j<10;j++){
+      this.ctx.strokeStyle = "#ffffff";
+      this.ctx.strokeRect(j*64,i*64,64,64);
+      this.ctx.fillStyle = "#775C18";
+      this.ctx.fillRect(j*64,i*64,64,64);
+    }
+  }
+    /*
     // Para dibujar rectangulo marron
     this.ctx.fillStyle = "#775C18";
     this.ctx.fillRect(50,50,850,650);
-
+    */
 
 	SpriteSheet.load (sprite_data,callback);
     };

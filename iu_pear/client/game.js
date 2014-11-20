@@ -68,7 +68,10 @@ var sprites = {
 };
 
 var startGame = function() {
-    SpriteSheet.draw(Game.ctx,"ccurvo",50,50);
+    
+    SpriteSheet.draw(Game.ctx,"ccurvo",1*64,1*64);
+    SpriteSheet.draw(Game.ctx,"crucecC",1*64,2*64);
+    /*
      SpriteSheet.draw(Game.ctx,"Cec",150,50);
      SpriteSheet.draw(Game.ctx,"CDiagonal",250,50);
      SpriteSheet.draw(Game.ctx,"Cce",350,50);
@@ -92,6 +95,7 @@ var startGame = function() {
      SpriteSheet.draw(Game.ctx,"sb",550,250);
      SpriteSheet.draw(Game.ctx,"sr",650,250);
      SpriteSheet.draw(Game.ctx,"sblue",750,250);
+    */
 }
 
 $(function() {
