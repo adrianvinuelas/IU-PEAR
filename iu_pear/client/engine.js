@@ -1,3 +1,31 @@
+
+
+Game = new function() {                                                                  
+
+    // Inicializa el juego
+    this.initialize = function(canvasElementId,sprite_data,callback) {
+	this.canvas = document.getElementById(canvasElementId)
+	this.width = this.canvas.width;
+	this.height= this.canvas.height;
+
+	this.ctx = this.canvas.getContext && this.canvas.getContext('2d');
+	if(!this.ctx) { return alert("Please upgrade your browser to play"); }
+
+    // Para dibujar rectangulo marron
+    this.ctx.fillStyle = "#775C18";
+    this.ctx.fillRect(50,50,850,650);
+	//this.setupInput();
+
+	//this.loop(); 
+
+	SpriteSheet.load (sprite_data,callback);
+    };
+
+};
+
+
+
+
 SpriteSheet = new function() {
 
 
