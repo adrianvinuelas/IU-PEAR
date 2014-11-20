@@ -14,9 +14,7 @@ Game = new function() {
     // Para dibujar rectangulo marron
     this.ctx.fillStyle = "#775C18";
     this.ctx.fillRect(50,50,850,650);
-	//this.setupInput();
 
-	//this.loop(); 
 
 	SpriteSheet.load (sprite_data,callback);
     };
