@@ -17,7 +17,12 @@ var sprites = {
      cruce4c: { sx:590 , sy: 590, w: 64, h: 64}, //Cruce de 4 caminos con casas en medio
      cruce3c: { sx:786 , sy: 460, w: 64, h: 64}, //Cruce de 3 caminos sin ciudad
      mc: { sx:852 , sy: 460, w: 64, h: 64}, //Monasterio con camino
-     c: { sx:918 , sy: 394, w: 64, h: 64} //Camino recto
+     c: { sx:918 , sy: 394, w: 64, h: 64}, //Camino recto
+     sn:{ sx:989, sy:6, w:17, h:17}, //Seguidor negro
+     sa:{ sx:1018, sy:5, w:17, h:17}, //Seguidor amarillo
+     sb:{ sx:1049, sy:4, w:17, h:17}, //Seguidor blanco
+     sr:{ sx:1077, sy:4, w:17, h:17}, //Seguidor rojo
+     sblue:{ sx:1104, sy:4, w:17, h:17}, //Seguidor azul 
 };
 
 var startGame = function() {
@@ -40,6 +45,11 @@ var startGame = function() {
      SpriteSheet.draw(Game.ctx,"cruce3c",50,250);
      SpriteSheet.draw(Game.ctx,"mc",150,250);
      SpriteSheet.draw(Game.ctx,"c",250,250);
+     SpriteSheet.draw(Game.ctx,"sn",350,250);
+     SpriteSheet.draw(Game.ctx,"sa",450,250);
+     SpriteSheet.draw(Game.ctx,"sb",550,250);
+     SpriteSheet.draw(Game.ctx,"sr",650,250);
+     SpriteSheet.draw(Game.ctx,"sblue",750,250);
 }
 
 $(function() {
