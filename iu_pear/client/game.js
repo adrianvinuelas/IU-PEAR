@@ -57,9 +57,7 @@ var sprites = {
         
      c: { sx:918 , sy: 394, w: 64, h: 64, ni:"campo", nc:"camino", nd: "campo", ci:"campo", cc:"camino", cd:"campo", 
         si:"campo", sc:"camino", sd:"campo", escudo: false}, //Camino recto    
-        
-        
-        
+         
     sn:{ sx:989, sy:6, w:17, h:17}, //Seguidor negro
     sa:{ sx:1018, sy:5, w:17, h:17}, //Seguidor amarillo
     sb:{ sx:1049, sy:4, w:17, h:17}, //Seguidor blanco
@@ -68,9 +66,7 @@ var sprites = {
 };
 
 var startGame = function() {
-    
     Game.setBoard(0,new TitleScreen("Juego Carcassone", "Pulsa espacio para empezar a jugar",playGame));
-    
     /*                              
     SpriteSheet.draw(Game.ctx,"ccurvo",1*64,1*64);
     SpriteSheet.draw(Game.ctx,"crucecC",1*64,2*64);
@@ -101,33 +97,57 @@ var startGame = function() {
     */
 }
 
-
 var playGame = function() {
   Game.setBoard(0,new tablero());
+  Game.setBoard(1,new TextoPideFicha("Pulsa enter para pedir ficha ",playFicha));
+  Game.setBoard(2,new pieza ("ccurvo", 1*64, 1*64));
+  //Game.setBoard(1,new PedirFicha("-----", "------",funcionIA)); //Funcion que tiene que dar la IA para pedirFicha
+  //Game.setBoard(2,new FichaInicial());
 }
 
+var playFicha = function () {
+  Game.setBoard(3,new FichaInicial());
+}
+
+var pieza = function (nombre, x, y){
+  this.step = function(dt) {
+        //De momento lo pongo vacio porque solo quiero probar tittle scream
+  };
+  this.draw = function(ctx) {
+	  SpriteSheet.draw(Game.ctx, nombre, x, y);
+  };
+};
+
 var tablero = function(){
-  	
     this.step = function(dt) {
         //De momento lo pongo vacio porque solo quiero probar tittle scream
     };
-    
     this.draw = function(ctx) {
 	    for (i=1;i<9;i++){
-            for (j=1;j<10;j++){
-              Game.ctx.strokeStyle = "#ffffff";
-              Game.ctx.strokeRect(j*64,i*64,64,64);
-              Game.ctx.fillStyle = "#775C18";
-              Game.ctx.fillRect(j*64,i*64,64,64);
-            }
+        for (j=1;j<10;j++){
+          Game.ctx.strokeStyle = "#ffffff";
+          Game.ctx.strokeRect(j*64,i*64,64,64);
+          Game.ctx.fillStyle = "#775C18";
+          Game.ctx.fillRect(j*64,i*64,64,64);
         }
-        
-        SpriteSheet.draw(Game.ctx,"ccurvo",1*64,1*64);
-        SpriteSheet.draw(Game.ctx,"crucecC",1*64,2*64);
+      }
     };	
-  
 }
 
+var FichaInicial = function() {
+    this.x = 11.5 *64 ;
+    this.y = 8 * 64 ;
+    this.h = SpriteSheet.map['mc'].h ;
+    this.w = SpriteSheet.map['mc'].w ;
+    this.sprite = 'mc' ;
+
+    this.step = function(dt) {
+      //De momento lo pongo vacio porque solo quiero probar tittle scream
+    };
+    this.draw = function(ctx) {       
+      SpriteSheet.draw(Game.ctx,this.sprite,this.x,this.y);
+    };
+}
 
 $(function() {
     Game.initialize("game",sprites,startGame);
