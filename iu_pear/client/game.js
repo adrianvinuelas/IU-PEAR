@@ -101,12 +101,10 @@ var playGame = function() {
   Game.setBoard(0,new tablero());
   Game.setBoard(1,new TextoPideFicha("Pulsa enter para pedir ficha ",playFicha));
   Game.setBoard(2,new pieza ("ccurvo", 1*64, 1*64));
-  //Game.setBoard(1,new PedirFicha("-----", "------",funcionIA)); //Funcion que tiene que dar la IA para pedirFicha
-  //Game.setBoard(2,new FichaInicial());
 }
 
 var playFicha = function () {
-  Game.setBoard(3,new FichaInicial());
+  Game.setBoard(3,new pieza ("mc", 11.5*64, 8*64));
 }
 
 var pieza = function (nombre, x, y){
@@ -116,7 +114,7 @@ var pieza = function (nombre, x, y){
   this.draw = function(ctx) {
 	  SpriteSheet.draw(Game.ctx, nombre, x, y);
   };
-};
+}
 
 var tablero = function(){
     this.step = function(dt) {
@@ -132,21 +130,6 @@ var tablero = function(){
         }
       }
     };	
-}
-
-var FichaInicial = function() {
-    this.x = 11.5 *64 ;
-    this.y = 8 * 64 ;
-    this.h = SpriteSheet.map['mc'].h ;
-    this.w = SpriteSheet.map['mc'].w ;
-    this.sprite = 'mc' ;
-
-    this.step = function(dt) {
-      //De momento lo pongo vacio porque solo quiero probar tittle scream
-    };
-    this.draw = function(ctx) {       
-      SpriteSheet.draw(Game.ctx,this.sprite,this.x,this.y);
-    };
 }
 
 $(function() {
