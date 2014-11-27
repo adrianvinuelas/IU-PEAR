@@ -9,9 +9,7 @@ Game = new function() {
 	  this.ctx = this.canvas.getContext && this.canvas.getContext('2d');
 	  if(!this.ctx) { return alert("Please upgrade your browser to play"); }
       //Modificamos las propiedades del canvas
-      this.ctx.fillStyle = "#775C18";
-      this.ctx.fillRect(50,50,850,650);
-     
+      //Pantalla que va a aparecer ANTES de pulsar espacio (En el caso de que se necesite)
       this.setupInput();
     
       this.loop(); 

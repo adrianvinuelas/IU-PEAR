@@ -168,12 +168,17 @@ var tablero = function(){
         //De momento lo pongo vacio porque solo quiero probar tittle scream
     };
     this.draw = function(ctx) {
+      //Pantalla que va a aparecer DESPUES de pulsar espacio
+      var img1 = new Image();
+      var img2 = new Image();
+      img1.src = 'background.jpg';
+      img2.src = 'menu.jpg';
+      Game.ctx.drawImage(img1, 50, 50, 655, 650);
+      Game.ctx.drawImage(img2, 655, 50, 245, 650);
 	    for (i=1;i<9;i++){
         for (j=1;j<10;j++){
           Game.ctx.strokeStyle = "#ffffff";
           Game.ctx.strokeRect(j*64,i*64,64,64);
-          Game.ctx.fillStyle = "#775C18";
-          Game.ctx.fillRect(j*64,i*64,64,64);
         }
       }
     };	
