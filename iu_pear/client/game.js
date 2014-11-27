@@ -65,14 +65,25 @@ var sprites = {
     sblue:{ sx:1104, sy:4, w:17, h:17}, //Seguidor azul 
 };
 
+//lo comento porque creo que lo vamos a tener que quitar
+/*
+var titulo = function(){
+
+Game.setBoard(0,new TitleScreen("Juego Carcassone", "Pulsa espacio para empezar a jugar",startGame));
+    
+}
+*/
+
 var startGame = function() {
 
     Jugador1 = {nombre: "Adri" , color: "sr"};
     Jugador2 = {nombre: "Victor" , color: "sblue"};
     Jugador3 = {nombre: "Alvaro" , color: "sa"};
     Jugador4 = {nombre: "Kevin" , color: "sn"};
-
-    Game.setBoard(0,new TitleScreen("Juego Carcassone", "Pulsa espacio para empezar a jugar",playGame));
+    Game.setBoard(0,new tablero());
+    Game.setBoard(1,new Jugadores());
+    Game.setBoard(2,new TextoPideFicha("Pulsa enter para pedir ficha ",playGame));
+    
     /*                              
     SpriteSheet.draw(Game.ctx,"ccurvo",1*64,1*64);
     SpriteSheet.draw(Game.ctx,"crucecC",1*64,2*64);
@@ -104,14 +115,13 @@ var startGame = function() {
 }
 
 var playGame = function() {
-  Game.setBoard(0,new tablero());
-  Game.setBoard(1,new Jugadores());
-  Game.setBoard(2,new TextoPideFicha("Pulsa enter para pedir ficha ",playFicha));
-  //Game.setBoard(2,new pieza ("ccurvo", 1*64, 1*64));
-}
+  
+  
+  var board = new TableroJuego();
 
-var playFicha = function () {
-  Game.setBoard(3,new pieza ("mc", 11.5*64, 8*64));
+  Game.setBoard(3,board);
+  board.add(new pieza ("mc", 11.5*64, 8*64));
+  
 }
 
 var pieza = function (nombre, x, y){
@@ -168,6 +178,7 @@ var tablero = function(){
       }
     };	
 }
+
 
 $(function() {
     Game.initialize("game",sprites,startGame);

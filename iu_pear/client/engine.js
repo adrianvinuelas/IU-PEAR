@@ -118,3 +118,100 @@ TextoPideFicha =  function TextoPideFicha(title,callback) {
   };   
 }
 
+
+
+// GameBoard implementa un tablero de juego que gestiona la
+// interacción entre los elementos del juego sobre el que se disponen
+// los elementos del juego (fichas, cartas, naves, proyectiles, etc.)
+// La clase GameBoard ofrece la interfaz step(), draw() para que sus
+// elementos puedan ser mostrados desde el bucle principal del juego.
+// "tablero" o clase abstracta donde vamos a ir metiendo todas las cosas que se vayan añadiendo en el juego, fichas.....
+
+TableroJuego = function() {
+    var board = this;
+    // Colección de objetos contenidos por este tablero
+    this.objects = [];
+    // Añade obj a objects
+    this.add = function(obj) {
+        obj.board=this; // Para que obj pueda referenciar el tablero. al objeto ademas de añadirlo a objects le paso un puntero del objeto al 
+                        //tablero
+        this.objects.push(obj);
+        return obj;
+    };
+    // Los siguientes 3 métodos gestionan el borrado. Cuando un board
+    // está siendo recorrido (en step()) podría eliminarse algún
+    // objeto, lo que interferiría en el recorrido. Por ello borrar se
+    // hace en dos fases: marcado, y una vez terminado el recorrido,
+    // se modifica objects.
+    // Marcar un objeto para borrar
+    this.remove = function(obj) {
+        this.removed.push(obj);
+    };
+    // Inicializar la lista de objetos pendientes de ser borrados
+    this.resetRemoved = function() { this.removed = []; }
+    // Elimina de objects los objetos pendientes de ser borrados
+    this.finalizeRemoved = function() {
+        for(var i=0, len=this.removed.length; i<len;i++) {
+            // Buscamos qué índice tiene en objects[] el objeto i de
+            // removed[]
+            var idx = this.objects.indexOf(this.removed[i]);
+            // splice elimina de objects el objeto en la posición idx
+            if(idx != -1) this.objects.splice(idx,1);
+        }
+    }
+    // Iterador que aplica el método funcName a todos los
+    // objetos de objects
+    //Iterate si le llamas por ejemplo con draw, lo que hará es recorrerse todos los objetos que hay en el board(tablero), y llamar al draw de esos objetos para que
+    //se vayan pintando todos.
+    this.iterate = function(funcName) {
+        // Convertimos en un array args (1..)
+        var args = Array.prototype.slice.call(arguments,1);
+        _(this.objects).forEach(function (obj) {
+        obj[funcName].apply(obj,args)
+        })
+    };
+    // Devuelve el primer objeto de objects para el que func es true//Luego lo llamaremos con collide, lo que hara es recorrerse todos los objetos llamando al
+    //collide de cada objeto para comprobar si hay colision. Si hay colision te devolvera el objeto.
+    this.detect = function(func) {
+        var encontrado = _(this.objects).find(function (obj) { return func.call(obj)})
+        if (encontrado){
+            return encontrado
+        }else{
+            return false;
+        }
+    };
+    // Cuando Game.loop() llame a step(), hay que llamar al método
+    // step() de todos los objetos contenidos en el tablero. Antes se
+    // inicializa la lista de objetos pendientes de borrar, y después
+    // se borran los que hayan aparecido en dicha lista
+    this.step = function(dt) {
+        this.resetRemoved();
+        this.iterate('step',dt);
+        this.finalizeRemoved();
+    };
+    // Cuando Game.loop() llame a draw(), hay que llamar al método
+    // draw() de todos los objetos contenidos en el tablero
+    this.draw= function(ctx) {
+        this.iterate('draw',ctx);
+    };
+    // Comprobar si hay intersección entre los rectángulos que
+    // circunscriben a los objetos o1 y o2
+    this.overlap = function(o1,o2) {
+        // return !((o1 encima de o2) || (o1 debajo de o2) ||
+        // (o1 a la izda de o2) || (o1 a la dcha de o2)
+        return !((o1.y+o1.h-1<o2.y) || (o1.y>o2.y+o2.h-1) ||
+        (o1.x+o1.w-1<o2.x) || (o1.x>o2.x+o2.w-1));
+    };
+    // Encontrar el primer objeto de tipo type que colisiona con obj
+    // Si se llama sin type, en contrar el primer objeto de cualquier
+    // tipo que colisiona con obj
+    this.collide = function(obj,type) {
+        return this.detect(function() {
+        if(obj != this) {
+            var col = (!type || this.type & type) && board.overlap(obj,this)
+            return col ? this : false;
+        }
+        });
+    };
+};
+
