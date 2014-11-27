@@ -66,6 +66,12 @@ var sprites = {
 };
 
 var startGame = function() {
+
+    Jugador1 = {nombre: "Adri" , color: "sr"};
+    Jugador2 = {nombre: "Victor" , color: "sblue"};
+    Jugador3 = {nombre: "Alvaro" , color: "sa"};
+    Jugador4 = {nombre: "Kevin" , color: "sn"};
+
     Game.setBoard(0,new TitleScreen("Juego Carcassone", "Pulsa espacio para empezar a jugar",playGame));
     /*                              
     SpriteSheet.draw(Game.ctx,"ccurvo",1*64,1*64);
@@ -99,8 +105,9 @@ var startGame = function() {
 
 var playGame = function() {
   Game.setBoard(0,new tablero());
-  Game.setBoard(1,new TextoPideFicha("Pulsa enter para pedir ficha ",playFicha));
-  Game.setBoard(2,new pieza ("ccurvo", 1*64, 1*64));
+  Game.setBoard(1,new Jugadores());
+  Game.setBoard(2,new TextoPideFicha("Pulsa enter para pedir ficha ",playFicha));
+  //Game.setBoard(2,new pieza ("ccurvo", 1*64, 1*64));
 }
 
 var playFicha = function () {
@@ -113,6 +120,36 @@ var pieza = function (nombre, x, y){
   };
   this.draw = function(ctx) {
 	  SpriteSheet.draw(Game.ctx, nombre, x, y);
+  };
+}
+
+
+//constructor para inicializar jugadores y pintarlos a un lado....etc
+//de momento sin argumentos porque por defecto suponemos los 4 jugadores inicializados al principio
+//supongo que luego como argumentos habrá que pasarle los jugadores que nos informen que juagan
+var Jugadores = function(){
+  this.step = function(dt) {
+        //De momento lo pongo vacio porque solo quiero probar tittle scream
+  };
+  this.draw = function(ctx) {
+      ctx.fillStyle = "#FFFFFF";
+	  ctx.font = "bold 27px bangers";
+	  ctx.fillText("JUGADORES", 10.5*64,1.5*64);
+	  ctx.font = "bold 17px bangers";
+	  ctx.fillText("JUGAODOR 1: ", 10.5*64,2*64);
+	  ctx.fillText("JUGAODOR 2: ", 10.5*64,3*64);
+	  ctx.fillText("JUGAODOR 3: ", 10.5*64,4*64);
+	  ctx.fillText("JUGAODOR 4: ", 10.5*64,5*64);
+	  ctx.font = "bold 14px bangers";
+	  ctx.fillText(Jugador1.nombre, 10.5*64,2.5*64);
+	  SpriteSheet.draw(Game.ctx,Jugador1.color, 12*64, 2.3*64);
+	  ctx.fillText(Jugador2.nombre, 10.5*64,3.5*64);
+	  SpriteSheet.draw(Game.ctx,Jugador2.color, 12*64, 3.3*64);
+	  ctx.fillText(Jugador3.nombre, 10.5*64,4.5*64);
+	  SpriteSheet.draw(Game.ctx,Jugador3.color, 12*64, 4.3*64);
+	  ctx.fillText(Jugador4.nombre, 10.5*64,5.5*64);
+	  SpriteSheet.draw(Game.ctx,Jugador4.color, 12*64, 5.3*64);
+	  
   };
 }
 

@@ -1,13 +1,3 @@
-/* Jueves 20/11/2014
-
-He añadido desde donde lo dejamos juntos el tittle screen, segun lo dejamos en la url aparecia el tablero y dos fichas
-colocadas como prueba. Con lo que he añadido lo que pasa es: primero aparece un titlle screen con el numbre del juego 
-y que dice que pulses espacio para comenzar y tal, al pulsar espacio aparece el tablero con las dos piezas puestas de
-prueba y un espacio a la derecha para los jugadores y tal, eso ya lo veremos si lo cambiamos.
-He sacado el bucle del tablero de donde lo teniamos a una variable y he añadido en el objeto Game bastantes cosas, bucle loop
-y lo de la tecla espacio, pero es facil*/
-
-
 
 Game = new function() {                                                                  
 
