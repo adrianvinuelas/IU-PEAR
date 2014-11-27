@@ -136,10 +136,10 @@ var Jugadores = function(){
 	  ctx.font = "bold 27px bangers";
 	  ctx.fillText("JUGADORES", 10.5*64,1.5*64);
 	  ctx.font = "bold 17px bangers";
-	  ctx.fillText("JUGAODOR 1: ", 10.5*64,2*64);
-	  ctx.fillText("JUGAODOR 2: ", 10.5*64,3*64);
-	  ctx.fillText("JUGAODOR 3: ", 10.5*64,4*64);
-	  ctx.fillText("JUGAODOR 4: ", 10.5*64,5*64);
+	  ctx.fillText("JUGADOR 1: ", 10.5*64,2*64);
+	  ctx.fillText("JUGADOR 2: ", 10.5*64,3*64);
+	  ctx.fillText("JUGADOR 3: ", 10.5*64,4*64);
+	  ctx.fillText("JUGADOR 4: ", 10.5*64,5*64);
 	  ctx.font = "bold 14px bangers";
 	  ctx.fillText(Jugador1.nombre, 10.5*64,2.5*64);
 	  SpriteSheet.draw(Game.ctx,Jugador1.color, 12*64, 2.3*64);
