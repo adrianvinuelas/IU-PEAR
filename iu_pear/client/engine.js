@@ -114,6 +114,7 @@ TextoPideFicha =  function TextoPideFicha(title,callback) {
     ctx.fillStyle = "#FFFFFF";   
     ctx.font = "bold 12px bangers";
     ctx.fillText(title,10.5*64,7.8*64);
+    ctx.fillText("Pulsa flecha derecha para rotar",10.5*64,9.3*64);
   };   
 }
 
