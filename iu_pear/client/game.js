@@ -184,6 +184,31 @@ var tablero = function(){
     };	
 }
 
+var Seguidor = function(inicialx, inicialy, x , y , sprite) {
+    this.inicialx = inicialx ;
+    this.inicialy= inicialy ;
+    this.x = x ;
+    this.y = y ; 
+    this.sprite = sprite ; 
+    
+    
+    this.step = function(dt) {
+    
+    
+    }
+    
+    
+    this.draw = function(ctx) {
+        
+        SpriteSheet.draw(ctx,this.inicialx,this.inicialy,this.x,this.y,sprite)    
+    }
+
+
+
+
+
+
+}
 
 $(function() {
     Game.initialize("game",sprites,startGame);
