@@ -123,13 +123,31 @@ var playGame = function() {
   board.add(new pieza ("mc", 11.5*64, 8*64));
   
 }
-
 var pieza = function (nombre, x, y){
+  this.x = x;
+  this.y = y;
+  this.w = 64;
+  this.h = 64;
+  this.nombre = nombre;
+  this.colocada = false;
+  this.giro = false;
+  this.numgiro = 0;
   this.step = function(dt) {
+	if(Game.keys['giro']){
+		if(!this.colocada){
+			this.giro = true;
+			this.numgiro++;
+			if(this.numgiro == 5){
+				this.numgiro = 1;
+			}
+			console.log("this.numgiro = " +this.numgiro)
+			Game.keys['giro'] = false;
+		}
+	}	
         //De momento lo pongo vacio porque solo quiero probar tittle scream
   };
   this.draw = function(ctx) {
-	  SpriteSheet.draw(Game.ctx, nombre, x, y);
+	  SpriteSheet.draw(Game.ctx, nombre, x, y,this.giro,this.numgiro);
   };
 }
 
