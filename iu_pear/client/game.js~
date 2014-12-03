@@ -121,15 +121,54 @@ var playGame = function() {
 
   Game.setBoard(3,board);
   board.add(new pieza ("mc", 11.5*64, 8*64));
+  //board.add(new pieza ("mc", 64,64));
+  //NP = new pieza("Cady", 8*64, 4*64);
+  //board.add(NP);
   
 }
-
 var pieza = function (nombre, x, y){
+  this.x = x;
+  this.y = y;
+  this.w = 64;
+  this.h = 64;
+  this.nombre = nombre;
+  this.colocada = false;
+  this.giro = false;
+  this.numgiro = 0;
   this.step = function(dt) {
+  
+   game.onmousedown = function(e){
+        if(e.which == 1){
+             alert('the was button is down!')
+            mX = Math.floor(e.pageX);
+            mY = Math.floor(e.pageY);
+            cX =Math.floor((mX-20)/64);
+            cY = Math.floor((mY-128)/64);
+           
+                console.log("x ------>:"  + cX +"mx :" + mX + "my :" + mY + "," + cY);
+           
+            x = Math.floor(cX *64);
+            y = Math.floor(cY * 64);
+                console.log(x + ","+ y ) ; 
+             this.colocada = true;
+      }
+      }          
+                
+	if(Game.keys['giro']){
+		if(!this.colocada){
+			this.giro = true;
+			this.numgiro++;
+			if(this.numgiro == 5){
+				this.numgiro = 1;
+			}
+			console.log("this.numgiro = " +this.numgiro)
+			Game.keys['giro'] = false;
+		}
+	}	
         //De momento lo pongo vacio porque solo quiero probar tittle scream
   };
   this.draw = function(ctx) {
-	  SpriteSheet.draw(Game.ctx, nombre, x, y);
+	  SpriteSheet.draw(Game.ctx, nombre, x, y,this.giro,this.numgiro);
   };
 }
 
@@ -186,9 +225,10 @@ var tablero = function(){
 
 var Seguidor = function(inicialx, inicialy, x , y , sprite) {
     this.inicialx = inicialx ;
-    this.inicialt= inicialy ;
+    this.inicialy= inicialy ;
     this.x = x ;
     this.y = y ; 
+    this.sprite = sprite ; 
     
     
     this.step = function(dt) {
@@ -199,7 +239,7 @@ var Seguidor = function(inicialx, inicialy, x , y , sprite) {
     
     this.draw = function(ctx) {
         
-        SpriteSheet.draw(ctx,this.x,this.y,sprite)    
+        SpriteSheet.draw(ctx,this.inicialx,this.inicialy,this.x,this.y,sprite)    
     }
 
 

@@ -136,6 +136,24 @@ var pieza = function (nombre, x, y){
   this.giro = false;
   this.numgiro = 0;
   this.step = function(dt) {
+  
+   game.onmousedown = function(e){
+        if(e.which == 1){
+             alert('the was button is down!')
+            mX = Math.floor(e.pageX);
+            mY = Math.floor(e.pageY);
+            cX =Math.floor((mX-20)/64);
+            cY = Math.floor((mY-128)/64);
+           
+                console.log("x ------>:"  + cX +"mx :" + mX + "my :" + mY + "," + cY);
+           
+            x = Math.floor(cX *64);
+            y = Math.floor(cY * 64);
+                console.log(x + ","+ y ) ; 
+             
+      }
+      }          
+                
 	if(Game.keys['giro']){
 		if(!this.colocada){
 			this.giro = true;
