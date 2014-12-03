@@ -80,7 +80,7 @@ var startGame = function() {
     Jugador2 = {nombre: "Victor" , color: "sblue"};
     Jugador3 = {nombre: "Alvaro" , color: "sa"};
     Jugador4 = {nombre: "Kevin" , color: "sn"};
-    Game.setBoard(0,new tablero());
+    Game.setBoard(0,new cuadricula());
     Game.setBoard(1,new Jugadores());
     Game.setBoard(2,new TextoPideFicha("Pulsa enter para pedir ficha ",playGame));
     
@@ -132,30 +132,36 @@ var pieza = function (nombre, x, y){
   this.w = 64;
   this.h = 64;
   this.nombre = nombre;
-  this.colocada = false;
+  var colocada = false;
   this.giro = false;
   this.numgiro = 0;
-  this.step = function(dt) {
   
-   game.onmousedown = function(e){
-        if(e.which == 1){
-             alert('the was button is down!')
-            mX = Math.floor(e.pageX);
-            mY = Math.floor(e.pageY);
-            cX =Math.floor((mX-20)/64);
-            cY = Math.floor((mY-128)/64);
-           
-                console.log("x ------>:"  + cX +"mx :" + mX + "my :" + mY + "," + cY);
-           
-            x = Math.floor(cX *64);
-            y = Math.floor(cY * 64);
-                console.log(x + ","+ y ) ; 
-             
-      }
-      }          
+  this.step = function(dt) {
+  console.log("colocada = " + colocada);
+   if (!colocada){
+	   game.onmousedown = function(e){
+		if(e.which == 1){
+		    if (!colocada){
+			    // alert('the was button is down!')
+			    mX = Math.floor(e.pageX);
+			    mY = Math.floor(e.pageY);
+			    cX =Math.floor((mX-20)/64);
+			    cY = Math.floor((mY-128)/64);
+			   
+				console.log("x ------>:"  + cX +"mx :" + mX + "my :" + mY + "," + cY);
+			   
+			    x = Math.floor(cX *64);
+			    y = Math.floor(cY * 64);
+				console.log(x + ","+ y ) ; 
+			    colocada = true;
+			console.log("this.colocada = " + colocada);
+		  }
+		     
+	       }
+      	    }          
                 
 	if(Game.keys['giro']){
-		if(!this.colocada){
+		
 			this.giro = true;
 			this.numgiro++;
 			if(this.numgiro == 5){
@@ -163,8 +169,8 @@ var pieza = function (nombre, x, y){
 			}
 			console.log("this.numgiro = " +this.numgiro)
 			Game.keys['giro'] = false;
-		}
 	}	
+  }
         //De momento lo pongo vacio porque solo quiero probar tittle scream
   };
   this.draw = function(ctx) {
@@ -202,7 +208,7 @@ var Jugadores = function(){
   };
 }
 
-var tablero = function(){
+var cuadricula = function(){
     this.step = function(dt) {
         //De momento lo pongo vacio porque solo quiero probar tittle scream
     };
