@@ -146,6 +146,39 @@ TextoPideFicha =  function TextoPideFicha(title,callback) {
 }
 
 
+AyudaScreen = function() {
+    this.ayuda = false;
+   
+    var up = false;
+    this.step = function (dt) {
+  
+    if(!Game.keys['espacio']) up = true;
+    if(up && Game.keys['espacio']) {
+    up = false;
+    this.ayuda = !this.ayuda;
+    }
+    };
+   
+    this.draw = function(ctx) {
+
+    
+    if (this.ayuda == true) {
+        ctx.save();
+        ctx.fillStyle = 'rgba(255,255,255,0.9)';
+        ctx.fillRect(110,90,520,320);
+        ctx.strokeStyle="#FF0000";
+        ctx.strokeRect(110,90,520,320);
+        var gradient=ctx.createLinearGradient(0,0,90,0);
+        gradient.addColorStop("0","magenta");
+        gradient.addColorStop("0.5","blue");
+        gradient.addColorStop("1.0","red");
+        ctx.fillStyle=gradient;
+        ctx.fillText("Este es el menu de ayuda, mejorarlo despues",2.5*64,3.5*64);
+        ctx.restore(); 
+    }
+    };
+   
+};
 
 // GameBoard implementa un tablero de juego que gestiona la
 // interacción entre los elementos del juego sobre el que se disponen

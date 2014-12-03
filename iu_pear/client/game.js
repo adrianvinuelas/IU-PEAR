@@ -83,13 +83,9 @@ var startGame = function() {
     Jugador4 = {nombre: "Kevin" , color: "sn"};
     Game.setBoard(0,new cuadricula());
     Game.setBoard(1,new Jugadores());
-    Game.setBoard(3,board);
-    Game.setBoard(2,new TextoPideFicha("Pulsa enter para pedir ficha ",playGame));
-}
-
-
-var pedirFicha = function(){
-	
+    Game.setBoard(4,board);
+    Game.setBoard(3,new TextoPideFicha("Pulsa enter para pedir ficha ",playGame));
+    Game.setBoard(2,new AyudaScreen());
 }
 
 
@@ -98,7 +94,7 @@ var playGame = function() {
 	  piezaNew = pedirPieza();
 	  console.log("kevin paquete");
 	  board.add(piezaNew);
-	  Game.setBoard(2,new TextoPideFicha("Pulsa enter para pedir ficha ",playGame));
+	  Game.setBoard(3,new TextoPideFicha("Pulsa enter para pedir ficha ",playGame));
   }
   
  }
@@ -111,7 +107,7 @@ var playGame = function() {
   //board.add(NP);
   
 
-function pedirPieza(){
+function pedirPieza(){ //Hay que llamar a la IA para que nos de la pieza aleatoria, mientras ponemos siempre la misma 
 	var piezaNueva = new pieza("CDiagonal", 11.5*64, 8*64);
 	return piezaNueva;
 }
