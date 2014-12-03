@@ -73,7 +73,8 @@ Game.setBoard(0,new TitleScreen("Juego Carcassone", "Pulsa espacio para empezar 
     
 }
 */
-
+var board = new TableroJuego();
+var otrapieza = true;
 var startGame = function() {
 
     Jugador1 = {nombre: "Adri" , color: "sr"};
@@ -82,50 +83,39 @@ var startGame = function() {
     Jugador4 = {nombre: "Kevin" , color: "sn"};
     Game.setBoard(0,new cuadricula());
     Game.setBoard(1,new Jugadores());
+    Game.setBoard(3,board);
     Game.setBoard(2,new TextoPideFicha("Pulsa enter para pedir ficha ",playGame));
-    
-    /*                              
-    SpriteSheet.draw(Game.ctx,"ccurvo",1*64,1*64);
-    SpriteSheet.draw(Game.ctx,"crucecC",1*64,2*64);
-    /*
-     SpriteSheet.draw(Game.ctx,"Cec",150,50);
-     SpriteSheet.draw(Game.ctx,"CDiagonal",250,50);
-     SpriteSheet.draw(Game.ctx,"Cce",350,50);
-     SpriteSheet.draw(Game.ctx,"Cc",450,50);
-     SpriteSheet.draw(Game.ctx,"ce2C",550,50);
-     SpriteSheet.draw(Game.ctx,"Ccampo",650,50);
-     SpriteSheet.draw(Game.ctx,"Cladoccentro",750,50);
-     SpriteSheet.draw(Game.ctx,"Cccurvo",50,150);
-     SpriteSheet.draw(Game.ctx,"Ccamporesto",150,150);
-     SpriteSheet.draw(Game.ctx,"Cady",250,150);
-     SpriteSheet.draw(Game.ctx,"crucecC",350,150);
-     SpriteSheet.draw(Game.ctx,"Ccarribadcha",450,150);
-     SpriteSheet.draw(Game.ctx,"m",550,150);
-     SpriteSheet.draw(Game.ctx,"C",650,150);
-     SpriteSheet.draw(Game.ctx,"cruce4c",750,150);
-     SpriteSheet.draw(Game.ctx,"cruce3c",50,250);
-     SpriteSheet.draw(Game.ctx,"mc",150,250);
-     SpriteSheet.draw(Game.ctx,"c",250,250);
-     SpriteSheet.draw(Game.ctx,"sn",350,250);
-     SpriteSheet.draw(Game.ctx,"sa",450,250);
-     SpriteSheet.draw(Game.ctx,"sb",550,250);
-     SpriteSheet.draw(Game.ctx,"sr",650,250);
-     SpriteSheet.draw(Game.ctx,"sblue",750,250);
-    */
 }
 
-var playGame = function() {
-  
-  
-  var board = new TableroJuego();
 
-  Game.setBoard(3,board);
-  board.add(new pieza ("mc", 11.5*64, 8*64));
+var pedirFicha = function(){
+	
+}
+
+
+var playGame = function() {
+  if(otrapieza){
+	  piezaNew = pedirPieza();
+	  console.log("kevin paquete");
+	  board.add(piezaNew);
+	  Game.setBoard(2,new TextoPideFicha("Pulsa enter para pedir ficha ",playGame));
+  }
+  
+ }
+  
+  
+  
+  	
   //board.add(new pieza ("mc", 64,64));
   //NP = new pieza("Cady", 8*64, 4*64);
   //board.add(NP);
   
+
+function pedirPieza(){
+	var piezaNueva = new pieza("CDiagonal", 11.5*64, 8*64);
+	return piezaNueva;
 }
+
 var pieza = function (nombre, x, y){
   this.x = x;
   this.y = y;
@@ -137,8 +127,9 @@ var pieza = function (nombre, x, y){
   this.numgiro = 0;
   
   this.step = function(dt) {
-  console.log("colocada = " + colocada);
+  //console.log("colocada = " + colocada);
    if (!colocada){
+	   otrapieza = false;
 	   game.onmousedown = function(e){
 		if(e.which == 1){
 		    if (!colocada){
@@ -154,11 +145,13 @@ var pieza = function (nombre, x, y){
 			    y = Math.floor(cY * 64);
 				console.log(x + ","+ y ) ; 
 			    colocada = true;
-			console.log("this.colocada = " + colocada);
+			    otrapieza = true;
+			//console.log("this.colocada = " + colocada);
 		  }
 		     
 	       }
-      	    }          
+      	    }
+	          
                 
 	if(Game.keys['giro']){
 		
@@ -247,12 +240,6 @@ var Seguidor = function(inicialx, inicialy, x , y , sprite) {
         
         SpriteSheet.draw(ctx,this.inicialx,this.inicialy,this.x,this.y,sprite)    
     }
-
-
-
-
-
-
 }
 
 $(function() {
