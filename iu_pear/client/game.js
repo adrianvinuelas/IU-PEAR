@@ -121,6 +121,9 @@ var playGame = function() {
 
   Game.setBoard(3,board);
   board.add(new pieza ("mc", 11.5*64, 8*64));
+  //board.add(new pieza ("mc", 64,64));
+  //NP = new pieza("Cady", 8*64, 4*64);
+  //board.add(NP);
   
 }
 var pieza = function (nombre, x, y){

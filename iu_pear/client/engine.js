@@ -63,7 +63,9 @@ Game = new function() {
 };
 
 SpriteSheet = new function() {
+
   this.map = { };
+  
   this.load = function(spriteData,callback) {
     this.map = spriteData;
     this.image = new Image();
@@ -73,29 +75,34 @@ SpriteSheet = new function() {
 
   this.draw = function(ctx,sprite,x,y,girar,numgiro,frame) {
     var s = this.map[sprite];
-    var sw = s.w;
-    var sh = s.h;
+    //var sw = s.w;
+    //var sh = s.h;
+    
     if(!frame) frame = 0;
     if(girar){
-	ctx.save();
-	if(numgiro == 1){
-		//console.log("entro a rotar 90");
-		ctx.rotate(90*Math.PI/180);
-		ctx.drawImage(this.image, s.sx + frame * s.w, s.sy, s.w, s.h, x - 64*3.5 , y - 64*20.5,s.w, s.h);
-	}else if (numgiro == 2){
-		//console.log("entro a rotar 180");
-		ctx.rotate(180*Math.PI/180);
-		ctx.drawImage(this.image, s.sx + frame * s.w, s.sy, s.w, s.h, x - 64*24, y - 64*17,s.w, s.h);
-	}else if (numgiro == 3){
-		//console.log("entro a rotar 270");
-		ctx.rotate(270*Math.PI/180);
-		ctx.drawImage(this.image, s.sx + frame * s.w, s.sy, s.w, s.h, x - 64*20.5 , y + 64*3.5,s.w, s.h);
-	}else if(numgiro == 4){
-		 ctx.drawImage(this.image, s.sx + frame * s.w, s.sy, s.w, s.h, Math.floor(x), Math.floor(y), s.w, s.h);
-	}
-	ctx.restore();
+	    ctx.save();	    
+	    ctx.translate(x,y);
+	    ctx.translate(s.w/2, s.h/2);
+	        
+	    if(numgiro == 1){
+		    //console.log("entro a rotar 90");		    
+		    ctx.rotate(90*Math.PI/180);
+		    ctx.drawImage(this.image, s.sx + frame * s.w, s.sy, s.w, s.h, Math.floor(-s.w/2) , Math.floor(-s.h/2),s.w, s.h);
+	    }else if (numgiro == 2){
+		    //console.log("entro a rotar 180");
+		    ctx.rotate(180*Math.PI/180);
+		    ctx.drawImage(this.image, s.sx + frame * s.w, s.sy, s.w, s.h, Math.floor(-s.w/2) , Math.floor(-s.h/2),s.w, s.h);
+	    }else if (numgiro == 3){
+		    //console.log("entro a rotar 270");
+		    ctx.rotate(270*Math.PI/180);
+		    ctx.drawImage(this.image, s.sx + frame * s.w, s.sy, s.w, s.h, Math.floor(-s.w/2) , Math.floor(-s.h/2),s.w, s.h);
+	    }else if(numgiro == 4){
+		     ctx.drawImage(this.image, s.sx + frame * s.w, s.sy, s.w, s.h, Math.floor(-s.w/2) , Math.floor(-s.h/2),s.w, s.h);
+	    }
+	    ctx.restore();
     }else{	
       ctx.drawImage(this.image, s.sx + frame * s.w, s.sy, s.w, s.h, Math.floor(x), Math.floor(y), s.w, s.h);
+      //ctx.drawImage(this.image, s.sx + frame * s.w, s.sy, s.w, s.h, Math.floor(-s.w/2) , Math.floor(-s.h/2),s.w, s.h);
     }
   };
   
