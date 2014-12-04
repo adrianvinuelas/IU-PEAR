@@ -73,12 +73,11 @@ SpriteSheet = new function() {
     this.image.src = 'sprites.jpg';
   };
 
-  this.draw = function(ctx,sprite,x,y,girar,numgiro,frame) {
+  this.draw = function(ctx,sprite,x,y,girar,numgiro,primeravez) {
     var s = this.map[sprite];
     //var sw = s.w;
     //var sh = s.h;
     
-    if(!frame) frame = 0;
     if(girar){
 	    ctx.save();	    
 	    ctx.translate(x,y);
@@ -87,22 +86,26 @@ SpriteSheet = new function() {
 	    if(numgiro == 1){
 		    //console.log("entro a rotar 90");		    
 		    ctx.rotate(90*Math.PI/180);
-		    ctx.drawImage(this.image, s.sx + frame * s.w, s.sy, s.w, s.h, Math.floor(-s.w/2) , Math.floor(-s.h/2),s.w, s.h);
+		    ctx.drawImage(this.image, s.sx , s.sy, s.w, s.h, Math.floor(-s.w/2) , Math.floor(-s.h/2),s.w, s.h);
 	    }else if (numgiro == 2){
 		    //console.log("entro a rotar 180");
 		    ctx.rotate(180*Math.PI/180);
-		    ctx.drawImage(this.image, s.sx + frame * s.w, s.sy, s.w, s.h, Math.floor(-s.w/2) , Math.floor(-s.h/2),s.w, s.h);
+		    ctx.drawImage(this.image, s.sx, s.sy, s.w, s.h, Math.floor(-s.w/2) , Math.floor(-s.h/2),s.w, s.h);
 	    }else if (numgiro == 3){
 		    //console.log("entro a rotar 270");
 		    ctx.rotate(270*Math.PI/180);
-		    ctx.drawImage(this.image, s.sx + frame * s.w, s.sy, s.w, s.h, Math.floor(-s.w/2) , Math.floor(-s.h/2),s.w, s.h);
+		    ctx.drawImage(this.image, s.sx , s.sy, s.w, s.h, Math.floor(-s.w/2) , Math.floor(-s.h/2),s.w, s.h);
 	    }else if(numgiro == 4){
-		     ctx.drawImage(this.image, s.sx + frame * s.w, s.sy, s.w, s.h, Math.floor(-s.w/2) , Math.floor(-s.h/2),s.w, s.h);
+		     ctx.drawImage(this.image, s.sx , s.sy, s.w, s.h, Math.floor(-s.w/2) , Math.floor(-s.h/2),s.w, s.h);
 	    }
 	    ctx.restore();
-    }else{	
-      ctx.drawImage(this.image, s.sx + frame * s.w, s.sy, s.w, s.h, Math.floor(x), Math.floor(y), s.w, s.h);
-      //ctx.drawImage(this.image, s.sx + frame * s.w, s.sy, s.w, s.h, Math.floor(-s.w/2) , Math.floor(-s.h/2),s.w, s.h);
+    }else{
+       //console.log("x en draw = " + x + ", y en draw = " + y + " y primeravez = " + primeravez);
+       if((x>=64 && x<=576) && (y<=512 && y>=64) && primeravez == 1){//límite(76-644)para la x, (167-674) para la y
+      		ctx.drawImage(this.image, s.sx, s.sy, s.w, s.h, Math.floor(x), Math.floor(y), s.w, s.h);
+	}else if (primeravez == 0){//si primeravez es 0 , es porque es la pieza que tenemos que colocar(esta fuera de la cuadricula)
+		ctx.drawImage(this.image, s.sx, s.sy, s.w, s.h, Math.floor(x), Math.floor(y), s.w, s.h);
+	}
     }
   };
   

@@ -130,7 +130,7 @@ var PiezaMadre = function (nombre, x, y){
   
   this.draw = function(ctx) {
 
-	  SpriteSheet.draw(Game.ctx, nombre, this.x, this.y,this.giro,this.numgiro);
+	  SpriteSheet.draw(Game.ctx, nombre, this.x, this.y,this.giro,this.numgiro,1);
   };	
 
 }
@@ -146,6 +146,8 @@ var pieza = function (nombre, x, y){
   this.numgiro = 0;
   this.type = "pieza";
   this.scroll = false;
+  this.primeravez = true;
+  this.primer = 0;
   
   this.step = function(dt) {
   //console.log("colocada = " + colocada);
@@ -186,16 +188,24 @@ var pieza = function (nombre, x, y){
 			Game.keys['giro'] = false;
 	}	
   }
-        
+        //De momento lo pongo vacio porque solo quiero probar tittle scream
   };
   this.draw = function(ctx) {
 	  if(colocada && !this.scroll){
-		console.log("como esta colocada cambio el this.x");
+		//console.log("como esta colocada cambio el this.x");
 		this.x = x;
 		this.y = y;
-		this.scroll = true;
-	  }  
-	  SpriteSheet.draw(Game.ctx, nombre, this.x, this.y,this.giro,this.numgiro);
+		this.primeravez = false;
+		this.primer= 1; //si la colocamos ya no es la primeravez que sale a imagen,lo hago para que si es aun la pieza a 
+		this.scroll = true;//colocar pues se pueda pintar fuera de la cuadricula, es decir, si this.primer = 0
+				//(ver draw de spritesheet engine)
+	  }
+	  if(!this.scroll){//esto es para que si aun la pieza es la que tenemos que colocar al hacer scroll no se mueva
+		this.x = x;//si scroll esta a false, la pieza mantiene las coordenadas (11.5*64, 8*64)
+		this.y = y;
+	  }
+	  SpriteSheet.draw(Game.ctx, nombre, this.x, this.y,this.giro,this.numgiro,this.primer);
+
   };
 }
 
@@ -218,13 +228,13 @@ var Jugadores = function(){
 	  ctx.fillText("JUGADOR 4: ", 10.5*64,5*64);
 	  ctx.font = "bold 14px bangers";
 	  ctx.fillText(Jugador1.nombre, 10.5*64,2.5*64);
-	  SpriteSheet.draw(Game.ctx,Jugador1.color, 12*64, 2.3*64);
+	  SpriteSheet.draw(Game.ctx,Jugador1.color, 12*64, 2.3*64,false,0,0);
 	  ctx.fillText(Jugador2.nombre, 10.5*64,3.5*64);
-	  SpriteSheet.draw(Game.ctx,Jugador2.color, 12*64, 3.3*64);
+	  SpriteSheet.draw(Game.ctx,Jugador2.color, 12*64, 3.3*64,false,0,0);
 	  ctx.fillText(Jugador3.nombre, 10.5*64,4.5*64);
-	  SpriteSheet.draw(Game.ctx,Jugador3.color, 12*64, 4.3*64);
+	  SpriteSheet.draw(Game.ctx,Jugador3.color, 12*64, 4.3*64,false,0,0);
 	  ctx.fillText(Jugador4.nombre, 10.5*64,5.5*64);
-	  SpriteSheet.draw(Game.ctx,Jugador4.color, 12*64, 5.3*64);
+	  SpriteSheet.draw(Game.ctx,Jugador4.color, 12*64, 5.3*64,false,0,0);
 	  
   };
 }
