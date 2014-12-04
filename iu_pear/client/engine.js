@@ -262,6 +262,18 @@ TableroJuego = function() {
         return !((o1.y+o1.h-1<o2.y) || (o1.y>o2.y+o2.h-1) ||
         (o1.x+o1.w-1<o2.x) || (o1.x>o2.x+o2.w-1));
     };
+    
+    this.translateScroll = function(x,y) {
+        _(this.objects).forEach(function (obj) {
+                if(obj.type == "pieza") {
+                        obj.x = obj.x + 64 * x ;
+                        obj.y = obj.y + 64 * y ;
+                
+                
+                
+      }
+      })
+      };
     // Encontrar el primer objeto de tipo type que colisiona con obj
     // Si se llama sin type, en contrar el primer objeto de cualquier
     // tipo que colisiona con obj
