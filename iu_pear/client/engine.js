@@ -86,17 +86,33 @@ SpriteSheet = new function() {
 	    if(numgiro == 1){
 		    //console.log("entro a rotar 90");		    
 		    ctx.rotate(90*Math.PI/180);
-		    ctx.drawImage(this.image, s.sx , s.sy, s.w, s.h, Math.floor(-s.w/2) , Math.floor(-s.h/2),s.w, s.h);
+		    if((x>=64 && x<=576) && (y<=512 && y>=64) && primeravez == 1){
+		   	 ctx.drawImage(this.image, s.sx , s.sy, s.w, s.h, Math.floor(-s.w/2) , Math.floor(-s.h/2),s.w, s.h);
+		    }else if (primeravez == 0){
+			ctx.drawImage(this.image, s.sx , s.sy, s.w, s.h, Math.floor(-s.w/2) , Math.floor(-s.h/2),s.w, s.h);
+		    }
 	    }else if (numgiro == 2){
 		    //console.log("entro a rotar 180");
 		    ctx.rotate(180*Math.PI/180);
-		    ctx.drawImage(this.image, s.sx, s.sy, s.w, s.h, Math.floor(-s.w/2) , Math.floor(-s.h/2),s.w, s.h);
+		    if((x>=64 && x<=576) && (y<=512 && y>=64) && primeravez == 1){
+		    	ctx.drawImage(this.image, s.sx, s.sy, s.w, s.h, Math.floor(-s.w/2) , Math.floor(-s.h/2),s.w, s.h);
+		    }else if (primeravez == 0){
+			ctx.drawImage(this.image, s.sx, s.sy, s.w, s.h, Math.floor(-s.w/2) , Math.floor(-s.h/2),s.w, s.h);
+		    }
 	    }else if (numgiro == 3){
 		    //console.log("entro a rotar 270");
 		    ctx.rotate(270*Math.PI/180);
-		    ctx.drawImage(this.image, s.sx , s.sy, s.w, s.h, Math.floor(-s.w/2) , Math.floor(-s.h/2),s.w, s.h);
+		    if((x>=64 && x<=576) && (y<=512 && y>=64) && primeravez == 1){
+		    	ctx.drawImage(this.image, s.sx , s.sy, s.w, s.h, Math.floor(-s.w/2) , Math.floor(-s.h/2),s.w, s.h);
+		     }else if (primeravez == 0){
+			ctx.drawImage(this.image, s.sx , s.sy, s.w, s.h, Math.floor(-s.w/2) , Math.floor(-s.h/2),s.w, s.h);
+		    }
 	    }else if(numgiro == 4){
+		if((x>=64 && x<=576) && (y<=512 && y>=64) && primeravez == 1){
 		     ctx.drawImage(this.image, s.sx , s.sy, s.w, s.h, Math.floor(-s.w/2) , Math.floor(-s.h/2),s.w, s.h);
+		 }else if (primeravez == 0){
+			ctx.drawImage(this.image, s.sx , s.sy, s.w, s.h, Math.floor(-s.w/2) , Math.floor(-s.h/2),s.w, s.h);
+		}
 	    }
 	    ctx.restore();
     }else{
