@@ -75,6 +75,7 @@ Game.setBoard(0,new TitleScreen("Juego Carcassone", "Pulsa espacio para empezar 
 */
 var board = new TableroJuego();
 var otrapieza = true;
+
 var startGame = function() {
 
     Jugador1 = {nombre: "Adri" , color: "sr"};
@@ -82,34 +83,56 @@ var startGame = function() {
     Jugador3 = {nombre: "Alvaro" , color: "sa"};
     Jugador4 = {nombre: "Kevin" , color: "sn"};
     Game.setBoard(0,new cuadricula());
-    Game.setBoard(1,new Jugadores());
-    Game.setBoard(4,board);
-    Game.setBoard(3,new TextoPideFicha("Pulsa enter para pedir ficha ",playGame));
+    Game.setBoard(1,new Jugadores());       
     Game.setBoard(2,new AyudaScreen());
+    board.add(new PiezaMadre("m", 5*64, 5*64)); //Pieza madre que siempre esta puesta cuando empieza el juego
+    Game.setBoard(3,new TextoPideFicha("Pulsa enter para pedir ficha ",playGame));
+    board.add(new ScrollTeclas());
+    Game.setBoard(4,board);
+    
 }
 
 
 var playGame = function() {
-  if(otrapieza){
+
+    if(otrapieza){
 	  piezaNew = pedirPieza();
-	  console.log("kevin paquete");
 	  board.add(piezaNew);
 	  Game.setBoard(3,new TextoPideFicha("Pulsa enter para pedir ficha ",playGame));
-  }
+    }
   
  }
   
-  
-  
-  	
-  //board.add(new pieza ("mc", 64,64));
-  //NP = new pieza("Cady", 8*64, 4*64);
-  //board.add(NP);
   
 
 function pedirPieza(){ //Hay que llamar a la IA para que nos de la pieza aleatoria, mientras ponemos siempre la misma 
 	var piezaNueva = new pieza("CDiagonal", 11.5*64, 8*64);
 	return piezaNueva;
+}
+
+var PiezaMadre = function (nombre, x, y){
+
+  this.x = x;
+  this.y = y;
+  this.w = 64;
+  this.h = 64;
+  this.nombre = nombre;
+
+ 
+  this.type = "pieza";
+
+  
+  this.step = function(dt) {
+  
+                  
+	
+  }
+  
+  this.draw = function(ctx) {
+
+	  SpriteSheet.draw(Game.ctx, nombre, this.x, this.y,this.giro,this.numgiro);
+  };	
+
 }
 
 var pieza = function (nombre, x, y){
@@ -121,6 +144,8 @@ var pieza = function (nombre, x, y){
   var colocada = false;
   this.giro = false;
   this.numgiro = 0;
+  this.type = "pieza";
+  this.scroll = false;
   
   this.step = function(dt) {
   //console.log("colocada = " + colocada);
@@ -149,9 +174,7 @@ var pieza = function (nombre, x, y){
 		  }
 		     
 	       }
-      	    }
-	          
-                
+      	    }              
 	if(Game.keys['giro']){
 		
 			this.giro = true;
@@ -163,10 +186,16 @@ var pieza = function (nombre, x, y){
 			Game.keys['giro'] = false;
 	}	
   }
-        //De momento lo pongo vacio porque solo quiero probar tittle scream
+        
   };
   this.draw = function(ctx) {
-	  SpriteSheet.draw(Game.ctx, nombre, x, y,this.giro,this.numgiro);
+	  if(colocada && !this.scroll){
+		console.log("como esta colocada cambio el this.x");
+		this.x = x;
+		this.y = y;
+		this.scroll = true;
+	  }  
+	  SpriteSheet.draw(Game.ctx, nombre, this.x, this.y,this.giro,this.numgiro);
   };
 }
 
@@ -202,7 +231,7 @@ var Jugadores = function(){
 
 var cuadricula = function(){
     this.step = function(dt) {
-        //De momento lo pongo vacio porque solo quiero probar tittle scream
+        
     };
     this.draw = function(ctx) {
       //Pantalla que va a aparecer DESPUES de pulsar espacio
@@ -241,6 +270,77 @@ var Seguidor = function(inicialx, inicialy, x , y , sprite) {
         SpriteSheet.draw(ctx,this.inicialx,this.inicialy,this.x,this.y,sprite)    
     }
 }
+
+
+var ScrollTeclas = function() {
+
+    this.width = 140;
+    this.height = 140;
+    this.scrollx = 45;
+    this.scrolly = 45;
+
+    var izq = false;
+    var der = false;
+    var arriba = false;
+    var abajo = false;
+
+
+    this.draw = function (ctx) {
+        ctx.save();
+        for(var y=0; y<=550; y=y+64){
+            for(var x=0; x<=600; x=x+64){
+                ctx.fillText((this.scrollx+x/64) + ".",7+x,11+y);
+                ctx.fillText((this.scrolly+y/64),32+x,11+y);
+            };
+        };
+
+ ctx.restore();
+    }
+    
+    this.step = function(dt) {
+    
+        if(!Game.keys['left']) izq = true;
+        if(izq && Game.keys['left']) {
+            izq = false;
+            if (this.scrollx != 0) {
+                this.scrollx -= 1;
+                this.board.translateScroll(1,0);
+            }
+        }
+        
+        if(!Game.keys['right']) der = true;
+        if(der && Game.keys['right']) {
+            der = false;
+            if (this.scrollx != this.width) {
+                this.scrollx += 1;
+                this.board.translateScroll(-1,0);
+
+            }
+        }
+        
+        if(!Game.keys['up']) arriba = true;
+        if(arriba && Game.keys['up']) {
+            arriba = false;
+            if (this.scrolly != 0) {
+                this.scrolly -= 1;
+                this.board.translateScroll(0,1);
+
+            }
+        }
+        
+        if(!Game.keys['down']) abajo = true;
+        if(abajo && Game.keys['down']) {
+            abajo= false;
+            if (this.scrolly != this.height) {
+                this.scrolly += 1;
+                this.board.translateScroll(0,-1);
+            }
+    
+        }
+    }
+
+}
+
 
 $(function() {
     Game.initialize("game",sprites,startGame);

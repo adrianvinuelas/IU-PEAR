@@ -19,7 +19,7 @@ Game = new function() {
     
     
     // Gestión de la entrada (teclas solo espacio de momento para prueba tonta)
-    var KEY_CODES = { 32 :'espacio', 39: 'giro', 13: 'pedirficha'};
+    var KEY_CODES = { 32 :'espacio', 82: 'giro', 13: 'pedirficha', 39:'right', 37:'left', 38:'up', 40:'down'};
     this.keys = {};
 
     this.setupInput = function() {
@@ -265,15 +265,12 @@ TableroJuego = function() {
     
     this.translateScroll = function(x,y) {
         _(this.objects).forEach(function (obj) {
-                if(obj.type == "pieza") {
-                        obj.x = obj.x + 64 * x ;
-                        obj.y = obj.y + 64 * y ;
-                
-                
-                
-      }
-      })
-      };
+                if(obj.type == "pieza") {                  
+                    obj.x = obj.x + 64 * x ;
+                    obj.y = obj.y + 64 * y ;                                 
+                }
+        })
+    };
     // Encontrar el primer objeto de tipo type que colisiona con obj
     // Si se llama sin type, en contrar el primer objeto de cualquier
     // tipo que colisiona con obj
