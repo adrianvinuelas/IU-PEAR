@@ -128,21 +128,24 @@ var pieza = function (nombre, x, y){
 	   otrapieza = false;
 	   game.onmousedown = function(e){
 		if(e.which == 1){
-		    if (!colocada){
-			    // alert('the was button is down!')
-			    mX = Math.floor(e.pageX);
-			    mY = Math.floor(e.pageY);
-			    cX =Math.floor((mX-20)/64);
-			    cY = Math.floor((mY-128)/64);
-			   
-				console.log("x ------>:"  + cX +"mx :" + mX + "my :" + mY + "," + cY);
-			   
-			    x = Math.floor(cX *64);
-			    y = Math.floor(cY * 64);
-				console.log(x + ","+ y ) ; 
-			    colocada = true;
-			    otrapieza = true;
-			//console.log("this.colocada = " + colocada);
+		    if (!colocada){//límite(76-644)para la x, (167-674) para la y
+			    mX = (e.pageX);
+			    mY = (e.pageY);
+			    if(mX<76||mX>644 ||mY<167 || mY>674){
+				alert('No puedes colocar la pieza ahí!');
+			    }else{
+				    cX =Math.floor((mX-5)/64);
+				    cY = Math.floor((mY-100)/64);
+				   
+					console.log("x ------>:"  + cX +"mx :" + mX + "my :" + mY + "," + "y ----->: " + cY);
+				   
+				    x = (cX *64);
+				    y = (cY * 64);
+					console.log(x + ","+ y ) ; 
+				    colocada = true;
+				    otrapieza = true;
+				//console.log("this.colocada = " + colocada);
+			   }
 		  }
 		     
 	       }
@@ -217,6 +220,7 @@ var cuadricula = function(){
       }
     };	
 }
+
 
 var Seguidor = function(inicialx, inicialy, x , y , sprite) {
     this.inicialx = inicialx ;
