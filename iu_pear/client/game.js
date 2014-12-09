@@ -23,7 +23,7 @@ var sprites = {
         si:"ciudad", sc:"ciudad", sd:"ciudad", escudo: false}, //Ciudad que tiene casas y un campo a un lado sin camino
         
      Cladoccentro: { sx: 198, sy: 458, w: 64, h: 64, ni:"campo", nc:"camino", nd: "ciudad", ci:"campo", cc:"camino", cd:"ciudad", 
-        si:"campo", sc:"camino", sd:"ciudad", escudo: false}, //Ciudad a un lado y en el centro un camino atravesando
+        si:"camCcepo", sc:"camino", sd:"ciudad", escudo: false}, //Ciudad a un lado y en el centro un camino atravesando
         
      Cccurvo: { sx: 918, sy: 264, w: 64, h: 64, ni:"campo", nc:"campo", nd: "ciudad", ci:"camino", cc:"camino", cd:"ciudad", 
         si:"campo", sc:"camino", sd:"ciudad", escudo: false}, //Ciudad a un lado y camino curvo sin atravesar
@@ -85,7 +85,26 @@ var startGame = function() {
     Game.setBoard(0,new cuadricula());
     Game.setBoard(1,new Jugadores());       
     Game.setBoard(2,new AyudaScreen());
-    board.add(new PiezaMadre("m", 5*64, 5*64)); //Pieza madre que siempre esta puesta cuando empieza el juego
+    //board.add(new PiezaMadre("m", 5*64, 5*64)); //Pieza madre que siempre esta puesta cuando empieza el juego
+		board.add(new PiezaMadre("Cladoccentro", 1*64, 1*64));//1
+		board.add(new PiezaMadre("Ccarribadcha", 2*64, 1*64));//2
+		board.add(new PiezaMadre("Cccurvo", 3*64, 1*64));//3
+		board.add(new PiezaMadre("crucecC", 4*64, 1*64));//4
+		board.add(new PiezaMadre("Cc", 5*64, 1*64));//5
+		//board.add(new PiezaMadre("", 1*64, 2*64));//6
+		board.add(new PiezaMadre("Ccamporesto", 2*64, 2*64));//7
+		board.add(new PiezaMadre("Cady", 3*64, 2*64));//8
+		board.add(new PiezaMadre("ce2C", 4*64, 2*64));//9
+		board.add(new PiezaMadre("CDiagonal", 5*64, 2*64));//10
+		board.add(new PiezaMadre("Cec", 1*64, 3*64));//11
+		board.add(new PiezaMadre("Ccampo", 2*64, 3*64));//12
+		//board.add(new PiezaMadre("", 3*64, 3*64));//13
+		board.add(new PiezaMadre("ccurvo", 4*64, 3*64));//14
+		board.add(new PiezaMadre("c", 5*64, 3*64));//15
+		board.add(new PiezaMadre("cruce3c", 1*64, 4*64));//16
+		board.add(new PiezaMadre("cruce4c", 2*64, 4*64));//17
+		board.add(new PiezaMadre("m", 3*64, 4*64));//18
+		board.add(new PiezaMadre("mc", 4*64, 4*64));//19
     Game.setBoard(3,new TextoPideFicha("Pulsa enter para pedir ficha ",playGame));
     board.add(new ScrollTeclas());
     Game.setBoard(4,board);
@@ -106,7 +125,7 @@ var playGame = function() {
   
 
 function pedirPieza(){ //Hay que llamar a la IA para que nos de la pieza aleatoria, mientras ponemos siempre la misma 
-	var piezaNueva = new pieza("CDiagonal", 11.5*64, 8*64);
+	var piezaNueva = new pieza("Cce", 11.5*64, 8*64);//CDiagonal
 	return piezaNueva;
 }
 
