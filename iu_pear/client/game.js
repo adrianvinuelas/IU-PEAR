@@ -1,6 +1,6 @@
 var sprites = {
 
-    1: { sx: 198, sy: 458, w: 64, h: 64}, 
+    1: { sx: 198, sy: 458, w: 64, h: 64},   //madre
     
     2: { sx:0 , sy: 64, w: 64, h: 64}, 
     
@@ -14,7 +14,7 @@ var sprites = {
     
     S6: { sx: 591, sy: 328, w: 64, h: 64}, 
     
-    C6: { sx: 657, sy: 525, w: 64, h: 64},  //esta cogida pero falta girarla (11,9) en sprite.png
+    C6: { sx: 657, sy: 526, w: 64, h: 64},  
     
     7: { sx: 918, sy: 198, w: 64, h: 64}, 
         
@@ -24,7 +24,7 @@ var sprites = {
     
     S10: { sx: 264, sy: 459, w: 64, h: 64}, 
     
-    C10: { sx: 1, sy: 328, w: 64, h:64},    //esta cogida pero falta girarla (1,6)
+    C10: { sx: 1, sy: 328, w: 64, h:64},    
     
     S11: { sx: 330, sy: 459, w: 64, h: 64}, 
     
