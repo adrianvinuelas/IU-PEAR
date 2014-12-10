@@ -165,7 +165,7 @@ TextoPideFicha =  function TextoPideFicha(title,callback) {
 }
 
 
-AyudaScreen = function() {
+AyudaScreen = function(title) {
     this.ayuda = false;
    
     var up = false;
@@ -180,19 +180,30 @@ AyudaScreen = function() {
    
     this.draw = function(ctx) {
 
+    ctx.fillStyle = "#FFFFFF";   
+    ctx.font = "bold 12px bangers";
+    ctx.fillText(title,10.5*64,6.8*64);
+  
     
     if (this.ayuda == true) {
-        ctx.save();
-        ctx.fillStyle = 'rgba(255,255,255,0.9)';
-        ctx.fillRect(110,90,520,320);
-        ctx.strokeStyle="#FF0000";
-        ctx.strokeRect(110,90,520,320);
-        var gradient=ctx.createLinearGradient(0,0,90,0);
+        ctx.save();  
+        ctx.fillStyle = '#D28C12';
+        ctx.fillRect(120,90,520,320);
+        ctx.strokeStyle="#FFFFFF";
+        ctx.strokeRect(120,90,520,320);
+        var gradient=ctx.createLinearGradient(0,0,800,0);
         gradient.addColorStop("0","magenta");
         gradient.addColorStop("0.5","blue");
         gradient.addColorStop("1.0","red");
         ctx.fillStyle=gradient;
-        ctx.fillText("Este es el menu de ayuda, mejorarlo despues",2.5*64,3.5*64);
+        ctx.fillText("En este menú encontraras toda la ayuda que necesites",2.1*64,1.8*64);
+        ctx.fillText("Dinámica del juego: ",2.1*64,2.1*64);
+        ctx.fillText("1º) Obten la pieza pulsando al enter.",2.1*64,2.4*64);
+        ctx.fillText("2º) Rota la pieza de la forma que quieras para conseguir la puntuación máxima",2.1*64,2.7*64);
+        ctx.fillText("3º) Haz click izquierdo sobre la cuadrícula para colocar la pieza",2.1*64,3*64);
+        ctx.fillText("4º) Ahora puedes colocar un seguidor si quieres, pulsando s",2.1*64,3.3*64);
+        ctx.fillText("5º) Coloca a tu seguidor de la forma que puedas conseguir la puntuacion máxima",2.1*64,3.6*64);
+        ctx.fillText("6º) ¡Ya ha finalizado tu turno! Espera de forma paciente a los demás",2.1*64,3.9*64);
         ctx.restore(); 
     }
     };

@@ -69,11 +69,11 @@ var startGame = function() {
     Game.setBoard(0,new cuadricula());
     Game.setBoard(1,new Jugadores());       
     Game.setBoard(2,new Seguidor());
-    Game.setBoard(3,new AyudaScreen());
+    Game.setBoard(5,new AyudaScreen("Pulsa espacio para ayuda"));
     board.add(new PiezaMadre("1", 5*64, 5*64)); //Pieza madre que siempre esta puesta cuando empieza el juego
-    Game.setBoard(4,new TextoPideFicha("Pulsa enter para pedir ficha ",playGame));
+    Game.setBoard(3,new TextoPideFicha("Pulsa enter para pedir ficha ",playGame));
     board.add(new ScrollTeclas());
-    Game.setBoard(5,board);
+    Game.setBoard(4,board);
     
 }
 
@@ -83,7 +83,7 @@ var playGame = function() {
     if(otrapieza){
 	  piezaNew = pedirPieza();
 	  board.add(piezaNew);
-	  Game.setBoard(4,new TextoPideFicha("Pulsa enter para pedir ficha ",playGame));
+	  Game.setBoard(3,new TextoPideFicha("Pulsa enter para pedir ficha ",playGame));
     }
   
  }
