@@ -84,7 +84,8 @@ var startGame = function() {
     Jugador4 = {nombre: "Kevin" , color: "sn"};
     Game.setBoard(0,new cuadricula());
     Game.setBoard(1,new Jugadores());       
-    Game.setBoard(2,new AyudaScreen());
+    Game.setBoard(2,new Seguidor());
+    Game.setBoard(3,new AyudaScreen());
     //board.add(new PiezaMadre("m", 5*64, 5*64)); //Pieza madre que siempre esta puesta cuando empieza el juego
 		board.add(new PiezaMadre("Cladoccentro", 1*64, 1*64));//1
 		board.add(new PiezaMadre("Ccarribadcha", 2*64, 1*64));//2
@@ -105,9 +106,9 @@ var startGame = function() {
 		board.add(new PiezaMadre("cruce4c", 2*64, 4*64));//17
 		board.add(new PiezaMadre("m", 3*64, 4*64));//18
 		board.add(new PiezaMadre("mc", 4*64, 4*64));//19
-    Game.setBoard(3,new TextoPideFicha("Pulsa enter para pedir ficha ",playGame));
+    Game.setBoard(4,new TextoPideFicha("Pulsa enter para pedir ficha ",playGame));
     board.add(new ScrollTeclas());
-    Game.setBoard(4,board);
+    Game.setBoard(5,board);
     
 }
 
@@ -117,7 +118,7 @@ var playGame = function() {
     if(otrapieza){
 	  piezaNew = pedirPieza();
 	  board.add(piezaNew);
-	  Game.setBoard(3,new TextoPideFicha("Pulsa enter para pedir ficha ",playGame));
+	  Game.setBoard(4,new TextoPideFicha("Pulsa enter para pedir ficha ",playGame));
     }
   
  }
@@ -218,6 +219,7 @@ var pieza = function (nombre, x, y){
 		this.primer= 1; //si la colocamos ya no es la primeravez que sale a imagen,lo hago para que si es aun la pieza a 
 		this.scroll = true;//colocar pues se pueda pintar fuera de la cuadricula, es decir, si this.primer = 0
 				//(ver draw de spritesheet engine)
+	        alert("Si quieres tener un seguidor pulsa la tecla s") ; 
 	  }
 	  if(!this.scroll){//esto es para que si aun la pieza es la que tenemos que colocar al hacer scroll no se mueva
 		this.x = x;//si scroll esta a false, la pieza mantiene las coordenadas (11.5*64, 8*64)
@@ -280,23 +282,29 @@ var cuadricula = function(){
 }
 
 
-var Seguidor = function(inicialx, inicialy, x , y , sprite) {
-    this.inicialx = inicialx ;
-    this.inicialy= inicialy ;
-    this.x = x ;
-    this.y = y ; 
-    this.sprite = sprite ; 
-    
+var Seguidor = function() {
+   // this.inicialx = inicialx ;
+   // this.inicialy= inicialy ;
+    //this.x = x ;
+    //this.y = y ; 
+    //this.sprite = sprite ; 
+    pulsado = false ; 
     
     this.step = function(dt) {
-    
+        if(Game.keys['seguidor']) pulsado = true;
+        if(pulsado && !Game.keys['seguidor']) {
+            pulsado = true;
+        }
     
     }
     
     
     this.draw = function(ctx) {
-        
-        SpriteSheet.draw(ctx,this.inicialx,this.inicialy,this.x,this.y,sprite)    
+        if(pulsado) {
+        ctx.font = "bold 14px bangers";
+	  ctx.fillText(Jugador1.nombre, 10.5*64,7.5*64);
+	  SpriteSheet.draw(Game.ctx,"sr", 12*64, 7.3*64,false,0,0);
+        }
     }
 }
 

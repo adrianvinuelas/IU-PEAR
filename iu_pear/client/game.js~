@@ -23,7 +23,7 @@ var sprites = {
         si:"ciudad", sc:"ciudad", sd:"ciudad", escudo: false}, //Ciudad que tiene casas y un campo a un lado sin camino
         
      Cladoccentro: { sx: 198, sy: 458, w: 64, h: 64, ni:"campo", nc:"camino", nd: "ciudad", ci:"campo", cc:"camino", cd:"ciudad", 
-        si:"campo", sc:"camino", sd:"ciudad", escudo: false}, //Ciudad a un lado y en el centro un camino atravesando
+        si:"camCcepo", sc:"camino", sd:"ciudad", escudo: false}, //Ciudad a un lado y en el centro un camino atravesando
         
      Cccurvo: { sx: 918, sy: 264, w: 64, h: 64, ni:"campo", nc:"campo", nd: "ciudad", ci:"camino", cc:"camino", cd:"ciudad", 
         si:"campo", sc:"camino", sd:"ciudad", escudo: false}, //Ciudad a un lado y camino curvo sin atravesar
@@ -75,6 +75,7 @@ Game.setBoard(0,new TitleScreen("Juego Carcassone", "Pulsa espacio para empezar 
 */
 var board = new TableroJuego();
 var otrapieza = true;
+
 var startGame = function() {
 
     Jugador1 = {nombre: "Adri" , color: "sr"};
@@ -82,35 +83,76 @@ var startGame = function() {
     Jugador3 = {nombre: "Alvaro" , color: "sa"};
     Jugador4 = {nombre: "Kevin" , color: "sn"};
     Game.setBoard(0,new cuadricula());
-    Game.setBoard(1,new Jugadores());
-    Game.setBoard(4,board);
-    Game.setBoard(3,new TextoPideFicha("Pulsa enter para pedir ficha ",playGame));
-    Game.setBoard(2,"Pulsa espacio para ayuda");
-    Game.setBoard(2,new AyudaScreen());
+    Game.setBoard(1,new Jugadores());       
+    Game.setBoard(2,new Seguidor());
+    Game.setBoard(3,new AyudaScreen());
+    //board.add(new PiezaMadre("m", 5*64, 5*64)); //Pieza madre que siempre esta puesta cuando empieza el juego
+		board.add(new PiezaMadre("Cladoccentro", 1*64, 1*64));//1
+		board.add(new PiezaMadre("Ccarribadcha", 2*64, 1*64));//2
+		board.add(new PiezaMadre("Cccurvo", 3*64, 1*64));//3
+		board.add(new PiezaMadre("crucecC", 4*64, 1*64));//4
+		board.add(new PiezaMadre("Cc", 5*64, 1*64));//5
+		//board.add(new PiezaMadre("", 1*64, 2*64));//6
+		board.add(new PiezaMadre("Ccamporesto", 2*64, 2*64));//7
+		board.add(new PiezaMadre("Cady", 3*64, 2*64));//8
+		board.add(new PiezaMadre("ce2C", 4*64, 2*64));//9
+		board.add(new PiezaMadre("CDiagonal", 5*64, 2*64));//10
+		board.add(new PiezaMadre("Cec", 1*64, 3*64));//11
+		board.add(new PiezaMadre("Ccampo", 2*64, 3*64));//12
+		//board.add(new PiezaMadre("", 3*64, 3*64));//13
+		board.add(new PiezaMadre("ccurvo", 4*64, 3*64));//14
+		board.add(new PiezaMadre("c", 5*64, 3*64));//15
+		board.add(new PiezaMadre("cruce3c", 1*64, 4*64));//16
+		board.add(new PiezaMadre("cruce4c", 2*64, 4*64));//17
+		board.add(new PiezaMadre("m", 3*64, 4*64));//18
+		board.add(new PiezaMadre("mc", 4*64, 4*64));//19
+    Game.setBoard(4,new TextoPideFicha("Pulsa enter para pedir ficha ",playGame));
+    board.add(new ScrollTeclas());
+    Game.setBoard(5,board);
+    
 }
 
 
 var playGame = function() {
-  if(otrapieza){
+
+    if(otrapieza){
 	  piezaNew = pedirPieza();
-	  console.log("kevin paquete");
 	  board.add(piezaNew);
-	  Game.setBoard(3,new TextoPideFicha("Pulsa enter para pedir ficha ",playGame));
-  }
+	  Game.setBoard(4,new TextoPideFicha("Pulsa enter para pedir ficha ",playGame));
+    }
   
  }
   
   
-  
-  	
-  //board.add(new pieza ("mc", 64,64));
-  //NP = new pieza("Cady", 8*64, 4*64);
-  //board.add(NP);
-  
 
 function pedirPieza(){ //Hay que llamar a la IA para que nos de la pieza aleatoria, mientras ponemos siempre la misma 
-	var piezaNueva = new pieza("CDiagonal", 11.5*64, 8*64);
+	var piezaNueva = new pieza("Cce", 11.5*64, 8*64);//CDiagonal
 	return piezaNueva;
+}
+
+var PiezaMadre = function (nombre, x, y){
+
+  this.x = x;
+  this.y = y;
+  this.w = 64;
+  this.h = 64;
+  this.nombre = nombre;
+
+ 
+  this.type = "pieza";
+
+  
+  this.step = function(dt) {
+  
+                  
+	
+  }
+  
+  this.draw = function(ctx) {
+
+	  SpriteSheet.draw(Game.ctx, nombre, this.x, this.y,this.giro,this.numgiro,1);
+  };	
+
 }
 
 var pieza = function (nombre, x, y){
@@ -122,6 +164,10 @@ var pieza = function (nombre, x, y){
   var colocada = false;
   this.giro = false;
   this.numgiro = 0;
+  this.type = "pieza";
+  this.scroll = false;
+  this.primeravez = true;
+  this.primer = 0;
   
   this.step = function(dt) {
   //console.log("colocada = " + colocada);
@@ -129,27 +175,28 @@ var pieza = function (nombre, x, y){
 	   otrapieza = false;
 	   game.onmousedown = function(e){
 		if(e.which == 1){
-		    if (!colocada){
-			    // alert('the was button is down!')
-			    mX = Math.floor(e.pageX);
-			    mY = Math.floor(e.pageY);
-			    cX =Math.floor((mX-20)/64);
-			    cY = Math.floor((mY-128)/64);
-			   
-				console.log("x ------>:"  + cX +"mx :" + mX + "my :" + mY + "," + cY);
-			   
-			    x = Math.floor(cX *64);
-			    y = Math.floor(cY * 64);
-				console.log(x + ","+ y ) ; 
-			    colocada = true;
-			    otrapieza = true;
-			//console.log("this.colocada = " + colocada);
+		    if (!colocada){//límite(76-644)para la x, (167-674) para la y
+			    mX = (e.pageX);
+			    mY = (e.pageY);
+			    if(mX<76||mX>644 ||mY<167 || mY>674){
+				alert('No puedes colocar la pieza ahí!');
+			    }else{
+				    cX =Math.floor((mX-5)/64);
+				    cY = Math.floor((mY-100)/64);
+				   
+					console.log("x ------>:"  + cX +"mx :" + mX + "my :" + mY + "," + "y ----->: " + cY);
+				   
+				    x = (cX *64);
+				    y = (cY * 64);
+					console.log(x + ","+ y ) ; 
+				    colocada = true;
+				    otrapieza = true;
+				//console.log("this.colocada = " + colocada);
+			   }
 		  }
 		     
 	       }
-      	    }
-	          
-                
+      	    }              
 	if(Game.keys['giro']){
 		
 			this.giro = true;
@@ -164,7 +211,22 @@ var pieza = function (nombre, x, y){
         //De momento lo pongo vacio porque solo quiero probar tittle scream
   };
   this.draw = function(ctx) {
-	  SpriteSheet.draw(Game.ctx, nombre, x, y,this.giro,this.numgiro);
+	  if(colocada && !this.scroll){
+		//console.log("como esta colocada cambio el this.x");
+		this.x = x;
+		this.y = y;
+		this.primeravez = false;
+		this.primer= 1; //si la colocamos ya no es la primeravez que sale a imagen,lo hago para que si es aun la pieza a 
+		this.scroll = true;//colocar pues se pueda pintar fuera de la cuadricula, es decir, si this.primer = 0
+				//(ver draw de spritesheet engine)
+	        alert("Si quieres tener un seguidor pulsa la tecla s") ; 
+	  }
+	  if(!this.scroll){//esto es para que si aun la pieza es la que tenemos que colocar al hacer scroll no se mueva
+		this.x = x;//si scroll esta a false, la pieza mantiene las coordenadas (11.5*64, 8*64)
+		this.y = y;
+	  }
+	  SpriteSheet.draw(Game.ctx, nombre, this.x, this.y,this.giro,this.numgiro,this.primer);
+
   };
 }
 
@@ -187,20 +249,20 @@ var Jugadores = function(){
 	  ctx.fillText("JUGADOR 4: ", 10.5*64,5*64);
 	  ctx.font = "bold 14px bangers";
 	  ctx.fillText(Jugador1.nombre, 10.5*64,2.5*64);
-	  SpriteSheet.draw(Game.ctx,Jugador1.color, 12*64, 2.3*64);
+	  SpriteSheet.draw(Game.ctx,Jugador1.color, 12*64, 2.3*64,false,0,0);
 	  ctx.fillText(Jugador2.nombre, 10.5*64,3.5*64);
-	  SpriteSheet.draw(Game.ctx,Jugador2.color, 12*64, 3.3*64);
+	  SpriteSheet.draw(Game.ctx,Jugador2.color, 12*64, 3.3*64,false,0,0);
 	  ctx.fillText(Jugador3.nombre, 10.5*64,4.5*64);
-	  SpriteSheet.draw(Game.ctx,Jugador3.color, 12*64, 4.3*64);
+	  SpriteSheet.draw(Game.ctx,Jugador3.color, 12*64, 4.3*64,false,0,0);
 	  ctx.fillText(Jugador4.nombre, 10.5*64,5.5*64);
-	  SpriteSheet.draw(Game.ctx,Jugador4.color, 12*64, 5.3*64);
+	  SpriteSheet.draw(Game.ctx,Jugador4.color, 12*64, 5.3*64,false,0,0);
 	  
   };
 }
 
 var cuadricula = function(){
     this.step = function(dt) {
-        //De momento lo pongo vacio porque solo quiero probar tittle scream
+        
     };
     this.draw = function(ctx) {
       //Pantalla que va a aparecer DESPUES de pulsar espacio
@@ -219,25 +281,105 @@ var cuadricula = function(){
     };	
 }
 
-var Seguidor = function(inicialx, inicialy, x , y , sprite) {
-    this.inicialx = inicialx ;
-    this.inicialy= inicialy ;
-    this.x = x ;
-    this.y = y ; 
-    this.sprite = sprite ; 
-    
+
+var Seguidor = function() {
+   // this.inicialx = inicialx ;
+   // this.inicialy= inicialy ;
+    //this.x = x ;
+    //this.y = y ; 
+    //this.sprite = sprite ; 
+    pulsado = false ; 
+    pulsado1 = false ; 
     
     this.step = function(dt) {
-    
+        if(Game.keys['seguidor']) pulsado = true;
+        if(pulsado && !Game.keys['seguidor']) {
+            pulsado1 = true;
+            pulsado = false;
+        }
     
     }
     
     
     this.draw = function(ctx) {
-        
-        SpriteSheet.draw(ctx,this.inicialx,this.inicialy,this.x,this.y,sprite)    
+        if(pulsado1) {
+        ctx.font = "bold 14px bangers";
+	  ctx.fillText(Jugador1.nombre, 10.5*64,7.5*64);
+	  SpriteSheet.draw(Game.ctx,"sr", 12*64, 7.3*64,false,0,0);
+        }
     }
 }
+
+
+var ScrollTeclas = function() {
+
+    this.width = 140;
+    this.height = 140;
+    this.scrollx = 45;
+    this.scrolly = 45;
+
+    var izq = false;
+    var der = false;
+    var arriba = false;
+    var abajo = false;
+
+
+    this.draw = function (ctx) {
+        ctx.save();
+        for(var y=0; y<=550; y=y+64){
+            for(var x=0; x<=600; x=x+64){
+                ctx.fillText((this.scrollx+x/64) + ".",7+x,11+y);
+                ctx.fillText((this.scrolly+y/64),32+x,11+y);
+            };
+        };
+
+ ctx.restore();
+    }
+    
+    this.step = function(dt) {
+    
+        if(!Game.keys['left']) izq = true;
+        if(izq && Game.keys['left']) {
+            izq = false;
+            if (this.scrollx != 0) {
+                this.scrollx -= 1;
+                this.board.translateScroll(1,0);
+            }
+        }
+        
+        if(!Game.keys['right']) der = true;
+        if(der && Game.keys['right']) {
+            der = false;
+            if (this.scrollx != this.width) {
+                this.scrollx += 1;
+                this.board.translateScroll(-1,0);
+
+            }
+        }
+        
+        if(!Game.keys['up']) arriba = true;
+        if(arriba && Game.keys['up']) {
+            arriba = false;
+            if (this.scrolly != 0) {
+                this.scrolly -= 1;
+                this.board.translateScroll(0,1);
+
+            }
+        }
+        
+        if(!Game.keys['down']) abajo = true;
+        if(abajo && Game.keys['down']) {
+            abajo= false;
+            if (this.scrolly != this.height) {
+                this.scrolly += 1;
+                this.board.translateScroll(0,-1);
+            }
+    
+        }
+    }
+
+}
+
 
 $(function() {
     Game.initialize("game",sprites,startGame);

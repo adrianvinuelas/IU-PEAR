@@ -19,7 +19,7 @@ Game = new function() {
     
     
     // Gestión de la entrada (teclas solo espacio de momento para prueba tonta)
-    var KEY_CODES = { 32 :'espacio', 82: 'giro', 13: 'pedirficha', 39:'right', 37:'left', 38:'up', 40:'down'};
+    var KEY_CODES = { 32 :'espacio', 82: 'giro', 13: 'pedirficha', 39:'right', 37:'left', 38:'up', 40:'down',83 : 'seguidor'};
     this.keys = {};
 
     this.setupInput = function() {
