@@ -1,62 +1,53 @@
 var sprites = {
+
+    1: { sx: 198, sy: 458, w: 64, h: 64}, 
+    
+    2: { sx:0 , sy: 64, w: 64, h: 64}, 
+    
+    3: { sx: 918, sy: 264, w: 64, h: 64}, 
+    
+    4: { sx:722 , sy: 394, w: 64, h: 64},
+    
+    S5: { sx: 133, sy: 591, w: 64, h: 64}, 
+    
+    C5: { sx: 263, sy: 524, w: 64, h: 64},   
+    
+    S6: { sx: 591, sy: 328, w: 64, h: 64}, 
+    
+    C6: { sx: 657, sy: 525, w: 64, h: 64},  //esta cogida pero falta girarla (11,9) en sprite.png
+    
+    7: { sx: 918, sy: 198, w: 64, h: 64}, 
         
-    ccurvo: { sx: 0, sy: 0, w: 64, h: 64, ni:"campo", nc:"campo", nd :"campo", ci:"camino", cc:"camino", cd:"campo", 
-        si:"campo", sc:"camino", sd:"campo", escudo:false}, //camino de izquierda a abajo
+    8: { sx:722 , sy: 525, w: 64, h: 64},
+    
+    9: { sx: 788, sy: 66, w: 64, h: 64}, 
+    
+    S10: { sx: 264, sy: 459, w: 64, h: 64}, 
+    
+    C10: { sx: 1, sy: 328, w: 64, h:64},    //esta cogida pero falta girarla (1,6)
+    
+    S11: { sx: 330, sy: 459, w: 64, h: 64}, 
+    
+    C11: { sx: 330, sy: 0, w: 64, h: 64}, 
+    
+    S12: { sx: 460, sy: 590, w: 64, h: 64},
         
-     Cec: { sx: 330, sy: 459, w: 64, h: 64, ni:"ciudad", nc:"ciudad", nd: "ciudad", ci:"campo", cc:"ciudad", cd:"campo", 
-        si:"ciudad", sc:"ciudad", sd:"ciudad", escudo: false}, //ciudad centro campo a los lados 
+    C12: { sx: 657, sy: 328, w: 64, h: 64},
+    
+    13: { sx:723 , sy: 65, w: 64, h: 64}, // De este tipo de pieza solo hay una con escudo.
+    
+    14: { sx: 0, sy: 0, w: 64, h: 64}, 
+    
+    15: { sx:918 , sy: 394, w: 64, h: 64}, 
+    
+    16: { sx:786 , sy: 460, w: 64, h: 64}, 
+    
+    17: { sx:590 , sy: 590, w: 64, h: 64}, 
+    
+    18: { sx:526 , sy: 458, w: 64, h: 64}, 
+    
+    19: { sx:852 , sy: 460, w: 64, h: 64}, 
         
-     CDiagonal: { sx: 264, sy: 459, w: 64, h: 64, ni:"ciudad", nc:"campo", nd: "campo", ci:"ciudad", cc:"campo", cd:"campo", 
-        si:"ciudad", sc:"ciudad", sd:"ciudad", escudo: false}, //Ciudad diagonal con un campo
-        
-     Cce: { sx: 657, sy: 525, w: 64, h: 64, ni:"ciudad", nc:"ciudad", nd: "ciudad", ci:"camino", cc:"ciudad", cd:"ciudad", 
-        si:"ciudad", sc:"ciudad", sd:"ciudad", escudo: true}, //Ciudad a la que le lleva un camino(escudo) 
-        
-     Cc: { sx: 133, sy: 591, w: 64, h: 64, ni:"ciudad", nc:"ciudad", nd: "ciudad", ci:"camino", cc:"campo", cd:"ciudad", 
-        si:"campo", sc:"camino", sd:"ciudad", escudo: false}, //Ciudad que tiene un camino pero el camino no entra en ella 
-        //Duda en cc "campo"    Hay que hablarlo con IA, conflicto en el juego
- 
-     ce2C: { sx: 788, sy: 66, w: 64, h: 64, ni:"ciudad", nc:"campo", nd: "ciudad", ci:"ciudad", cc:"campo", cd:"ciudad", 
-        si:"ciudad", sc:"campo", sd:"ciudad", escudo: false}, //Campo entre dos ciudades
-        
-     Ccampo: { sx: 460, sy: 590, w: 64, h: 64, ni:"ciudad", nc:"ciudad", nd: "ciudad", ci:"ciudad", cc:"ciudad", cd:"campo", 
-        si:"ciudad", sc:"ciudad", sd:"ciudad", escudo: false}, //Ciudad que tiene casas y un campo a un lado sin camino
-        
-     Cladoccentro: { sx: 198, sy: 458, w: 64, h: 64, ni:"campo", nc:"camino", nd: "ciudad", ci:"campo", cc:"camino", cd:"ciudad", 
-        si:"camCcepo", sc:"camino", sd:"ciudad", escudo: false}, //Ciudad a un lado y en el centro un camino atravesando
-        
-     Cccurvo: { sx: 918, sy: 264, w: 64, h: 64, ni:"campo", nc:"campo", nd: "ciudad", ci:"camino", cc:"camino", cd:"ciudad", 
-        si:"campo", sc:"camino", sd:"ciudad", escudo: false}, //Ciudad a un lado y camino curvo sin atravesar
-        
-     Ccamporesto: { sx: 65, sy: 195, w: 64, h: 64, ni:"campo", nc:"campo", nd: "ciudad", ci:"campo", cc:"campo", cd:"ciudad", 
-        si:"ciudad", sc:"ciudad", sd:"ciudad", escudo: false}, //Ciudad a un lado y campo el resto
-        
-     Cady: { sx:722 , sy: 525, w: 64, h: 64, ni:"ciudad", nc:"ciudad", nd: "ciudad", ci:"ciudad", cc:"campo", cd:"campo", 
-        si:"ciudad", sc:"campo", sd:"campo", escudo: false}, //Ciudades adayacentes resto campo
-        
-     crucecC: { sx:722 , sy: 394, w: 64, h: 64, ni:"campo", nc:"camino", nd: "campo", ci:"camino", cc:"cruce", cd:"camino", 
-        si:"ciudad", sc:"ciudad", sd:"ciudad", escudo: false}, //Cruce 3 caminos mas ciudad
-        
-     Ccarribadcha: { sx:0 , sy: 64, w: 64, h: 64, ni:"campo", nc:"camino", nd: "campo", ci:"campo", cc:"camino", cd:"camino", 
-        si:"ciudad", sc:"ciudad", sd:"ciudad", escudo: false}, //Mirando desde ciudad camino hacia arriba y derecha
-     
-     m: { sx:526 , sy: 458, w: 64, h: 64, ni:"campo", nc:"campo", nd: "campo", ci:"campo", cc:"monasterio", cd:"campo", 
-        si:"campo", sc:"campo", sd:"campo", escudo: false}, //Monasterio
-         
-     C: { sx:723 , sy: 65, w: 64, h: 64, ni:"ciudad", nc:"ciudad", nd: "ciudad", ci:"ciudad", cc:"ciudad", cd:"ciudad", 
-        si:"ciudad", sc:"ciudad", sd:"ciudad", escudo: true}, //Todo ciudad con escudo
-        
-     cruce4c: { sx:590 , sy: 590, w: 64, h: 64, ni:"campo", nc:"camino", nd: "campo", ci:"camino", cc:"cruce", cd:"camino", 
-        si:"campo", sc:"camino", sd:"campo", escudo: false}, //Cruce de 4 caminos con casas en medio
-        
-     cruce3c: { sx:786 , sy: 460, w: 64, h: 64, ni:"campo", nc:"camino", nd: "campo", ci:"camino", cc:"cruce", cd:"campo", 
-        si:"campo", sc:"camino", sd:"campo", escudo: false}, //Cruce de 3 caminos sin ciudad
-        
-     mc: { sx:852 , sy: 460, w: 64, h: 64, ni:"campo", nc:"campo", nd: "campo", ci:"campo", cc:"monasterio", cd:"campo", 
-        si:"campo", sc:"camino", sd:"campo", escudo: false}, //Monasterio con camino
-        
-     c: { sx:918 , sy: 394, w: 64, h: 64, ni:"campo", nc:"camino", nd: "campo", ci:"campo", cc:"camino", cd:"campo", 
-        si:"campo", sc:"camino", sd:"campo", escudo: false}, //Camino recto    
          
     sn:{ sx:989, sy:6, w:17, h:17}, //Seguidor negro
     sa:{ sx:1018, sy:5, w:17, h:17}, //Seguidor amarillo
@@ -65,14 +56,7 @@ var sprites = {
     sblue:{ sx:1104, sy:4, w:17, h:17}, //Seguidor azul 
 };
 
-//lo comento porque creo que lo vamos a tener que quitar
-/*
-var titulo = function(){
 
-Game.setBoard(0,new TitleScreen("Juego Carcassone", "Pulsa espacio para empezar a jugar",startGame));
-    
-}
-*/
 var board = new TableroJuego();
 var otrapieza = true;
 
@@ -86,26 +70,7 @@ var startGame = function() {
     Game.setBoard(1,new Jugadores());       
     Game.setBoard(2,new Seguidor());
     Game.setBoard(3,new AyudaScreen());
-    //board.add(new PiezaMadre("m", 5*64, 5*64)); //Pieza madre que siempre esta puesta cuando empieza el juego
-		board.add(new PiezaMadre("Cladoccentro", 1*64, 1*64));//1
-		board.add(new PiezaMadre("Ccarribadcha", 2*64, 1*64));//2
-		board.add(new PiezaMadre("Cccurvo", 3*64, 1*64));//3
-		board.add(new PiezaMadre("crucecC", 4*64, 1*64));//4
-		board.add(new PiezaMadre("Cc", 5*64, 1*64));//5
-		//board.add(new PiezaMadre("", 1*64, 2*64));//6
-		board.add(new PiezaMadre("Ccamporesto", 2*64, 2*64));//7
-		board.add(new PiezaMadre("Cady", 3*64, 2*64));//8
-		board.add(new PiezaMadre("ce2C", 4*64, 2*64));//9
-		board.add(new PiezaMadre("CDiagonal", 5*64, 2*64));//10
-		board.add(new PiezaMadre("Cec", 1*64, 3*64));//11
-		board.add(new PiezaMadre("Ccampo", 2*64, 3*64));//12
-		//board.add(new PiezaMadre("", 3*64, 3*64));//13
-		board.add(new PiezaMadre("ccurvo", 4*64, 3*64));//14
-		board.add(new PiezaMadre("c", 5*64, 3*64));//15
-		board.add(new PiezaMadre("cruce3c", 1*64, 4*64));//16
-		board.add(new PiezaMadre("cruce4c", 2*64, 4*64));//17
-		board.add(new PiezaMadre("m", 3*64, 4*64));//18
-		board.add(new PiezaMadre("mc", 4*64, 4*64));//19
+    board.add(new PiezaMadre("1", 5*64, 5*64)); //Pieza madre que siempre esta puesta cuando empieza el juego
     Game.setBoard(4,new TextoPideFicha("Pulsa enter para pedir ficha ",playGame));
     board.add(new ScrollTeclas());
     Game.setBoard(5,board);
@@ -126,7 +91,7 @@ var playGame = function() {
   
 
 function pedirPieza(){ //Hay que llamar a la IA para que nos de la pieza aleatoria, mientras ponemos siempre la misma 
-	var piezaNueva = new pieza("Cce", 11.5*64, 8*64);//CDiagonal
+	var piezaNueva = new pieza("2", 11.5*64, 8*64);
 	return piezaNueva;
 }
 
