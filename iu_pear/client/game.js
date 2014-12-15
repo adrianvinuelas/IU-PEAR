@@ -59,6 +59,7 @@ var sprites = {
 
 var board = new TableroJuego();
 var otrapieza = true;
+var piezaactual = new PiezaActual();
 
 var startGame = function() {
 
@@ -74,6 +75,7 @@ var startGame = function() {
     Game.setBoard(3,new TextoPideFicha("Pulsa enter para pedir ficha ",playGame));
     board.add(new ScrollTeclas());
     Game.setBoard(4,board);
+   
     
 }
 
@@ -128,12 +130,13 @@ var pieza = function (nombre, x, y){
   this.nombre = nombre;
   var colocada = false;
   this.giro = false;
+  piezaactual.giro= false;
   this.numgiro = 0;
+  piezaactual.ngiro= 0;
   this.type = "pieza";
   this.scroll = false;
   this.primeravez = true;
   this.primer = 0;
-  
   this.step = function(dt) {
   //console.log("colocada = " + colocada);
    if (!colocada){
@@ -165,9 +168,12 @@ var pieza = function (nombre, x, y){
 	if(Game.keys['giro']){
 		
 			this.giro = true;
+			piezaactual.giro = true;
 			this.numgiro++;
+			piezaactual.ngiro++;
 			if(this.numgiro == 5){
 				this.numgiro = 1;
+				piezaactual.ngiro = 1;
 			}
 			console.log("this.numgiro = " +this.numgiro)
 			Game.keys['giro'] = false;
@@ -258,6 +264,7 @@ var Seguidor = function() {
     this.step = function(dt) {
         if(Game.keys['seguidor']) pulsado = true;
         if(pulsado && !Game.keys['seguidor']) {
+	    Game.setBoard(6,piezaactual);
             pulsado = true;
         }
     

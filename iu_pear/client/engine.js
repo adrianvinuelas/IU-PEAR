@@ -1,4 +1,5 @@
-
+var nombrepiezactual;
+var imagen;
 Game = new function() {                                                                  
 
   // Inicializa el juego
@@ -69,12 +70,16 @@ SpriteSheet = new function() {
   this.load = function(spriteData,callback) {
     this.map = spriteData;
     this.image = new Image();
+    imagen = new Image();
+    imagen.onload = callback;
+    imagen.src = 'sprites.jpg';
     this.image.onload = callback;
     this.image.src = 'sprites.jpg';
   };
 
-  this.draw = function(ctx,sprite,x,y,girar,numgiro,primeravez) {
+  this.draw = function(ctx,sprite,x,y,girar,numgiro,primeravez,seguidor) {
     var s = this.map[sprite];
+    nombrepiezactual = sprite;
     //var sw = s.w;
     //var sh = s.h;
     
@@ -82,14 +87,18 @@ SpriteSheet = new function() {
 	    ctx.save();	    
 	    ctx.translate(x,y);
 	    ctx.translate(s.w/2, s.h/2);
-	        
+	     
 	    if(numgiro == 1){
 		    //console.log("entro a rotar 90");		    
 		    ctx.rotate(90*Math.PI/180);
 		    if((x>=64 && x<=576) && (y<=512 && y>=64) && primeravez == 1){
 		   	 ctx.drawImage(this.image, s.sx , s.sy, s.w, s.h, Math.floor(-s.w/2) , Math.floor(-s.h/2),s.w, s.h);
 		    }else if (primeravez == 0){
+			if (seguidor){
+			ctx.drawImage(this.image, s.sx, s.sy, s.w, s.h,Math.floor(-s.w/2) , Math.floor(-s.h/2)-64*2,3*s.w, 3*s.h);
+			}else{
 			ctx.drawImage(this.image, s.sx , s.sy, s.w, s.h, Math.floor(-s.w/2) , Math.floor(-s.h/2),s.w, s.h);
+			}
 		    }
 	    }else if (numgiro == 2){
 		    //console.log("entro a rotar 180");
@@ -97,7 +106,11 @@ SpriteSheet = new function() {
 		    if((x>=64 && x<=576) && (y<=512 && y>=64) && primeravez == 1){
 		    	ctx.drawImage(this.image, s.sx, s.sy, s.w, s.h, Math.floor(-s.w/2) , Math.floor(-s.h/2),s.w, s.h);
 		    }else if (primeravez == 0){
-			ctx.drawImage(this.image, s.sx, s.sy, s.w, s.h, Math.floor(-s.w/2) , Math.floor(-s.h/2),s.w, s.h);
+			if (seguidor){
+			 ctx.drawImage(this.image, s.sx, s.sy, s.w, s.h,Math.floor(-s.w/2)-2*64 , Math.floor(-s.h/2)-64*2,3*s.w, 3*s.h);
+			}else{
+			 ctx.drawImage(this.image, s.sx, s.sy, s.w, s.h, Math.floor(-s.w/2) , Math.floor(-s.h/2),s.w, s.h);
+			}
 		    }
 	    }else if (numgiro == 3){
 		    //console.log("entro a rotar 270");
@@ -105,22 +118,34 @@ SpriteSheet = new function() {
 		    if((x>=64 && x<=576) && (y<=512 && y>=64) && primeravez == 1){
 		    	ctx.drawImage(this.image, s.sx , s.sy, s.w, s.h, Math.floor(-s.w/2) , Math.floor(-s.h/2),s.w, s.h);
 		     }else if (primeravez == 0){
-			ctx.drawImage(this.image, s.sx , s.sy, s.w, s.h, Math.floor(-s.w/2) , Math.floor(-s.h/2),s.w, s.h);
+			if (seguidor){
+			  ctx.drawImage(this.image, s.sx, s.sy, s.w, s.h,Math.floor(-s.w/2)-2*64 , Math.floor(-s.h/2),3*s.w, 3*s.h);
+			}else{
+			  ctx.drawImage(this.image, s.sx , s.sy, s.w, s.h, Math.floor(-s.w/2) , Math.floor(-s.h/2),s.w, s.h);
+			}
 		    }
 	    }else if(numgiro == 4){
 		if((x>=64 && x<=576) && (y<=512 && y>=64) && primeravez == 1){
 		     ctx.drawImage(this.image, s.sx , s.sy, s.w, s.h, Math.floor(-s.w/2) , Math.floor(-s.h/2),s.w, s.h);
 		 }else if (primeravez == 0){
-			ctx.drawImage(this.image, s.sx , s.sy, s.w, s.h, Math.floor(-s.w/2) , Math.floor(-s.h/2),s.w, s.h);
+			if(seguidor){
+				ctx.drawImage(this.image, s.sx, s.sy, s.w, s.h, Math.floor(-s.w/2), Math.floor(-s.h/2), 3*s.w, 3*s.h);
+			}else{
+			  	ctx.drawImage(this.image, s.sx , s.sy, s.w, s.h, Math.floor(-s.w/2) , Math.floor(-s.h/2),s.w, s.h);
+			}
 		}
 	    }
 	    ctx.restore();
     }else{
-       //console.log("x en draw = " + x + ", y en draw = " + y + " y primeravez = " + primeravez);
-       if((x>=64 && x<=576) && (y<=512 && y>=64) && primeravez == 1){//límite(76-644)para la x, (167-674) para la y
-      		ctx.drawImage(this.image, s.sx, s.sy, s.w, s.h, Math.floor(x), Math.floor(y), s.w, s.h);
-	}else if (primeravez == 0){//si primeravez es 0 , es porque es la pieza que tenemos que colocar(esta fuera de la cuadricula)
-		ctx.drawImage(this.image, s.sx, s.sy, s.w, s.h, Math.floor(x), Math.floor(y), s.w, s.h);
+	if(seguidor){
+		ctx.drawImage(this.image, s.sx, s.sy, s.w, s.h, Math.floor(x), Math.floor(y), 3*s.w, 3*s.h);
+	}else{
+	       //console.log("x en draw = " + x + ", y en draw = " + y + " y primeravez = " + primeravez);
+	       if((x>=64 && x<=576) && (y<=512 && y>=64) && primeravez == 1){//límite(76-644)para la x, (167-674) para la y
+	      		ctx.drawImage(this.image, s.sx, s.sy, s.w, s.h, Math.floor(x), Math.floor(y), s.w, s.h);
+		}else if (primeravez == 0){//si primeravez es 0 , es porque es la pieza que tenemos que colocar(esta fuera de la cuadricula)
+			ctx.drawImage(this.image, s.sx, s.sy, s.w, s.h, Math.floor(x), Math.floor(y), s.w, s.h);
+		}
 	}
     }
   };
@@ -144,6 +169,21 @@ TitleScreen = function TitleScreen(title,subtitle,callback) {
 	  ctx.fillText(title,Game.width/6,Game.height/2);
 	  ctx.font = "bold 20px bangers";
 	  ctx.fillText(subtitle,Game.width/6,Game.height/2 + 40);
+  };
+}
+
+PiezaActual = function() {
+  // En cada paso, comprobamos si la tecla ha pasado de no pulsada a
+  // pulsada. 
+  this.giro;
+  this.ngiro;
+  this.step = function(dt) {
+	
+  };
+     
+  this.draw = function(ctx) {
+	 SpriteSheet.draw(ctx,nombrepiezactual,4*64,4*64,this.giro,this.ngiro,0,true);
+	 //ctx.drawImage(imagen, sprite1.sx, sprite1.sy, sprite1.w, sprite1.h, Math.floor(4*64), Math.floor(4*64), 3*sprite1.w, 3*sprite1.h);
   };
 }
 
