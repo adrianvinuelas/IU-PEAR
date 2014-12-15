@@ -59,6 +59,7 @@ var sprites = {
 
 var board = new TableroJuego();
 var otrapieza = true;
+var piezaactual = new PiezaActual();
 
 var startGame = function() {
 
@@ -68,12 +69,12 @@ var startGame = function() {
     Jugador4 = {nombre: "Kevin" , color: "sn"};
     Game.setBoard(0,new cuadricula());
     Game.setBoard(1,new Jugadores());       
-    Game.setBoard(2,new Seguidor());
-    Game.setBoard(5,new AyudaScreen());
+    Game.setBoard(5,new AyudaScreen("Pulsa espacio para ayuda"));
     board.add(new PiezaMadre("1", 5*64, 5*64)); //Pieza madre que siempre esta puesta cuando empieza el juego
-    Game.setBoard(3,new TextoPideFicha("Pulsa enter para pedir ficha ",playGame));
+    Game.setBoard(2,new TextoPideFicha("Pulsa enter para pedir ficha ",playGame));
     board.add(new ScrollTeclas());
-    Game.setBoard(4,board);
+    Game.setBoard(3,board);
+   
     
 }
 
@@ -83,7 +84,8 @@ var playGame = function() {
     if(otrapieza){
 	  piezaNew = pedirPieza();
 	  board.add(piezaNew);
-	  Game.setBoard(3,new TextoPideFicha("Pulsa enter para pedir ficha ",playGame));
+	  board.add(new ColocarSeguidor());
+	  Game.setBoard(2,new TextoPideFicha("Pulsa enter para pedir ficha ",playGame));
     }
   
  }
@@ -126,14 +128,16 @@ var pieza = function (nombre, x, y){
   this.w = 64;
   this.h = 64;
   this.nombre = nombre;
+  piezaactual.nombre = nombre;
   var colocada = false;
   this.giro = false;
+  piezaactual.giro= false;
   this.numgiro = 0;
+  piezaactual.ngiro= 0;
   this.type = "pieza";
   this.scroll = false;
   this.primeravez = true;
   this.primer = 0;
-  
   this.step = function(dt) {
   //console.log("colocada = " + colocada);
    if (!colocada){
@@ -160,14 +164,17 @@ var pieza = function (nombre, x, y){
 			   }
 		  }
 		     
-	       }
-      	    }              
+       }
+    }              
 	if(Game.keys['giro']){
 		
 			this.giro = true;
+			piezaactual.giro = true;
 			this.numgiro++;
+			piezaactual.ngiro++;
 			if(this.numgiro == 5){
 				this.numgiro = 1;
+				piezaactual.ngiro = 1;
 			}
 			console.log("this.numgiro = " +this.numgiro)
 			Game.keys['giro'] = false;
@@ -184,7 +191,7 @@ var pieza = function (nombre, x, y){
 		this.primer= 1; //si la colocamos ya no es la primeravez que sale a imagen,lo hago para que si es aun la pieza a 
 		this.scroll = true;//colocar pues se pueda pintar fuera de la cuadricula, es decir, si this.primer = 0
 				//(ver draw de spritesheet engine)
-	        alert("Si quieres tener un seguidor pulsa la tecla s") ; 
+	        alert("Si quieres tener un seguidor pulsa la tecla s.") ; 
 	  }
 	  if(!this.scroll){//esto es para que si aun la pieza es la que tenemos que colocar al hacer scroll no se mueva
 		this.x = x;//si scroll esta a false, la pieza mantiene las coordenadas (11.5*64, 8*64)
@@ -247,29 +254,70 @@ var cuadricula = function(){
 }
 
 
-var Seguidor = function() {
-   // this.inicialx = inicialx ;
-   // this.inicialy= inicialy ;
-    //this.x = x ;
-    //this.y = y ; 
-    //this.sprite = sprite ; 
+var cuadriculaSeguidor = function(){
+    this.step = function(dt) {
+      /*   if(Game.keys['seguidor']) pulsado = true;
+        if(pulsado && !Game.keys['seguidor']) {
+            pulsado = true;
+        }*/
+    
+    };
+    this.draw = function(ctx) {
+      //Pantalla que va a aparecer DESPUES de pulsar espacio
+      if (pulsado) {
+	    for (i=4;i<7;i++){
+        for (j=4;j<7;j++){
+          Game.ctx.strokeStyle = "red";
+          Game.ctx.strokeRect(j*64,i*64,64,64);
+          Game.ctx.beginPath();
+          Game.ctx.moveTo(4*64,4*64);
+          Game.ctx.lineTo(5*64,5*64); 
+          Game.ctx.stroke();
+          Game.ctx.beginPath();
+          Game.ctx.moveTo(7*64,4*64);
+          Game.ctx.lineTo(6*64,5*64); 
+          Game.ctx.stroke();
+          Game.ctx.beginPath();
+          Game.ctx.moveTo(4*64,7*64);
+          Game.ctx.lineTo(5*64,6*64); 
+          Game.ctx.stroke();
+          Game.ctx.beginPath();
+          Game.ctx.moveTo(7*64,7*64);
+          Game.ctx.lineTo(6*64,6*64); 
+          Game.ctx.stroke();
+        }
+      }
+      }
+    };	
+}
+
+
+var ColocarSeguidor = function() {
+   
     pulsado = false ; 
+    posi = false;
     
     this.step = function(dt) {
         if(Game.keys['seguidor']) pulsado = true;
         if(pulsado && !Game.keys['seguidor']) {
             pulsado = true;
+            board.add(piezaactual);            
         }
-    
+        
+        
+        if(Game.keys['pos2']) posi = true;
+        if(posi && !Game.keys['pos2']) {
+            posi = true;
+            board.remove(piezaactual);  
+            pulsado = false;               
+        }
+        
     }
     
     
     this.draw = function(ctx) {
-        if(pulsado) {
-        ctx.font = "bold 14px bangers";
-	  ctx.fillText(Jugador1.nombre, 10.5*64,7.5*64);
-	  SpriteSheet.draw(Game.ctx,"sr", 12*64, 7.3*64,false,0,0);
-        }
+        
+        
     }
 }
 

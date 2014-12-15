@@ -254,6 +254,44 @@ var cuadricula = function(){
 }
 
 
+var cuadriculaSeguidor = function(){
+    this.step = function(dt) {
+      /*   if(Game.keys['seguidor']) pulsado = true;
+        if(pulsado && !Game.keys['seguidor']) {
+            pulsado = true;
+        }*/
+    
+    };
+    this.draw = function(ctx) {
+      //Pantalla que va a aparecer DESPUES de pulsar espacio
+      if (pulsado) {
+	    for (i=4;i<7;i++){
+        for (j=4;j<7;j++){
+          Game.ctx.strokeStyle = "red";
+          Game.ctx.strokeRect(j*64,i*64,64,64);
+          Game.ctx.beginPath();
+          Game.ctx.moveTo(4*64,4*64);
+          Game.ctx.lineTo(5*64,5*64); 
+          Game.ctx.stroke();
+          Game.ctx.beginPath();
+          Game.ctx.moveTo(7*64,4*64);
+          Game.ctx.lineTo(6*64,5*64); 
+          Game.ctx.stroke();
+          Game.ctx.beginPath();
+          Game.ctx.moveTo(4*64,7*64);
+          Game.ctx.lineTo(5*64,6*64); 
+          Game.ctx.stroke();
+          Game.ctx.beginPath();
+          Game.ctx.moveTo(7*64,7*64);
+          Game.ctx.lineTo(6*64,6*64); 
+          Game.ctx.stroke();
+        }
+      }
+      }
+    };	
+}
+
+
 var ColocarSeguidor = function() {
    
     pulsado = false ; 
@@ -263,7 +301,8 @@ var ColocarSeguidor = function() {
         if(Game.keys['seguidor']) pulsado = true;
         if(pulsado && !Game.keys['seguidor']) {
             pulsado = true;
-            board.add(piezaactual);            
+            board.add(piezaactual);  
+            board.add(new cuadriculaSeguidor());          
         }
         
         
