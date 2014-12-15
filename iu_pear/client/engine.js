@@ -21,7 +21,8 @@ Game = new function() {
     
     // Gestión de la entrada (teclas solo espacio de momento para prueba tonta)
     var KEY_CODES = { 32 :'espacio', 82: 'giro', 13: 'pedirficha', 39:'right', 37:'left', 38:'up', 40:'down',83 : 'seguidor', 
-                        50: 'pos2', 78:'NoSeguidor'};
+                      48: 'pos0', 49: 'pos1', 50: 'pos2', 51: 'pos3', 52: 'pos4', 53: 'pos5', 54: 'pos6', 55: 'pos7', 56: 'pos8',
+                      57: 'pos9', 81: 'pos10', 87: 'pos11', 69: 'pos12', 78: 'NOSeguidor'};
     this.keys = {};
 
     this.setupInput = function() {
@@ -184,6 +185,55 @@ PiezaActual = function() {
 	 SpriteSheet.draw(ctx,this.nombre,4*64,4*64,this.giro,this.ngiro,0,true);
 
   };
+}
+
+cuadriculaSeguidor = function(){
+    this.step = function(dt) {
+
+    
+    };
+    
+    this.draw = function(ctx) {
+      
+	    for (i=4;i<7;i++){
+        for (j=4;j<7;j++){
+          Game.ctx.strokeStyle = "red";
+          Game.ctx.strokeRect(j*64,i*64,64,64);
+          Game.ctx.beginPath();
+          Game.ctx.moveTo(4*64,4*64);
+          Game.ctx.lineTo(5*64,5*64); 
+          Game.ctx.stroke();
+          Game.ctx.beginPath();
+          Game.ctx.moveTo(7*64,4*64);
+          Game.ctx.lineTo(6*64,5*64); 
+          Game.ctx.stroke();
+          Game.ctx.beginPath();
+          Game.ctx.moveTo(4*64,7*64);
+          Game.ctx.lineTo(5*64,6*64); 
+          Game.ctx.stroke();
+          Game.ctx.beginPath();
+          Game.ctx.moveTo(7*64,7*64);
+          Game.ctx.lineTo(6*64,6*64); 
+          Game.ctx.stroke();
+          ctx.fillStyle = "red";
+          ctx.fillText("0",4*64+40,4*64+15);
+          ctx.fillText("1",5*64+30,4*64+15);
+          ctx.fillText("2",6*64+20,4*64+15);
+          ctx.fillText("3",6*64+40,4*64+50);
+          ctx.fillText("4",6*64+40,5*64+30);
+          ctx.fillText("5",6*64+40,6*64+15);
+          ctx.fillText("6",6*64+20,6*64+50);
+          ctx.fillText("7",5*64+30,6*64+50);
+          ctx.fillText("8",4*64+40,6*64+50);
+          ctx.fillText("9",4*64+10,6*64+15);
+          ctx.fillText("Q",4*64+10,5*64+30);
+          ctx.fillText("W",4*64+10,4*64+50);
+          ctx.fillText("E",5*64+30,5*64+15);
+      
+        }
+      }
+      
+    };	
 }
 
 TextoPideFicha =  function TextoPideFicha(title,callback) {
@@ -352,4 +402,7 @@ TableroJuego = function() {
         });
     };
 };
+
+
+
 
