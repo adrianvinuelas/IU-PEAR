@@ -69,12 +69,11 @@ var startGame = function() {
     Jugador4 = {nombre: "Kevin" , color: "sn"};
     Game.setBoard(0,new cuadricula());
     Game.setBoard(1,new Jugadores());       
-    Game.setBoard(2,new Seguidor());
     Game.setBoard(5,new AyudaScreen("Pulsa espacio para ayuda"));
     board.add(new PiezaMadre("1", 5*64, 5*64)); //Pieza madre que siempre esta puesta cuando empieza el juego
-    Game.setBoard(3,new TextoPideFicha("Pulsa enter para pedir ficha ",playGame));
+    Game.setBoard(2,new TextoPideFicha("Pulsa enter para pedir ficha ",playGame));
     board.add(new ScrollTeclas());
-    Game.setBoard(4,board);
+    Game.setBoard(3,board);
    
     
 }
@@ -85,7 +84,8 @@ var playGame = function() {
     if(otrapieza){
 	  piezaNew = pedirPieza();
 	  board.add(piezaNew);
-	  Game.setBoard(3,new TextoPideFicha("Pulsa enter para pedir ficha ",playGame));
+	  board.add(new ColocarSeguidor());
+	  Game.setBoard(2,new TextoPideFicha("Pulsa enter para pedir ficha ",playGame));
     }
   
  }
@@ -128,6 +128,7 @@ var pieza = function (nombre, x, y){
   this.w = 64;
   this.h = 64;
   this.nombre = nombre;
+  piezaactual.nombre = nombre;
   var colocada = false;
   this.giro = false;
   piezaactual.giro= false;
@@ -163,8 +164,8 @@ var pieza = function (nombre, x, y){
 			   }
 		  }
 		     
-	       }
-      	    }              
+       }
+    }              
 	if(Game.keys['giro']){
 		
 			this.giro = true;
@@ -190,7 +191,7 @@ var pieza = function (nombre, x, y){
 		this.primer= 1; //si la colocamos ya no es la primeravez que sale a imagen,lo hago para que si es aun la pieza a 
 		this.scroll = true;//colocar pues se pueda pintar fuera de la cuadricula, es decir, si this.primer = 0
 				//(ver draw de spritesheet engine)
-	        alert("Si quieres tener un seguidor pulsa la tecla s") ; 
+	        alert("Si quieres tener un seguidor pulsa la tecla s.") ; 
 	  }
 	  if(!this.scroll){//esto es para que si aun la pieza es la que tenemos que colocar al hacer scroll no se mueva
 		this.x = x;//si scroll esta a false, la pieza mantiene las coordenadas (11.5*64, 8*64)
@@ -253,30 +254,32 @@ var cuadricula = function(){
 }
 
 
-var Seguidor = function() {
-   // this.inicialx = inicialx ;
-   // this.inicialy= inicialy ;
-    //this.x = x ;
-    //this.y = y ; 
-    //this.sprite = sprite ; 
+var ColocarSeguidor = function() {
+   
     pulsado = false ; 
+    posi = false;
     
     this.step = function(dt) {
         if(Game.keys['seguidor']) pulsado = true;
         if(pulsado && !Game.keys['seguidor']) {
-	    Game.setBoard(6,piezaactual);
             pulsado = true;
+            board.add(piezaactual);            
         }
-    
+        
+        
+        if(Game.keys['pos2']) posi = true;
+        if(posi && !Game.keys['pos2']) {
+            posi = true;
+            board.remove(piezaactual);  
+            pulsado = false;               
+        }
+        
     }
     
     
     this.draw = function(ctx) {
-        if(pulsado) {
-        ctx.font = "bold 14px bangers";
-	  ctx.fillText(Jugador1.nombre, 10.5*64,7.5*64);
-	  SpriteSheet.draw(Game.ctx,"sr", 12*64, 7.3*64,false,0,0);
-        }
+        
+        
     }
 }
 

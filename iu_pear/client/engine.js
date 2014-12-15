@@ -1,4 +1,4 @@
-var nombrepiezactual;
+
 var imagen;
 Game = new function() {                                                                  
 
@@ -20,7 +20,8 @@ Game = new function() {
     
     
     // Gestión de la entrada (teclas solo espacio de momento para prueba tonta)
-    var KEY_CODES = { 32 :'espacio', 82: 'giro', 13: 'pedirficha', 39:'right', 37:'left', 38:'up', 40:'down',83 : 'seguidor'};
+    var KEY_CODES = { 32 :'espacio', 82: 'giro', 13: 'pedirficha', 39:'right', 37:'left', 38:'up', 40:'down',83 : 'seguidor', 
+                        50: 'pos2', 78:'NoSeguidor'};
     this.keys = {};
 
     this.setupInput = function() {
@@ -79,9 +80,6 @@ SpriteSheet = new function() {
 
   this.draw = function(ctx,sprite,x,y,girar,numgiro,primeravez,seguidor) {
     var s = this.map[sprite];
-    nombrepiezactual = sprite;
-    //var sw = s.w;
-    //var sh = s.h;
     
     if(girar){
 	    ctx.save();	    
@@ -173,17 +171,18 @@ TitleScreen = function TitleScreen(title,subtitle,callback) {
 }
 
 PiezaActual = function() {
-  // En cada paso, comprobamos si la tecla ha pasado de no pulsada a
-  // pulsada. 
+
   this.giro;
   this.ngiro;
+  this.nombre;
+  
   this.step = function(dt) {
 	
   };
      
   this.draw = function(ctx) {
-	 SpriteSheet.draw(ctx,nombrepiezactual,4*64,4*64,this.giro,this.ngiro,0,true);
-	 //ctx.drawImage(imagen, sprite1.sx, sprite1.sy, sprite1.w, sprite1.h, Math.floor(4*64), Math.floor(4*64), 3*sprite1.w, 3*sprite1.h);
+	 SpriteSheet.draw(ctx,this.nombre,4*64,4*64,this.giro,this.ngiro,0,true);
+
   };
 }
 
