@@ -124,6 +124,27 @@ var PiezaMadre = function (nombre, x, y){
 
 }
 
+
+var Seguidor = function (x, y){
+
+  this.x = x;
+  this.y = y;
+  this.w = 16;
+  this.h = 16;
+  this.type = "pieza";
+
+  this.step = function(dt) {           
+	
+  }
+  
+  this.draw = function(ctx) {
+	  SpriteSheet.draw(Game.ctx, "sr", this.x, this.y, false, 0, 0);
+  };	
+
+}
+
+
+
 var pieza = function (nombre, x, y){
   this.x = x;
   this.y = y;
@@ -155,18 +176,18 @@ var pieza = function (nombre, x, y){
 				    cX =Math.floor((mX-5)/64);
 				    cY = Math.floor((mY-100)/64);
 				   
-					console.log("x ------>:"  + cX +"mx :" + mX + "my :" + mY + "," + "y ----->: " + cY);
+					//console.log("x ------>:"  + cX +"mx :" + mX + "my :" + mY + "," + "y ----->: " + cY);
 				   
 				    x = (cX *64);
 				    y = (cY * 64);
-					console.log(x + ","+ y ) ; 
+					//console.log(x + ","+ y ) ; 
 				    colocada = true;
 				    otrapieza = true;
 				    
 				    //se mete dibujo para colocar seguidor
 				    board.add(piezaactual);  
-                    board.add(cuadriculaS);     
-                    board.add(new ColocarSeguidor());  
+            board.add(cuadriculaS);     
+            board.add(new ColocarSeguidor(cX, cY));  
 				
 			   }
 		  }
@@ -218,7 +239,7 @@ var Jugadores = function(){
         //De momento lo pongo vacio porque solo quiero probar tittle scream
   };
   this.draw = function(ctx) {
-      ctx.fillStyle = "#FFFFFF";
+    ctx.fillStyle = "#FFFFFF";
 	  ctx.font = "bold 27px bangers";
 	  ctx.fillText("JUGADORES", 10.5*64,1.5*64);
 	  ctx.font = "bold 17px bangers";
@@ -260,12 +281,7 @@ var cuadricula = function(){
     };	
 }
 
-
-
-
-var ColocarSeguidor = function() {
-   
-    pulsado = false ; 
+var ColocarSeguidor = function(x, y) {
     posicion0 = false;
     posicion1 = false;
     posicion2 = false;
@@ -280,162 +296,126 @@ var ColocarSeguidor = function() {
     posicion11 = false;
     posicion12 = false;
     noseg = false;
-    
+
     this.step = function(dt) {
-        //if(Game.keys['seguidor']) pulsado = true;
-        //if(pulsado && !Game.keys['seguidor']) {            
-            //board.add(piezaactual);  
-            //cuadriculaS = new cuadriculaSeguidor();
-            //board.add(cuadriculaS);          
-        //}
-        
+     
         if(Game.keys['pos0']) posicion0 = true;
         if(posicion0 && !Game.keys['pos0']) {
             posicion0 = true;
-            PosicionElegida = 0;
             board.remove(piezaactual);  
-            board.remove(cuadriculaS);     
-            pulsado = false;     
-            console.log(PosicionElegida);          
+            board.remove(cuadriculaS);
+            board.add (new Seguidor (64*x+15.5, 64*y+5.5));  
+            
         }
         
         if(Game.keys['pos1']) posicion1 = true;
         if(posicion1 && !Game.keys['pos1']) {
             posicion1 = true;
-            PosicionElegida = 1;
             board.remove(piezaactual);  
-            board.remove(cuadriculaS);     
-            pulsado = false; 
-            console.log(PosicionElegida);       
+            board.remove(cuadriculaS);
+            board.add (new Seguidor (64*x+32, 64*y+10));     
         }
         
         if(Game.keys['pos2']) posicion2 = true;
         if(posicion2 && !Game.keys['pos2']) {
             posicion2 = true;
-            PosicionElegida = 2;
             board.remove(piezaactual);  
-            board.remove(cuadriculaS);     
-            pulsado = false;        
-            console.log(PosicionElegida);       
+            board.remove(cuadriculaS);
+            board.add (new Seguidor (64*x+47, 64*y+5.5));  
+                 
         }
         
         if(Game.keys['pos3']) posicion3 = true;
         if(posicion3 && !Game.keys['pos3']) {
             posicion3 = true;
-            PosicionElegida = 3;
             board.remove(piezaactual);  
-            board.remove(cuadriculaS);     
-            pulsado = false;   
-            console.log(PosicionElegida);            
+            board.remove(cuadriculaS);
+            board.add (new Seguidor (64*x+58, 64*y+15.5));  
+                       
         }
         
         if(Game.keys['pos4']) posicion4 = true;
         if(posicion4 && !Game.keys['pos4']) {
             posicion4 = true;
-            PosicionElegida = 4;
             board.remove(piezaactual);  
-            board.remove(cuadriculaS);     
-            pulsado = false;        
-            console.log(PosicionElegida);       
+            board.remove(cuadriculaS);
+            board.add (new Seguidor (64*x+52, 64*y+32));       
         }
         
         if(Game.keys['pos5']) posicion4 = true;
         if(posicion5 && !Game.keys['pos5']) {
             posicion5 = true;
-            PosicionElegida = 5;
             board.remove(piezaactual);  
-            board.remove(cuadriculaS);     
-            pulsado = false;
-            console.log(PosicionElegida);               
+            board.remove(cuadriculaS);
+            board.add (new Seguidor (64*x+58, 64*y+47));  
+                           
         }
         
         if(Game.keys['pos6']) posicion6 = true;
         if(posicion6 && !Game.keys['pos6']) {
             posicion6 = true;
-            PosicionElegida = 6;
             board.remove(piezaactual);  
-            board.remove(cuadriculaS);     
-            pulsado = false;     
-            console.log(PosicionElegida);          
+            board.remove(cuadriculaS);
+            board.add (new Seguidor (64*x+47, 64*y+58));                        
         }
         
         if(Game.keys['pos7']) posicion7 = true;
         if(posicion7 && !Game.keys['pos7']) {
-            posicion7 = true;
-            PosicionElegida = 7;
-            board.remove(piezaactual);  
-            board.remove(cuadriculaS);     
-            pulsado = false;     
-            console.log(PosicionElegida);          
+           posicion7 = true;
+           board.remove(piezaactual);  
+           board.remove(cuadriculaS);
+           board.add (new Seguidor (64*x+32, 64*y+52)); 
         }
         
         if(Game.keys['pos8']) posicion8 = true;
         if(posicion8 && !Game.keys['pos8']) {
             posicion8 = true;
-            PosicionElegida = 8;
             board.remove(piezaactual);  
-            board.remove(cuadriculaS);     
-            pulsado = false;     
-            console.log(PosicionElegida);          
+            board.remove(cuadriculaS);
+            board.add (new Seguidor (64*x+15.5, 64*y+58));           
         }
         
         if(Game.keys['pos9']) posicion9 = true;
         if(posicion9 && !Game.keys['pos9']) {
             posicion9 = true;
-            PosicionElegida = 9;
             board.remove(piezaactual);  
-            board.remove(cuadriculaS);     
-            pulsado = false;     
-            console.log(PosicionElegida);          
+            board.remove(cuadriculaS);
+            board.add (new Seguidor (64*x+5.5, 64*y+47));            
         }
         
         if(Game.keys['pos10']) posicion10 = true;
         if(posicion10 && !Game.keys['pos10']) {
             posicion10 = true;
-            PosicionElegida = 10;
             board.remove(piezaactual);  
-            board.remove(cuadriculaS);     
-            pulsado = false;     
-            console.log(PosicionElegida);          
+            board.remove(cuadriculaS);
+            board.add (new Seguidor (64*x+10, 64*y+32));           
         }
         
         if(Game.keys['pos11']) posicion11 = true;
         if(posicion11 && !Game.keys['pos11']) {
             posicion11 = true;
-            PosicionElegida = 11;
             board.remove(piezaactual);  
-            board.remove(cuadriculaS);     
-            pulsado = false;     
-            console.log(PosicionElegida);          
+            board.remove(cuadriculaS);
+            board.add (new Seguidor (64*x+32, 64*y+32));            
         }
         
         if(Game.keys['pos12']) posicion12 = true;
         if(posicion12 && !Game.keys['pos12']) {
             posicion12 = true;
-            PosicionElegida = 12;
             board.remove(piezaactual);  
-            board.remove(cuadriculaS);     
-            pulsado = false;     
-            console.log(PosicionElegida);          
+            board.remove(cuadriculaS);
+            board.add (new Seguidor (64*x+5.5, 64*y+15));           
         }
         
         if(Game.keys['NOSeguidor']) noseg = true;
         if(noseg && !Game.keys['NOSeguidor']) {
             noseg = true;
-            PosicionElegida = false;
             board.remove(piezaactual);  
-            board.remove(cuadriculaS);     
-            pulsado = false;     
-            console.log(PosicionElegida);          
+            board.remove(cuadriculaS);
+            //NO HAY          
         }
-        
-        
-        
-    }
-    
-    
+    }    
     this.draw = function(ctx) {
-        
         
     }
 }
