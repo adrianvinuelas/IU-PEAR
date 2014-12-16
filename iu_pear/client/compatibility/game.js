@@ -81,11 +81,11 @@ var startGame = function() {
     Jugador4 = {nombre: "Kevin" , color: "sn"};
     Game.setBoard(0,new cuadricula());
     Game.setBoard(1,new Jugadores());       
-    Game.setBoard(5,new AyudaScreen("Pulsa espacio para ayuda"));
+    Game.setBoard(3,new AyudaScreen("Pulsa espacio para ayuda"));
     board.add(new PiezaMadre("1", 5*64, 5*64)); //Pieza madre que siempre esta puesta cuando empieza el juego
     Game.setBoard(2,new TextoPideFicha("Pulsa enter para pedir ficha ",playGame));
     board.add(new ScrollTeclas());
-    Game.setBoard(3,board);
+    Game.setBoard(5,board);
    
     
 }

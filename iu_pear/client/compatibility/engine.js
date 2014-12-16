@@ -136,7 +136,7 @@ SpriteSheet = new function() {
 	if(seguidor){
 		ctx.drawImage(this.image, s.sx, s.sy, s.w, s.h, Math.floor(x), Math.floor(y), 3*s.w, 3*s.h);
 	}else{
-	       console.log("x en draw = " + x + ", y en draw = " + y + " y primeravez = " + primeravez);
+	       //console.log("x en draw = " + x + ", y en draw = " + y + " y primeravez = " + primeravez);
 	       if((x>=64 && x<=639) && (y<=575 && y>=64) && primeravez == 1){//límite(76-644)para la x, (167-674) para la y
 	      		ctx.drawImage(this.image, s.sx, s.sy, s.w, s.h, Math.floor(x), Math.floor(y), s.w, s.h);
 		}else if (primeravez == 0){//si primeravez es 0 , es porque es la pieza que tenemos que colocar(esta fuera de la cuadricula)
@@ -179,7 +179,7 @@ PiezaActual = function() {
   };
      
   this.draw = function(ctx) {
-	 SpriteSheet.draw(ctx,this.nombre,4*64,4*64,this.giro,this.ngiro,0,true);
+	 SpriteSheet.draw(ctx,this.nombre,10.5*64,6*64,this.giro,this.ngiro,0,true);
 
   };
 }
@@ -192,40 +192,40 @@ cuadriculaSeguidor = function(){
     
     this.draw = function(ctx) {
       
-	    for (i=4;i<7;i++){
-        for (j=4;j<7;j++){
+	    for (i=6;i<9;i++){
+        for (j=10.5;j<13.5;j++){
           Game.ctx.strokeStyle = "red";
           Game.ctx.strokeRect(j*64,i*64,64,64);
           Game.ctx.beginPath();
-          Game.ctx.moveTo(4*64,4*64);
-          Game.ctx.lineTo(5*64,5*64); 
+          Game.ctx.moveTo(10.5*64,6*64);
+          Game.ctx.lineTo(11.5*64,7*64); 
           Game.ctx.stroke();
           Game.ctx.beginPath();
-          Game.ctx.moveTo(7*64,4*64);
-          Game.ctx.lineTo(6*64,5*64); 
+          Game.ctx.moveTo(13.5*64,6*64);
+          Game.ctx.lineTo(12.5*64,7*64); 
           Game.ctx.stroke();
           Game.ctx.beginPath();
-          Game.ctx.moveTo(4*64,7*64);
-          Game.ctx.lineTo(5*64,6*64); 
+          Game.ctx.moveTo(13.5*64,9*64);
+          Game.ctx.lineTo(12.5*64,8*64); 
           Game.ctx.stroke();
           Game.ctx.beginPath();
-          Game.ctx.moveTo(7*64,7*64);
-          Game.ctx.lineTo(6*64,6*64); 
+          Game.ctx.moveTo(10.5*64,9*64);
+          Game.ctx.lineTo(11.5*64,8*64); 
           Game.ctx.stroke();
           ctx.fillStyle = "red";
-          ctx.fillText("0",4*64+40,4*64+15);
-          ctx.fillText("1",5*64+30,4*64+15);
-          ctx.fillText("2",6*64+20,4*64+15);
-          ctx.fillText("3",6*64+40,4*64+50);
-          ctx.fillText("4",6*64+40,5*64+30);
-          ctx.fillText("5",6*64+40,6*64+15);
-          ctx.fillText("6",6*64+20,6*64+50);
-          ctx.fillText("7",5*64+30,6*64+50);
-          ctx.fillText("8",4*64+40,6*64+50);
-          ctx.fillText("9",4*64+10,6*64+15);
-          ctx.fillText("Q",4*64+10,5*64+30);
-          ctx.fillText("W",4*64+10,4*64+50);
-          ctx.fillText("E",5*64+30,5*64+15);
+          ctx.fillText("0",10.5*64+40,6*64+15);
+          ctx.fillText("1",11.5*64+30,6*64+15);
+          ctx.fillText("2",12.5*64+20,6*64+15);
+          ctx.fillText("3",12.5*64+40,6*64+50);
+          ctx.fillText("4",12.5*64+40,7*64+30);
+          ctx.fillText("5",12.5*64+40,8*64+15);
+          ctx.fillText("6",12.5*64+20,8*64+50);
+          ctx.fillText("7",11.5*64+30,8*64+50);
+          ctx.fillText("8",10.5*64+40,8*64+50);
+          ctx.fillText("9",10.5*64+10,8*64+15);
+          ctx.fillText("Q",10.5*64+10,7*64+30);
+          ctx.fillText("W",10.5*64+10,6*64+50);
+          ctx.fillText("E",11.5*64+30,7*64+15);
       
         }
       }
