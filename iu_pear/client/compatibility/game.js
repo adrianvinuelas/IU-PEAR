@@ -61,7 +61,8 @@ var board = new TableroJuego();
 var otrapieza = true;
 var piezaactual = new PiezaActual();
 var cuadriculaS = new cuadriculaSeguidor();
-var posicionElegida = false;
+var DejarScroll = true;
+//
 var xIA;//estas variables globales son para los calculos de la casilla en la que se pone la ficha para pasarselo a IA
 var yIA;//estas variables globales son para los calculos de la casilla en la que se pone la ficha para pasarselo a IA
 var xprima = 64;//estas variables globales son para los calculos de la casilla en la que se pone la ficha para pasarselo a IA
@@ -70,6 +71,7 @@ var xIAprima = 0;//estas variables globales son para los calculos de la casilla 
 var yIAprima = 0;//estas variables globales son para los calculos de la casilla en la que se pone la ficha para pasarselo a IA
 var scrollxprima = 0;//estas variables globales son para los calculos de la casilla en la que se pone la ficha para pasarselo a IA
 var scrollyprima = 0;//estas variables globales son para los calculos de la casilla en la que se pone la ficha para pasarselo a IA
+//
 
 var startGame = function() {
 
@@ -93,8 +95,7 @@ var playGame = function() {
 
     if(otrapieza){
 	  piezaNew = pedirPieza();
-	  board.add(piezaNew);
-	  
+	  board.add(piezaNew);	  
 	  Game.setBoard(2,new TextoPideFicha("Pulsa enter para pedir ficha ",playGame));
     }
   
@@ -137,9 +138,7 @@ var Seguidor = function (x, y){
 
   this.x = x;
   this.y = y;
-  this.w = 16;
-  this.h = 16;
-  this.type = "pieza";
+  this.type = "pieza";              // le dejamos mismo tipo que pieza porque en el draw nos interesa que actue igual en algunas cosas
 
   this.step = function(dt) {           
 	
@@ -184,18 +183,22 @@ var pieza = function (nombre, x, y){
 				    cX =Math.floor((mX-5)/64);
 				    cY = Math.floor((mY-100)/64);
 				   
-					console.log("x ------>:"  + cX +"mx :" + mX + "my :" + mY + "," + "y ----->: " + cY);
+					//console.log("x ------>:"  + cX +"mx :" + mX + "my :" + mY + "," + "y ----->: " + cY);
 				   
 				    x = (cX *64);
 				    y = (cY * 64);
 					//console.log(x + ","+ y ) ; 
-				    colocada = true;
-				    otrapieza = true;
+				    colocada = true;				    
 				    
 				    //se mete dibujo para colocar seguidor
 				    board.add(piezaactual);  
-           			    board.add(cuadriculaS);     
-          			    board.add(new ColocarSeguidor(cX, cY));  
+       			    board.add(cuadriculaS);     
+       			    DejarScroll = false;    //cuando estamos esperando a que pulsen una tecla para elegir la posicion donde colocar el seguidor
+       			                            //no se puede mover el scroll
+      			    board.add(new ColocarSeguidor(cX, cY));  
+          			    
+          			    
+          			// Para quedarnos con la casilla del tablero donde nos pinchan, para pasarselo a IA.
 				    for (i=1;i<9;i++){//
 					xprima = 64;
 		       		 	for (j=1;j<10;j++){
@@ -324,15 +327,19 @@ var ColocarSeguidor = function(x, y) {
     posicion12 = false;
     noseg = false;
     this.colocado = false;
+    
     this.step = function(dt) {
+    
      if(!this.colocado){
         if(Game.keys['pos0']) posicion0 = true;
         if(posicion0 && !Game.keys['pos0']) {
             posicion0 = false;
             board.remove(piezaactual);  
             board.remove(cuadriculaS);
-            board.add (new Seguidor (64*x+15.5, 64*y+5.5));  
-	    this.colocado= true;           
+            board.add (new Seguidor (64*x+7.5, 64*y+2.5));  
+	        this.colocado= true;      
+	        otrapieza = true;     
+	        DejarScroll = true;
         }
         
         if(Game.keys['pos1']) posicion1 = true;
@@ -340,8 +347,10 @@ var ColocarSeguidor = function(x, y) {
             posicion1 = false;
             board.remove(piezaactual);  
             board.remove(cuadriculaS);
-            board.add (new Seguidor (64*x+32, 64*y+10));
-	   this.colocado= true;     
+            board.add (new Seguidor (64*x+22, 64*y+2.5));
+	        this.colocado= true;
+	        otrapieza = true;     
+	        DejarScroll = true;
         }
         
         if(Game.keys['pos2']) posicion2 = true;
@@ -349,8 +358,10 @@ var ColocarSeguidor = function(x, y) {
             posicion2 = false;
             board.remove(piezaactual);  
             board.remove(cuadriculaS);
-            board.add (new Seguidor (64*x+47, 64*y+5.5)); 
-	   this.colocado= true;
+            board.add (new Seguidor (64*x+41, 64*y+2.5)); 
+	        this.colocado= true;
+	        otrapieza = true;
+	        DejarScroll = true;
                  
         }
         
@@ -359,8 +370,10 @@ var ColocarSeguidor = function(x, y) {
             posicion3 = false;
             board.remove(piezaactual);  
             board.remove(cuadriculaS);
-            board.add (new Seguidor (64*x+58, 64*y+15.5)); 
-   	    this.colocado= true;
+            board.add (new Seguidor (64*x+48, 64*y+14.5)); 
+   	        this.colocado= true;
+   	        otrapieza = true;
+   	        DejarScroll = true;
                        
         }
         
@@ -369,17 +382,21 @@ var ColocarSeguidor = function(x, y) {
             posicion4 = false;
             board.remove(piezaactual);  
             board.remove(cuadriculaS);
-            board.add (new Seguidor (64*x+52, 64*y+32));
- 	    this.colocado= true;    
+            board.add (new Seguidor (64*x+48, 64*y+27));
+ 	        this.colocado= true;    
+ 	        otrapieza = true;
+ 	        DejarScroll = true;
         }
         
-        if(Game.keys['pos5']) posicion4 = true;
+        if(Game.keys['pos5']) posicion5 = true;
         if(posicion5 && !Game.keys['pos5']) {
             posicion5 = false;
             board.remove(piezaactual);  
             board.remove(cuadriculaS);
-            board.add (new Seguidor (64*x+58, 64*y+47));
-	    this.colocado= true;
+            board.add (new Seguidor (64*x+48, 64*y+39));
+	        this.colocado= true;
+	        otrapieza = true;
+	        DejarScroll = true;
                            
         }
         
@@ -388,8 +405,10 @@ var ColocarSeguidor = function(x, y) {
             posicion6 = false;
             board.remove(piezaactual);  
             board.remove(cuadriculaS);
-            board.add (new Seguidor (64*x+47, 64*y+58));
-	    this.colocado= true;                   
+            board.add (new Seguidor (64*x+40, 64*y+48));
+	        this.colocado= true;       
+	        otrapieza = true;     
+	        DejarScroll = true;       
         }
         
         if(Game.keys['pos7']) posicion7 = true;
@@ -397,8 +416,10 @@ var ColocarSeguidor = function(x, y) {
            posicion7 = false;
            board.remove(piezaactual);  
            board.remove(cuadriculaS);
-           board.add (new Seguidor (64*x+32, 64*y+52));
-	   this.colocado= true;
+           board.add (new Seguidor (64*x+22, 64*y+48));
+	       this.colocado= true;
+	       otrapieza = true;
+	       DejarScroll = true;
         }
         
         if(Game.keys['pos8']) posicion8 = true;
@@ -406,8 +427,10 @@ var ColocarSeguidor = function(x, y) {
             posicion8 = false;
             board.remove(piezaactual);  
             board.remove(cuadriculaS);
-            board.add (new Seguidor (64*x+15.5, 64*y+58));
-	    this.colocado= true;          
+            board.add (new Seguidor (64*x+7.5, 64*y+48));
+	        this.colocado= true;    
+	        otrapieza = true;   
+	        DejarScroll = true;   
         }
         
         if(Game.keys['pos9']) posicion9 = true;
@@ -415,8 +438,10 @@ var ColocarSeguidor = function(x, y) {
             posicion9 = false;
             board.remove(piezaactual);  
             board.remove(cuadriculaS);
-            board.add (new Seguidor (64*x+5.5, 64*y+47));
-	    this.colocado= true;         
+            board.add (new Seguidor (64*x, 64*y+39));
+	        this.colocado= true;         
+	        otrapieza = true;
+	        DejarScroll = true;
         }
         
         if(Game.keys['pos10']) posicion10 = true;
@@ -424,8 +449,10 @@ var ColocarSeguidor = function(x, y) {
             posicion10 = false;
             board.remove(piezaactual);  
             board.remove(cuadriculaS);
-            board.add (new Seguidor (64*x+10, 64*y+32));
- 	    this.colocado= true;         
+            board.add (new Seguidor (64*x, 64*y+27));
+ 	        this.colocado= true; 
+ 	        otrapieza = true;  
+ 	        DejarScroll = true;      
         }
         
         if(Game.keys['pos11']) posicion11 = true;
@@ -433,8 +460,10 @@ var ColocarSeguidor = function(x, y) {
             posicion11 = false;
             board.remove(piezaactual);  
             board.remove(cuadriculaS);
-            board.add (new Seguidor (64*x+32, 64*y+32));
-	    this.colocado= true;           
+            board.add (new Seguidor (64*x, 64*y+14.5));
+	        this.colocado= true;  
+	        otrapieza = true;   
+	        DejarScroll = true;      
         }
         
         if(Game.keys['pos12']) posicion12 = true;
@@ -442,8 +471,10 @@ var ColocarSeguidor = function(x, y) {
             posicion12 = false;
             board.remove(piezaactual);  
             board.remove(cuadriculaS);
-            board.add (new Seguidor (64*x+5.5, 64*y+15));
-	    this.colocado= true;         
+            board.add (new Seguidor (64*x+24, 64*y+27));
+	        this.colocado= true;   
+	        otrapieza = true;    
+	        DejarScroll = true;  
         }
         
         if(Game.keys['NOSeguidor']) noseg = true;
@@ -451,9 +482,11 @@ var ColocarSeguidor = function(x, y) {
             noseg = false;
             board.remove(piezaactual);  
             board.remove(cuadriculaS);
-	    this.colocado= true;
+	        this.colocado= true;
+	        otrapieza = true;
+	        DejarScroll = true;
             //NO HAY          
-        }
+        }        
      }
     }    
     this.draw = function(ctx) {
@@ -484,10 +517,12 @@ var ScrollTeclas = function() {
             };
         };
 
- ctx.restore();
+        ctx.restore();
     }
     
     this.step = function(dt) {
+    
+        if (DejarScroll){
     
         if(!Game.keys['left']) izq = true;
         if(izq && Game.keys['left']) {
@@ -527,10 +562,11 @@ var ScrollTeclas = function() {
             }
     
         }
-	scrollxprima = this.scrollx;
-   	scrollyprima = this.scrolly;
-	//console.log("scrollxprima = " + scrollxprima);
-	//console.log("scrollyprima = " + scrollyprima);
+        
+	    scrollxprima = this.scrollx;
+   	    scrollyprima = this.scrolly;
+        }   	   
+   	   
     }
 
 }
