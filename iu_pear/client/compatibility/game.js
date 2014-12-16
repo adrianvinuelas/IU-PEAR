@@ -62,6 +62,14 @@ var otrapieza = true;
 var piezaactual = new PiezaActual();
 var cuadriculaS = new cuadriculaSeguidor();
 var posicionElegida = false;
+var xIA;//estas variables globales son para los calculos de la casilla en la que se pone la ficha para pasarselo a IA
+var yIA;//estas variables globales son para los calculos de la casilla en la que se pone la ficha para pasarselo a IA
+var xprima = 64;//estas variables globales son para los calculos de la casilla en la que se pone la ficha para pasarselo a IA
+var yprima = 64;//estas variables globales son para los calculos de la casilla en la que se pone la ficha para pasarselo a IA
+var xIAprima = 0;//estas variables globales son para los calculos de la casilla en la que se pone la ficha para pasarselo a IA
+var yIAprima = 0;//estas variables globales son para los calculos de la casilla en la que se pone la ficha para pasarselo a IA
+var scrollxprima = 0;//estas variables globales son para los calculos de la casilla en la que se pone la ficha para pasarselo a IA
+var scrollyprima = 0;//estas variables globales son para los calculos de la casilla en la que se pone la ficha para pasarselo a IA
 
 var startGame = function() {
 
@@ -186,8 +194,27 @@ var pieza = function (nombre, x, y){
 				    
 				    //se mete dibujo para colocar seguidor
 				    board.add(piezaactual);  
-            board.add(cuadriculaS);     
-            board.add(new ColocarSeguidor(cX, cY));  
+           			    board.add(cuadriculaS);     
+          			    board.add(new ColocarSeguidor(cX, cY));  
+				    for (i=1;i<9;i++){//
+					xprima = 64;
+		       		 	for (j=1;j<10;j++){
+						xIAprima = scrollxprima+xprima/64;
+						yIAprima = scrollyprima+yprima/64;
+						xprima += 64;
+					  	if(cX == j && cY == i){
+							xIA = xIAprima;
+							yIA = yIAprima;
+							console.log("xIA = " + xIA);
+							console.log("yIA = " + yIA);
+						}
+					}
+					yprima += 64;
+				   }//
+				   xIAprima = 0;
+				   yIAprima = 0;
+				   xprima = 64;
+				   yprima = 64;
 				
 			   }
 		  }
@@ -486,6 +513,10 @@ var ScrollTeclas = function() {
             }
     
         }
+	scrollxprima = this.scrollx;
+   	scrollyprima = this.scrolly;
+	//console.log("scrollxprima = " + scrollxprima);
+	//console.log("scrollyprima = " + scrollyprima);
     }
 
 }
