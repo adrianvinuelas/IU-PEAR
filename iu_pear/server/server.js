@@ -1,4 +1,4 @@
-/*
+
 Meteor.publish("turno", function (turno) {
 	// publicar el jugador de quien es el turno
 	return Players.find({player_id: turno});
@@ -8,7 +8,6 @@ Meteor.publish("all_players", function () {
 	// publicar todos los jugadores
 	return Players.find();
 });
-
 
 
 Meteor.methods ({ 
@@ -38,4 +37,4 @@ Meteor.startup(function(){
 		Players.insert({color: "black"});
 	};
 });
-*/
+

@@ -82,6 +82,7 @@ var startGame = function() {
     Game.setBoard(0,new cuadricula());
     Game.setBoard(1,new Jugadores());       
     Game.setBoard(3,new AyudaScreen("Pulsa espacio para ayuda"));
+		//Meteor.call("dameFichaMadre");
     board.add(new PiezaMadre("1", 5*64, 5*64)); //Pieza madre que siempre esta puesta cuando empieza el juego
     Game.setBoard(2,new TextoPideFicha("Pulsa enter para pedir ficha ",playGame));
     board.add(new ScrollTeclas());
@@ -94,6 +95,7 @@ var startGame = function() {
 var playGame = function() {
 
     if(otrapieza){
+		//Meteor.call("dameFicha");
 	  piezaNew = pedirPieza();
 	  board.add(piezaNew);	  
 	  Game.setBoard(2,new TextoPideFicha("Pulsa enter para pedir ficha ",playGame));

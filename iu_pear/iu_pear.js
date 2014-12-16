@@ -1,3 +1,5 @@
+Players = new Meteor.Collection("players");
+
 
 if (Meteor.isClient) { 
   Accounts.ui.config({
