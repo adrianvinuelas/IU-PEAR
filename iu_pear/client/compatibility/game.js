@@ -146,7 +146,7 @@ var Seguidor = function (x, y){
   }
   
   this.draw = function(ctx) {
-	  SpriteSheet.draw(Game.ctx, "sr", this.x, this.y, false, 0, 0);
+	  SpriteSheet.draw(Game.ctx, "sr", this.x, this.y, false, 0, 1);
   };	
 
 }
@@ -184,7 +184,7 @@ var pieza = function (nombre, x, y){
 				    cX =Math.floor((mX-5)/64);
 				    cY = Math.floor((mY-100)/64);
 				   
-					//console.log("x ------>:"  + cX +"mx :" + mX + "my :" + mY + "," + "y ----->: " + cY);
+					console.log("x ------>:"  + cX +"mx :" + mX + "my :" + mY + "," + "y ----->: " + cY);
 				   
 				    x = (cX *64);
 				    y = (cY * 64);
@@ -323,124 +323,138 @@ var ColocarSeguidor = function(x, y) {
     posicion11 = false;
     posicion12 = false;
     noseg = false;
-
+    this.colocado = false;
     this.step = function(dt) {
-     
+     if(!this.colocado){
         if(Game.keys['pos0']) posicion0 = true;
         if(posicion0 && !Game.keys['pos0']) {
-            posicion0 = true;
+            posicion0 = false;
             board.remove(piezaactual);  
             board.remove(cuadriculaS);
             board.add (new Seguidor (64*x+15.5, 64*y+5.5));  
-            
+	    this.colocado= true;           
         }
         
         if(Game.keys['pos1']) posicion1 = true;
         if(posicion1 && !Game.keys['pos1']) {
-            posicion1 = true;
+            posicion1 = false;
             board.remove(piezaactual);  
             board.remove(cuadriculaS);
-            board.add (new Seguidor (64*x+32, 64*y+10));     
+            board.add (new Seguidor (64*x+32, 64*y+10));
+	   this.colocado= true;     
         }
         
         if(Game.keys['pos2']) posicion2 = true;
         if(posicion2 && !Game.keys['pos2']) {
-            posicion2 = true;
+            posicion2 = false;
             board.remove(piezaactual);  
             board.remove(cuadriculaS);
-            board.add (new Seguidor (64*x+47, 64*y+5.5));  
+            board.add (new Seguidor (64*x+47, 64*y+5.5)); 
+	   this.colocado= true;
                  
         }
         
         if(Game.keys['pos3']) posicion3 = true;
         if(posicion3 && !Game.keys['pos3']) {
-            posicion3 = true;
+            posicion3 = false;
             board.remove(piezaactual);  
             board.remove(cuadriculaS);
-            board.add (new Seguidor (64*x+58, 64*y+15.5));  
+            board.add (new Seguidor (64*x+58, 64*y+15.5)); 
+   	    this.colocado= true;
                        
         }
         
         if(Game.keys['pos4']) posicion4 = true;
         if(posicion4 && !Game.keys['pos4']) {
-            posicion4 = true;
+            posicion4 = false;
             board.remove(piezaactual);  
             board.remove(cuadriculaS);
-            board.add (new Seguidor (64*x+52, 64*y+32));       
+            board.add (new Seguidor (64*x+52, 64*y+32));
+ 	    this.colocado= true;    
         }
         
         if(Game.keys['pos5']) posicion4 = true;
         if(posicion5 && !Game.keys['pos5']) {
-            posicion5 = true;
+            posicion5 = false;
             board.remove(piezaactual);  
             board.remove(cuadriculaS);
-            board.add (new Seguidor (64*x+58, 64*y+47));  
+            board.add (new Seguidor (64*x+58, 64*y+47));
+	    this.colocado= true;
                            
         }
         
         if(Game.keys['pos6']) posicion6 = true;
         if(posicion6 && !Game.keys['pos6']) {
-            posicion6 = true;
+            posicion6 = false;
             board.remove(piezaactual);  
             board.remove(cuadriculaS);
-            board.add (new Seguidor (64*x+47, 64*y+58));                        
+            board.add (new Seguidor (64*x+47, 64*y+58));
+	    this.colocado= true;                   
         }
         
         if(Game.keys['pos7']) posicion7 = true;
         if(posicion7 && !Game.keys['pos7']) {
-           posicion7 = true;
+           posicion7 = false;
            board.remove(piezaactual);  
            board.remove(cuadriculaS);
-           board.add (new Seguidor (64*x+32, 64*y+52)); 
+           board.add (new Seguidor (64*x+32, 64*y+52));
+	   this.colocado= true;
         }
         
         if(Game.keys['pos8']) posicion8 = true;
         if(posicion8 && !Game.keys['pos8']) {
-            posicion8 = true;
+            posicion8 = false;
             board.remove(piezaactual);  
             board.remove(cuadriculaS);
-            board.add (new Seguidor (64*x+15.5, 64*y+58));           
+            board.add (new Seguidor (64*x+15.5, 64*y+58));
+	    this.colocado= true;          
         }
         
         if(Game.keys['pos9']) posicion9 = true;
         if(posicion9 && !Game.keys['pos9']) {
-            posicion9 = true;
+            posicion9 = false;
             board.remove(piezaactual);  
             board.remove(cuadriculaS);
-            board.add (new Seguidor (64*x+5.5, 64*y+47));            
+            board.add (new Seguidor (64*x+5.5, 64*y+47));
+	    this.colocado= true;         
         }
         
         if(Game.keys['pos10']) posicion10 = true;
         if(posicion10 && !Game.keys['pos10']) {
-            posicion10 = true;
+            posicion10 = false;
             board.remove(piezaactual);  
             board.remove(cuadriculaS);
-            board.add (new Seguidor (64*x+10, 64*y+32));           
+            board.add (new Seguidor (64*x+10, 64*y+32));
+ 	    this.colocado= true;         
         }
         
         if(Game.keys['pos11']) posicion11 = true;
         if(posicion11 && !Game.keys['pos11']) {
-            posicion11 = true;
+            posicion11 = false;
             board.remove(piezaactual);  
             board.remove(cuadriculaS);
-            board.add (new Seguidor (64*x+32, 64*y+32));            
+            board.add (new Seguidor (64*x+32, 64*y+32));
+	    this.colocado= true;           
         }
         
         if(Game.keys['pos12']) posicion12 = true;
         if(posicion12 && !Game.keys['pos12']) {
-            posicion12 = true;
+            posicion12 = false;
             board.remove(piezaactual);  
             board.remove(cuadriculaS);
-            board.add (new Seguidor (64*x+5.5, 64*y+15));           
+            board.add (new Seguidor (64*x+5.5, 64*y+15));
+	    this.colocado= true;         
         }
         
         if(Game.keys['NOSeguidor']) noseg = true;
         if(noseg && !Game.keys['NOSeguidor']) {
-            noseg = true;
+            noseg = false;
             board.remove(piezaactual);  
             board.remove(cuadriculaS);
+	    this.colocado= true;
             //NO HAY          
         }
+     }
     }    
     this.draw = function(ctx) {
         

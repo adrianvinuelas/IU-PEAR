@@ -136,8 +136,8 @@ SpriteSheet = new function() {
 	if(seguidor){
 		ctx.drawImage(this.image, s.sx, s.sy, s.w, s.h, Math.floor(x), Math.floor(y), 3*s.w, 3*s.h);
 	}else{
-	       //console.log("x en draw = " + x + ", y en draw = " + y + " y primeravez = " + primeravez);
-	       if((x>=64 && x<=576) && (y<=512 && y>=64) && primeravez == 1){//límite(76-644)para la x, (167-674) para la y
+	       console.log("x en draw = " + x + ", y en draw = " + y + " y primeravez = " + primeravez);
+	       if((x>=64 && x<=639) && (y<=575 && y>=64) && primeravez == 1){//límite(76-644)para la x, (167-674) para la y
 	      		ctx.drawImage(this.image, s.sx, s.sy, s.w, s.h, Math.floor(x), Math.floor(y), s.w, s.h);
 		}else if (primeravez == 0){//si primeravez es 0 , es porque es la pieza que tenemos que colocar(esta fuera de la cuadricula)
 			ctx.drawImage(this.image, s.sx, s.sy, s.w, s.h, Math.floor(x), Math.floor(y), s.w, s.h);
@@ -381,12 +381,8 @@ TableroJuego = function() {
     
     this.translateScroll = function(x,y) {
         _(this.objects).forEach(function (obj) {
-                if(obj.type == "pieza") {  
-		    //console.log("x antes = " + obj.x)
-		    //console.log("y antes = " + obj.x)            
+                if(obj.type == "pieza") {       
                     obj.x = obj.x + 64 * x ;
-		    //console.log("x despues = " + obj.x)
-		    //console.log("y despues = " + obj.x) 
                     obj.y = obj.y + 64 * y ;                                 
                 }
         })
