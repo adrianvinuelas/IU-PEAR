@@ -5,7 +5,7 @@ Tracker.autorun(function(){
 	console.log("current user: " + currentUser);
 	currentUser = Meteor.userId();
 	console.log("current user: " + currentUser);
-	Session.set ("currentUser", currentUser);
+	Session.set ("currentUser");
 });
 
 Meteor.startup(function(){

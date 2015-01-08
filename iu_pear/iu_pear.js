@@ -1,5 +1,4 @@
-Players = new Meteor.Collection("players");
-
+Accion = new Mongo.Collection("accion");
 
 if (Meteor.isClient) { 
   Accounts.ui.config({
