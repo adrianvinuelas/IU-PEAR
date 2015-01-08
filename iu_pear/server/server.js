@@ -10,25 +10,23 @@ Meteor.publish("all_players", function () {
 });
 
 
-Meteor.methods ({ 
-	
-  empezar_partida: function(){ 
-  
-  },
-  
-	preguntar_turno: function(){
-	
-	},
+//Meteor.methods que crea la Ia para que la llamemos nosotros. Ahora creamos un dummie tonto.
+Meteor.methods({
 
-	dame_ficha: function(){
-	
-	},	
-
+    DameFicha: function () {
+        console.log("Estoy en DameFicha");
+        
+        var array = ["5", false];
+        console.log(array[0]);
+        console.log(array[1]);
+        return array;	       		            
+    }
+    
 });
 
 Meteor.startup(function(){
 	console.log("Arrancado servidor");
-	
+	/*
 	if (Players.find().count() == 0) {
 		//Los inserto a pelo, plataforma se los tiene que pasar a ia¿?
 		Players.insert({color: "red"});
@@ -36,5 +34,6 @@ Meteor.startup(function(){
 		Players.insert({color: "yellow"});
 		Players.insert({color: "black"});
 	};
+	*/
 });
 

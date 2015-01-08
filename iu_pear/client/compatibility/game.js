@@ -96,8 +96,8 @@ var playGame = function() {
 
     if(otrapieza){
 		//Meteor.call("dameFicha");
-	  piezaNew = pedirPieza();
-	  board.add(piezaNew);	  
+          //gestionar el turno en este punto si no es tu turno aunque pulses enter no va a pedir pieza
+	  pedirPieza();
 	  Game.setBoard(2,new TextoPideFicha("Pulsa enter para pedir ficha ",playGame));
     }
   
@@ -106,8 +106,29 @@ var playGame = function() {
   
 
 function pedirPieza(){ //Hay que llamar a la IA para que nos de la pieza aleatoria, mientras ponemos siempre la misma 
-	var piezaNueva = new pieza("2", 11.5*64, 8*64);
-	return piezaNueva;
+	
+  
+    Meteor.call("DameFicha", function(error, result){
+        console.log("llamo a DameFicha");
+        console.log(result[0]);
+        
+        if (result[0] == "5"){
+        console.log("1");
+        if (result[1] == true){
+            var arg = "C" + result[0];
+            console.log(arg);
+        }else{
+            var arg = "S" + result[0];	             
+            console.log(arg);   
+        }
+        //esta por terminar a ver que es exacto lo que nos pasa la IA       
+        }
+        
+        var piezaNueva = new pieza(arg, 11.5*64, 8*64);
+        board.add(piezaNueva);	  
+
+    });
+
 }
 
 var PiezaMadre = function (nombre, x, y){
