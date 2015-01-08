@@ -15,6 +15,14 @@ Meteor.methods ({
     array = ["1", false];
     return array;
   },	
+
+  colocar_ficha: function(coordenadas){
+	console.log("numero giro = " + coordenadas[0]);
+	console.log("x = " +coordenadas[1]);
+	console.log("y = " +coordenadas[2]);
+	return true;
+  },
+
 });
 
 Meteor.startup(function(){

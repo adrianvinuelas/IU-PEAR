@@ -169,9 +169,11 @@ var pieza = function (nombre, x, y){
   this.nombre = nombre;
   piezaactual.nombre = nombre;
   var colocada = false;
+  var noDejan = false;
   this.giro = false;
   piezaactual.giro= false;
   this.numgiro = 0;
+  var giroIA = 0;
   piezaactual.ngiro= 0;
   this.type = "pieza";
   this.scroll = false;
@@ -187,7 +189,7 @@ var pieza = function (nombre, x, y){
 			    mX = (e.pageX);
 			    mY = (e.pageY);
 			    if(mX<76||mX>644 ||mY<167 || mY>674){
-				alert('No puedes colocar la pieza ahí!');
+					alert('No puedes colocar la pieza ahí!');
 			    }else{
 				    cX =Math.floor((mX-5)/64);
 				    cY = Math.floor((mY-100)/64);
@@ -197,14 +199,7 @@ var pieza = function (nombre, x, y){
 				    x = (cX *64);
 				    y = (cY * 64);
 					//console.log(x + ","+ y ) ; 
-				    colocada = true;				    
-				    
-				    //se mete dibujo para colocar seguidor
-				    board.add(piezaactual);  
-       			    board.add(cuadriculaS);     
-       			    DejarScroll = false;    //cuando estamos esperando a que pulsen una tecla para elegir la posicion donde colocar el seguidor
-       			                            //no se puede mover el scroll
-      			    board.add(new ColocarSeguidor(cX, cY));  
+				   
           			    
           			    
           			// Para quedarnos con la casilla del tablero donde nos pinchan, para pasarselo a IA.
@@ -217,12 +212,25 @@ var pieza = function (nombre, x, y){
 					  	if(cX == j && cY == i){
 							xIA = xIAprima;
 							yIA = yIAprima;
+							console.log("giroIA = " + giroIA);
 							console.log("xIA = " + xIA);
 							console.log("yIA = " + yIA);
 						}
 					}
 					yprima += 64;
 				   }//
+				   Meteor.call("colocar_ficha",[giroIA,xIA,yIA], function (error, result) {
+				  	if(result){
+						board.add(piezaactual);
+						board.add(cuadriculaS); 
+						DejarScroll = false;    //cuando estamos esperando a que pulsen una tecla para elegir la posicion donde colocar el seguidor se mete dibujo para colocar seguidor no se puede mover el scroll
+						board.add(new ColocarSeguidor(cX, cY)); 
+						colocada = true;	
+					}else{
+						noDejan = true;
+						alert('No puedes colocar la pieza ahí!');
+					}
+				   });
 				   xIAprima = 0;
 				   yIAprima = 0;
 				   xprima = 64;
@@ -238,9 +246,11 @@ var pieza = function (nombre, x, y){
 			this.giro = true;
 			piezaactual.giro = true;
 			this.numgiro++;
+			giroIA++;
 			piezaactual.ngiro++;
 			if(this.numgiro == 5){
 				this.numgiro = 1;
+				giroIA = 1;
 				piezaactual.ngiro = 1;
 			}
 			console.log("this.numgiro = " +this.numgiro)
@@ -263,6 +273,12 @@ var pieza = function (nombre, x, y){
 	  if(!this.scroll){//esto es para que si aun la pieza es la que tenemos que colocar al hacer scroll no se mueva
 		this.x = x;//si scroll esta a false, la pieza mantiene las coordenadas (11.5*64, 8*64)
 		this.y = y;
+	  }
+
+	  if(noDejan){
+		this.x = 11.5*64;
+		this.y = 8*64;
+	  	
 	  }
 	  SpriteSheet.draw(Game.ctx, nombre, this.x, this.y,this.giro,this.numgiro,this.primer);
 
