@@ -104,6 +104,7 @@ var playGame = function() {
 
 var pedirPieza = function () {
 	Meteor.call('dame_ficha', function (error, result) {
+	    //Esta mal sin terminar porque no sabemos todavia con exactitud que nos va a devolver la IA
 		if (result[0] == "1"){
 			if (result[1] == true){
 				var arg = "C" + result[0];
@@ -113,7 +114,7 @@ var pedirPieza = function () {
 			var piezaNueva = new pieza (result[0], 11.5*64, 8*64);
 			board.add(piezaNueva);	  
 			Game.setBoard(2,new TextoPideFicha("Pulsa enter para pedir ficha ",playGame));
-    }
+        }
 	});
 }
 
@@ -145,66 +146,60 @@ var PiezaMadre = function (nombre, x, y){
 
 var Seguidor = function (x, y){
 
-  this.x = x;
-  this.y = y;
-  this.type = "pieza";              // le dejamos mismo tipo que pieza porque en el draw nos interesa que actue igual en algunas cosas
+    this.x = x;
+    this.y = y;
+    this.type = "pieza";              // le dejamos mismo tipo que pieza porque en el draw nos interesa que actue igual en algunas cosas
 
-  this.step = function(dt) {           
-	
-  }
+    this.step = function(dt) {           
+
+    }
   
-  this.draw = function(ctx) {
-	  SpriteSheet.draw(Game.ctx, "sr", this.x, this.y, false, 0, 1);
-  };	
+    this.draw = function(ctx) {
+        SpriteSheet.draw(Game.ctx, "sr", this.x, this.y, false, 0, 1);
+    };	
 
 }
 
 
 
 var pieza = function (nombre, x, y){
-  this.x = x;
-  this.y = y;
-  this.w = 64;
-  this.h = 64;
-  this.nombre = nombre;
-  piezaactual.nombre = nombre;
-  var colocada = false;
-  var noDejan = false;
-  this.giro = false;
-  piezaactual.giro= false;
-  this.numgiro = 0;
-  var giroIA = 0;
-  piezaactual.ngiro= 0;
-  this.type = "pieza";
-  this.scroll = false;
-  this.primeravez = true;
-  this.primer = 0;
-  this.step = function(dt) {
-  //console.log("colocada = " + colocada);
-   if (!colocada){
-	   otrapieza = false;
-	   game.onmousedown = function(e){
-		if(e.which == 1){
-		    if (!colocada){//límite(76-644)para la x, (167-674) para la y
-			    mX = (e.pageX);
-			    mY = (e.pageY);
-			    if(mX<76||mX>644 ||mY<167 || mY>674){
+    this.x = x;
+    this.y = y;
+    this.w = 64;
+    this.h = 64;
+    this.nombre = nombre;
+    piezaactual.nombre = nombre;
+    var colocada = false;
+    var noDejan = false;
+    this.giro = false;
+    piezaactual.giro= false;
+    this.numgiro = 0;
+    var giroIA = 0;
+    piezaactual.ngiro= 0;
+    this.type = "pieza";
+    this.scroll = false;
+    this.primeravez = true;
+    this.primer = 0;
+    this.step = function(dt) {
+    //console.log("colocada = " + colocada);
+    if (!colocada){
+        otrapieza = false;
+        game.onmousedown = function(e){
+        if(e.which == 1){
+            if (!colocada){//límite(76-644)para la x, (167-674) para la y
+                mX = (e.pageX);
+                mY = (e.pageY);
+                if(mX<76||mX>644 ||mY<167 || mY>674){
 					alert('No puedes colocar la pieza ahí!');
 			    }else{
 				    cX =Math.floor((mX-5)/64);
-				    cY = Math.floor((mY-100)/64);
-				   
-					//console.log("x ------>:"  + cX +"mx :" + mX + "my :" + mY + "," + "y ----->: " + cY);
-				   
+				    cY = Math.floor((mY-100)/64);				   
 				    x = (cX *64);
 				    y = (cY * 64);
-					//console.log(x + ","+ y ) ; 
-				   
-          			    
-          			    
+
           			// Para quedarnos con la casilla del tablero donde nos pinchan, para pasarselo a IA.
 				    for (i=1;i<9;i++){//
-					xprima = 64;
+					    xprima = 64;
 		       		 	for (j=1;j<10;j++){
 						xIAprima = scrollxprima+xprima/64;
 						yIAprima = scrollyprima+yprima/64;
@@ -219,6 +214,7 @@ var pieza = function (nombre, x, y){
 					}
 					yprima += 64;
 				   }//
+				   
 				   Meteor.call("colocar_ficha",[giroIA,xIA,yIA], function (error, result) {
 				  	if(result){
 						board.add(piezaactual);
@@ -240,7 +236,8 @@ var pieza = function (nombre, x, y){
 		  }
 		     
        }
-    }              
+    }        
+          
 	if(Game.keys['giro']){
 		
 			this.giro = true;
@@ -256,9 +253,9 @@ var pieza = function (nombre, x, y){
 			console.log("this.numgiro = " +this.numgiro)
 			Game.keys['giro'] = false;
 	}	
-  }
-        //De momento lo pongo vacio porque solo quiero probar tittle scream
+    }
   };
+  
   this.draw = function(ctx) {
 	  if(colocada && !this.scroll){
 		//console.log("como esta colocada cambio el this.x");
@@ -351,20 +348,33 @@ var ColocarSeguidor = function(x, y) {
     posicion11 = false;
     posicion12 = false;
     noseg = false;
-    this.colocado = false;
+    var colocado = false;
     
     this.step = function(dt) {
     
-     if(!this.colocado){
+     if(!colocado){       
+        /*Hago la prueba con meteor.call para la posicion 0 solo y una version incompleta porque no sabemos con exactitud tampoco lo que nos
+        devuelve IA*/
         if(Game.keys['pos0']) posicion0 = true;
-        if(posicion0 && !Game.keys['pos0']) {
+        if(posicion0 && !Game.keys['pos0']) {                   
             posicion0 = false;
             board.remove(piezaactual);  
             board.remove(cuadriculaS);
-            board.add (new Seguidor (64*x+7.5, 64*y+2.5));  
-	        this.colocado= true;      
-	        otrapieza = true;     
-	        DejarScroll = true;
+            
+            Meteor.call("colocar_seguidor",[0], function (error, result) {
+            
+                if(result){                                      
+                    board.add (new Seguidor (64*x+7.5, 64*y+2.5));  
+	                colocado= true;      
+	                otrapieza = true;     
+	                DejarScroll = true;
+	            }else{
+	                alert("No puedes colocar un seguidor en esa posicion \n Prueba otra");
+	                board.add(piezaactual);
+					board.add(cuadriculaS); 
+	            }
+	        
+            });
         }
         
         if(Game.keys['pos1']) posicion1 = true;
@@ -373,7 +383,7 @@ var ColocarSeguidor = function(x, y) {
             board.remove(piezaactual);  
             board.remove(cuadriculaS);
             board.add (new Seguidor (64*x+22, 64*y+2.5));
-	        this.colocado= true;
+	        colocado= true;
 	        otrapieza = true;     
 	        DejarScroll = true;
         }
@@ -384,7 +394,7 @@ var ColocarSeguidor = function(x, y) {
             board.remove(piezaactual);  
             board.remove(cuadriculaS);
             board.add (new Seguidor (64*x+41, 64*y+2.5)); 
-	        this.colocado= true;
+	        colocado= true;
 	        otrapieza = true;
 	        DejarScroll = true;
                  
@@ -396,7 +406,7 @@ var ColocarSeguidor = function(x, y) {
             board.remove(piezaactual);  
             board.remove(cuadriculaS);
             board.add (new Seguidor (64*x+48, 64*y+14.5)); 
-   	        this.colocado= true;
+   	        colocado= true;
    	        otrapieza = true;
    	        DejarScroll = true;
                        
@@ -408,7 +418,7 @@ var ColocarSeguidor = function(x, y) {
             board.remove(piezaactual);  
             board.remove(cuadriculaS);
             board.add (new Seguidor (64*x+48, 64*y+27));
- 	        this.colocado= true;    
+ 	        colocado= true;    
  	        otrapieza = true;
  	        DejarScroll = true;
         }
@@ -419,7 +429,7 @@ var ColocarSeguidor = function(x, y) {
             board.remove(piezaactual);  
             board.remove(cuadriculaS);
             board.add (new Seguidor (64*x+48, 64*y+39));
-	        this.colocado= true;
+	        colocado= true;
 	        otrapieza = true;
 	        DejarScroll = true;
                            
@@ -431,7 +441,7 @@ var ColocarSeguidor = function(x, y) {
             board.remove(piezaactual);  
             board.remove(cuadriculaS);
             board.add (new Seguidor (64*x+40, 64*y+48));
-	        this.colocado= true;       
+	        colocado= true;       
 	        otrapieza = true;     
 	        DejarScroll = true;       
         }
@@ -442,7 +452,7 @@ var ColocarSeguidor = function(x, y) {
            board.remove(piezaactual);  
            board.remove(cuadriculaS);
            board.add (new Seguidor (64*x+22, 64*y+48));
-	       this.colocado= true;
+	       colocado= true;
 	       otrapieza = true;
 	       DejarScroll = true;
         }
@@ -453,7 +463,7 @@ var ColocarSeguidor = function(x, y) {
             board.remove(piezaactual);  
             board.remove(cuadriculaS);
             board.add (new Seguidor (64*x+7.5, 64*y+48));
-	        this.colocado= true;    
+	        colocado= true;    
 	        otrapieza = true;   
 	        DejarScroll = true;   
         }
@@ -464,7 +474,7 @@ var ColocarSeguidor = function(x, y) {
             board.remove(piezaactual);  
             board.remove(cuadriculaS);
             board.add (new Seguidor (64*x, 64*y+39));
-	        this.colocado= true;         
+	        colocado= true;         
 	        otrapieza = true;
 	        DejarScroll = true;
         }
@@ -475,7 +485,7 @@ var ColocarSeguidor = function(x, y) {
             board.remove(piezaactual);  
             board.remove(cuadriculaS);
             board.add (new Seguidor (64*x, 64*y+27));
- 	        this.colocado= true; 
+ 	        colocado= true; 
  	        otrapieza = true;  
  	        DejarScroll = true;      
         }
@@ -486,7 +496,7 @@ var ColocarSeguidor = function(x, y) {
             board.remove(piezaactual);  
             board.remove(cuadriculaS);
             board.add (new Seguidor (64*x, 64*y+14.5));
-	        this.colocado= true;  
+	        colocado= true;  
 	        otrapieza = true;   
 	        DejarScroll = true;      
         }
@@ -497,7 +507,7 @@ var ColocarSeguidor = function(x, y) {
             board.remove(piezaactual);  
             board.remove(cuadriculaS);
             board.add (new Seguidor (64*x+24, 64*y+27));
-	        this.colocado= true;   
+	        colocado= true;   
 	        otrapieza = true;    
 	        DejarScroll = true;  
         }
@@ -507,13 +517,14 @@ var ColocarSeguidor = function(x, y) {
             noseg = false;
             board.remove(piezaactual);  
             board.remove(cuadriculaS);
-	        this.colocado= true;
+	        colocado= true;
 	        otrapieza = true;
 	        DejarScroll = true;
             //NO HAY          
         }        
      }
-    }    
+    }
+        
     this.draw = function(ctx) {
         
     }
