@@ -120,7 +120,7 @@ SpriteSheet = new function() {
 			  ctx.drawImage(this.image, s.sx , s.sy, s.w, s.h, Math.floor(-s.w/2) , Math.floor(-s.h/2),s.w, s.h);
 			}
 		    }
-	    }else if(numgiro == 4){
+	    }else if(numgiro == 00){//Vuelve al estado normal
 		if((x>=64 && x<=576) && (y<=512 && y>=64) && primeravez == 1){
 		     ctx.drawImage(this.image, s.sx , s.sy, s.w, s.h, Math.floor(-s.w/2) , Math.floor(-s.h/2),s.w, s.h);
 		 }else if (primeravez == 0){

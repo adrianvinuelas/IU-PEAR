@@ -24,6 +24,8 @@ Meteor.methods ({
         console.log("y = " +coordenadas[2]);
         return true;
     },
+    
+    
 
     colocar_seguidor: function(posicion){
         console.log("posicion: " + posicion);

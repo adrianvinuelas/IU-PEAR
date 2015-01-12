@@ -245,10 +245,10 @@ var pieza = function (nombre, x, y){
 			this.numgiro++;
 			giroIA++;
 			piezaactual.ngiro++;
-			if(this.numgiro == 5){
-				this.numgiro = 1;
-				giroIA = 1;
-				piezaactual.ngiro = 1;
+			if(this.numgiro == 4){
+				this.numgiro = 0;
+				giroIA = 0;
+				piezaactual.ngiro = 0;
 			}
 			console.log("this.numgiro = " +this.numgiro)
 			Game.keys['giro'] = false;
@@ -353,8 +353,6 @@ var ColocarSeguidor = function(x, y) {
     this.step = function(dt) {
     
      if(!colocado){       
-        /*Hago la prueba con meteor.call para la posicion 0 solo y una version incompleta porque no sabemos con exactitud tampoco lo que nos
-        devuelve IA*/
         if(Game.keys['pos0']) posicion0 = true;
         if(posicion0 && !Game.keys['pos0']) {                   
             posicion0 = false;
@@ -369,7 +367,7 @@ var ColocarSeguidor = function(x, y) {
 	                otrapieza = true;     
 	                DejarScroll = true;
 	            }else{
-	                alert("No puedes colocar un seguidor en esa posicion \n Prueba otra");
+	                alert("No puedes colocar un seguidor en esa posicion \nPrueba otra");
 	                board.add(piezaactual);
 					board.add(cuadriculaS); 
 	            }
@@ -382,10 +380,22 @@ var ColocarSeguidor = function(x, y) {
             posicion1 = false;
             board.remove(piezaactual);  
             board.remove(cuadriculaS);
-            board.add (new Seguidor (64*x+22, 64*y+2.5));
-	        colocado= true;
-	        otrapieza = true;     
-	        DejarScroll = true;
+            
+            Meteor.call("colocar_seguidor",[1], function (error, result) {
+            
+                if(result){                                      
+                    board.add (new Seguidor (64*x+22, 64*y+2.5));
+	                colocado= true;      
+	                otrapieza = true;     
+	                DejarScroll = true;
+	            }else{
+	                alert("No puedes colocar un seguidor en esa posicion \nPrueba otra");
+	                board.add(piezaactual);
+					board.add(cuadriculaS); 
+	            }
+	        
+            });
+            
         }
         
         if(Game.keys['pos2']) posicion2 = true;
@@ -393,11 +403,22 @@ var ColocarSeguidor = function(x, y) {
             posicion2 = false;
             board.remove(piezaactual);  
             board.remove(cuadriculaS);
-            board.add (new Seguidor (64*x+41, 64*y+2.5)); 
-	        colocado= true;
-	        otrapieza = true;
-	        DejarScroll = true;
-                 
+            
+            Meteor.call("colocar_seguidor",[2], function (error, result) {
+            
+                if(result){                                      
+                    board.add (new Seguidor (64*x+41, 64*y+2.5)); 
+	                colocado= true;      
+	                otrapieza = true;     
+	                DejarScroll = true;
+	            }else{
+	                alert("No puedes colocar un seguidor en esa posicion \nPrueba otra");
+	                board.add(piezaactual);
+					board.add(cuadriculaS); 
+	            }
+	        
+            });
+            
         }
         
         if(Game.keys['pos3']) posicion3 = true;
@@ -405,10 +426,21 @@ var ColocarSeguidor = function(x, y) {
             posicion3 = false;
             board.remove(piezaactual);  
             board.remove(cuadriculaS);
-            board.add (new Seguidor (64*x+48, 64*y+14.5)); 
-   	        colocado= true;
-   	        otrapieza = true;
-   	        DejarScroll = true;
+            
+            Meteor.call("colocar_seguidor",[3], function (error, result) {
+            
+                if(result){                                      
+                    board.add (new Seguidor (64*x+48, 64*y+14.5)); 
+	                colocado= true;      
+	                otrapieza = true;     
+	                DejarScroll = true;
+	            }else{
+	                alert("No puedes colocar un seguidor en esa posicion \nPrueba otra");
+	                board.add(piezaactual);
+					board.add(cuadriculaS); 
+	            }
+	        
+            });       
                        
         }
         
@@ -417,10 +449,21 @@ var ColocarSeguidor = function(x, y) {
             posicion4 = false;
             board.remove(piezaactual);  
             board.remove(cuadriculaS);
-            board.add (new Seguidor (64*x+48, 64*y+27));
- 	        colocado= true;    
- 	        otrapieza = true;
- 	        DejarScroll = true;
+            
+            Meteor.call("colocar_seguidor",[4], function (error, result) {
+            
+                if(result){                                      
+                    board.add (new Seguidor (64*x+48, 64*y+27));
+	                colocado= true;      
+	                otrapieza = true;     
+	                DejarScroll = true;
+	            }else{
+	                alert("No puedes colocar un seguidor en esa posicion \nPrueba otra");
+	                board.add(piezaactual);
+					board.add(cuadriculaS); 
+	            }
+	        
+            });       
         }
         
         if(Game.keys['pos5']) posicion5 = true;
@@ -428,10 +471,21 @@ var ColocarSeguidor = function(x, y) {
             posicion5 = false;
             board.remove(piezaactual);  
             board.remove(cuadriculaS);
-            board.add (new Seguidor (64*x+48, 64*y+39));
-	        colocado= true;
-	        otrapieza = true;
-	        DejarScroll = true;
+            
+            Meteor.call("colocar_seguidor",[5], function (error, result) {
+            
+                if(result){                                      
+                    board.add (new Seguidor (64*x+48, 64*y+39));
+	                colocado= true;      
+	                otrapieza = true;     
+	                DejarScroll = true;
+	            }else{
+	                alert("No puedes colocar un seguidor en esa posicion \nPrueba otra");
+	                board.add(piezaactual);
+					board.add(cuadriculaS); 
+	            }	        
+            });       
+
                            
         }
         
@@ -440,10 +494,20 @@ var ColocarSeguidor = function(x, y) {
             posicion6 = false;
             board.remove(piezaactual);  
             board.remove(cuadriculaS);
-            board.add (new Seguidor (64*x+40, 64*y+48));
-	        colocado= true;       
-	        otrapieza = true;     
-	        DejarScroll = true;       
+            
+            Meteor.call("colocar_seguidor",[6], function (error, result) {
+            
+                if(result){                                      
+                    board.add (new Seguidor (64*x+40, 64*y+48));
+	                colocado= true;      
+	                otrapieza = true;     
+	                DejarScroll = true;
+	            }else{
+	                alert("No puedes colocar un seguidor en esa posicion \nPrueba otra");
+	                board.add(piezaactual);
+					board.add(cuadriculaS); 
+	            }	        
+            });    
         }
         
         if(Game.keys['pos7']) posicion7 = true;
@@ -451,10 +515,20 @@ var ColocarSeguidor = function(x, y) {
            posicion7 = false;
            board.remove(piezaactual);  
            board.remove(cuadriculaS);
-           board.add (new Seguidor (64*x+22, 64*y+48));
-	       colocado= true;
-	       otrapieza = true;
-	       DejarScroll = true;
+           
+           Meteor.call("colocar_seguidor",[7], function (error, result) {
+            
+                if(result){                                      
+                    board.add (new Seguidor (64*x+22, 64*y+48));
+	                colocado= true;      
+	                otrapieza = true;     
+	                DejarScroll = true;
+	            }else{
+	                alert("No puedes colocar un seguidor en esa posicion \nPrueba otra");
+	                board.add(piezaactual);
+					board.add(cuadriculaS); 
+	            }	        
+            });    
         }
         
         if(Game.keys['pos8']) posicion8 = true;
@@ -462,10 +536,20 @@ var ColocarSeguidor = function(x, y) {
             posicion8 = false;
             board.remove(piezaactual);  
             board.remove(cuadriculaS);
-            board.add (new Seguidor (64*x+7.5, 64*y+48));
-	        colocado= true;    
-	        otrapieza = true;   
-	        DejarScroll = true;   
+            
+            Meteor.call("colocar_seguidor",[8], function (error, result) {
+            
+                if(result){                                      
+                    board.add (new Seguidor (64*x+7.5, 64*y+48));
+	                colocado= true;      
+	                otrapieza = true;     
+	                DejarScroll = true;
+	            }else{
+	                alert("No puedes colocar un seguidor en esa posicion \nPrueba otra");
+	                board.add(piezaactual);
+					board.add(cuadriculaS); 
+	            }	        
+            });    
         }
         
         if(Game.keys['pos9']) posicion9 = true;
@@ -473,10 +557,20 @@ var ColocarSeguidor = function(x, y) {
             posicion9 = false;
             board.remove(piezaactual);  
             board.remove(cuadriculaS);
-            board.add (new Seguidor (64*x, 64*y+39));
-	        colocado= true;         
-	        otrapieza = true;
-	        DejarScroll = true;
+            
+            Meteor.call("colocar_seguidor",[9], function (error, result) {
+            
+                if(result){                                      
+                    board.add (new Seguidor (64*x, 64*y+39));
+	                colocado= true;      
+	                otrapieza = true;     
+	                DejarScroll = true;
+	            }else{
+	                alert("No puedes colocar un seguidor en esa posicion \nPrueba otra");
+	                board.add(piezaactual);
+					board.add(cuadriculaS); 
+	            }	        
+            });    
         }
         
         if(Game.keys['pos10']) posicion10 = true;
@@ -484,10 +578,21 @@ var ColocarSeguidor = function(x, y) {
             posicion10 = false;
             board.remove(piezaactual);  
             board.remove(cuadriculaS);
-            board.add (new Seguidor (64*x, 64*y+27));
- 	        colocado= true; 
- 	        otrapieza = true;  
- 	        DejarScroll = true;      
+            
+            Meteor.call("colocar_seguidor",[10], function (error, result) {
+            
+                if(result){                                      
+                    board.add (new Seguidor (64*x, 64*y+27));
+	                colocado= true;      
+	                otrapieza = true;     
+	                DejarScroll = true;
+	            }else{
+	                alert("No puedes colocar un seguidor en esa posicion \nPrueba otra");
+	                board.add(piezaactual);
+					board.add(cuadriculaS); 
+	            }	        
+            });    
+                  
         }
         
         if(Game.keys['pos11']) posicion11 = true;
@@ -495,10 +600,20 @@ var ColocarSeguidor = function(x, y) {
             posicion11 = false;
             board.remove(piezaactual);  
             board.remove(cuadriculaS);
-            board.add (new Seguidor (64*x, 64*y+14.5));
-	        colocado= true;  
-	        otrapieza = true;   
-	        DejarScroll = true;      
+            
+            Meteor.call("colocar_seguidor",[11], function (error, result) {
+            
+                if(result){                                      
+                    board.add (new Seguidor (64*x, 64*y+14.5));
+	                colocado= true;      
+	                otrapieza = true;     
+	                DejarScroll = true;
+	            }else{
+	                alert("No puedes colocar un seguidor en esa posicion \nPrueba otra");
+	                board.add(piezaactual);
+					board.add(cuadriculaS); 
+	            }	        
+            });          
         }
         
         if(Game.keys['pos12']) posicion12 = true;
@@ -506,10 +621,20 @@ var ColocarSeguidor = function(x, y) {
             posicion12 = false;
             board.remove(piezaactual);  
             board.remove(cuadriculaS);
-            board.add (new Seguidor (64*x+24, 64*y+27));
-	        colocado= true;   
-	        otrapieza = true;    
-	        DejarScroll = true;  
+            
+            Meteor.call("colocar_seguidor",[12], function (error, result) {
+            
+                if(result){                                      
+                    board.add (new Seguidor (64*x+24, 64*y+27));
+	                colocado= true;      
+	                otrapieza = true;     
+	                DejarScroll = true;
+	            }else{
+	                alert("No puedes colocar un seguidor en esa posicion \nPrueba otra");
+	                board.add(piezaactual);
+					board.add(cuadriculaS); 
+	            }	        
+            });            
         }
         
         if(Game.keys['NOSeguidor']) noseg = true;
@@ -517,10 +642,13 @@ var ColocarSeguidor = function(x, y) {
             noseg = false;
             board.remove(piezaactual);  
             board.remove(cuadriculaS);
-	        colocado= true;
-	        otrapieza = true;
-	        DejarScroll = true;
-            //NO HAY          
+            
+            Meteor.call("colocar_seguidor", function (error, result) {
+	            colocado= true;
+	            otrapieza = true;
+	            DejarScroll = true;
+                //NO HAY     
+            });     
         }        
      }
     }
