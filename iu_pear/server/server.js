@@ -14,8 +14,12 @@ Meteor.methods ({
     */
     
     dame_ficha: function(){
-        array = ["1", false];
-    return array;
+        objetoFicha = {
+            tipo: 16,
+            escudo: false
+        }
+        
+        return objetoFicha;
     },	
 
     colocar_ficha: function(coordenadas){

@@ -104,17 +104,28 @@ var playGame = function() {
 
 var pedirPieza = function () {
 	Meteor.call('dame_ficha', function (error, result) {
+	    var arg;
 	    //Esta mal sin terminar porque no sabemos todavia con exactitud que nos va a devolver la IA
-		if (result[0] == "1"){
-			if (result[1] == true){
-				var arg = "C" + result[0];
- 			}else{
- 				var arg = "S" + result[0];
- 		 	}
-			var piezaNueva = new pieza (result[0], 11.5*64, 8*64);
-			board.add(piezaNueva);	  
-			Game.setBoard(2,new TextoPideFicha("Pulsa enter para pedir ficha ",playGame));
-        }
+	    if((result.tipo == 5) || (result.tipo == 6) || (result.tipo == 10) || (result.tipo == 11) || (result.tipo == 12)){
+	    
+	        if (result.escudo == true){
+	            arg = "C" + result.tipo.toString();
+	            console.log(arg);
+	        }else{
+	            arg = "S" + result.tipo.toString();
+	        }
+	    
+	    }else{
+	    
+	        arg = result.tipo.toString();
+	        
+	    }
+	    
+		
+		var piezaNueva = new pieza (arg, 11.5*64, 8*64);
+		board.add(piezaNueva);	  
+		Game.setBoard(2,new TextoPideFicha("Pulsa enter para pedir ficha ",playGame));
+        
 	});
 }
 
