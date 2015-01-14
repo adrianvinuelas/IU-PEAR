@@ -57,7 +57,7 @@ var sprites = {
 };
 
 
-var board = new TableroJuego();
+board = new TableroJuego();
 var otrapieza = true;
 var piezaactual = new PiezaActual();
 var cuadriculaS = new cuadriculaSeguidor();
@@ -73,6 +73,7 @@ var scrollxprima = 0;//estas variables globales son para los calculos de la casi
 var scrollyprima = 0;//estas variables globales son para los calculos de la casilla en la que se pone la ficha para pasarselo a IA
 //
 var JugadoresIA = []    //variable global para cuando IA nos pasa los jugadores
+User_IdIA = "";
 
 var startGame = function() {
 
@@ -81,11 +82,14 @@ var startGame = function() {
     Jugador3 = {nombre: "Alvaro" , color: "sa"};
     Jugador4 = {nombre: "Kevin" , color: "sn"};
     Game.setBoard(0,new cuadricula());
-    Game.setBoard(1,new Jugadores());       
+    Game.setBoard(1,new Jugadores(JugadoresIA));       
     Game.setBoard(3,new AyudaScreen("Pulsa espacio para ayuda"));
     //Meteor.call("dameFichaMadre");
     board.add(new PiezaMadre("1", 5*64, 5*64)); //Pieza madre que siempre esta puesta cuando empieza el juego
-    Game.setBoard(2,new TextoPideFicha("Pulsa enter para pedir ficha ",playGame));
+    console.log(Meteor.userId());
+    if(Meteor.userId() === User_IdIA){
+        Game.setBoard(2,new TextoPideFicha("Pulsa enter para pedir ficha ",playGame));
+    }
     board.add(new ScrollTeclas());
     Game.setBoard(5,board);
    
@@ -99,7 +103,7 @@ var playGame = function() {
 		//turno = Session.get ("currentUser");
 		//mirar en el array de jugadores (o la coleccion)
 		//Metor.callIA 
-		console.log(JugadoresIA[0].nombre);
+		//console.log(JugadoresIA[0].nombre);
 		pedirPieza();
 		Game.setBoard(2,new TextoPideFicha("Pulsa enter para pedir ficha ",playGame));
   }
@@ -127,10 +131,24 @@ var pedirPieza = function () {
 	    
 		
 		var piezaNueva = new pieza (arg, 11.5*64, 8*64);
-		board.add(piezaNueva);	  
+		board.add(piezaNueva);
+		//Hacemos update para que los demas clientres pinten la pieza que pide el del turno				
+		obj = Turno.findOne({Comando:"EmpezarPartida"});
+		console.log(obj);
 		
-        
+		Turno.update(obj._id,{$set: {Comando: "PedirPieza", nombrePieza:arg }});  
+		
+		
+		obj5 = Turno.findOne({Comando:"EmpezarPartida"});
+		console.log("NOOOOO" + obj5);
+		
+		obj2 = Turno.findOne({Comando:"PedirPieza"});
+		console.log(obj2);
+		
+		
 	});
+	
+	
 }
 
 var PiezaMadre = function (nombre, x, y){
@@ -177,7 +195,7 @@ var Seguidor = function (x, y){
 
 
 
-var pieza = function (nombre, x, y){
+pieza = function (nombre, x, y){
     this.x = x;
     this.y = y;
     this.w = 64;
@@ -306,7 +324,7 @@ var pieza = function (nombre, x, y){
 //constructor para inicializar jugadores y pintarlos a un lado....etc
 //de momento sin argumentos porque por defecto suponemos los 4 jugadores inicializados al principio
 //supongo que luego como argumentos habrá que pasarle los jugadores que nos informen que juagan
-var Jugadores = function(){
+var Jugadores = function(arrayJugadores){
   this.step = function(dt) {
         //De momento lo pongo vacio porque solo quiero probar tittle scream
   };
@@ -756,10 +774,11 @@ var ScrollTeclas = function() {
 }
 
 
-EmpezarTodo = function (arrayJugadores) {
+EmpezarTodo = function (arrayJugadores, user_Id) {
 
     Game.initialize("game",sprites,startGame);       
     JugadoresIA = arrayJugadores;
+    User_IdIA = user_Id;
 };
 /*
 EmpezarTodo = function (arrayJugadores) {

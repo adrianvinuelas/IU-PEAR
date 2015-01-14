@@ -11,16 +11,27 @@ Tracker.autorun(function(){
 var reactiva = null;
 Tracker.autorun(function(){
 
-        reactiva = Turno.find();
+    reactiva = Turno.find();
+    console.log(reactiva);    
+    reactiva.forEach(function(m){
+           
+        if(m.Comando === "EmpezarPartida"){
+            console.log("1111");
+            EmpezarTodo(m.Jugadores, m.User_id);
+        }else if(m.Comando === "PedirPieza"){
+            if(Meteor.userId() != User_IdIA){
+                console.log("2222") ; 
+                var piezaNueva = new pieza (m.nombrePieza, 11.5*64, 8*64);
+		        board.add(piezaNueva);
+		    }
+            
+        }else if(m.Comando === "ColocarPieza"){
         
-        reactiva.forEach(function(m){
-            console.log(m.EmpezarPartida);
-            //console.log(m.Jugadores);
-            if(m.EmpezarPartida == "SI"){
-                    console.log("1111");
-                    EmpezarTodo(m.Jugadores);
-            }
-        });
+        } else if (m.Comando === "ColocarSeguidor") {
+            console.log("33333") ; 
+            //colocar seguidor 
+        }
+    });
         
 });
 

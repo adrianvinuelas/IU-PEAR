@@ -1,17 +1,6 @@
 Meteor.methods ({ 
 	
-    //IA nos llama a empezar_partida
-    empezar_partida: function(jugadores){ 
-        console.log(jugadores);
-        accion.insert ("empezar");
-        //EmpezarTodo(jugadores);
-    },
     
-    /*
-    preguntar_turno: function(){
-
-    },
-    */
     
     dame_ficha: function(){
         objetoFicha = {
@@ -39,8 +28,10 @@ Meteor.methods ({
 });
 
         Meteor.publish("turnoIU");                //solo lo toca IU
-        var array = [{nombre : "Kevin", puntos: 0}]
-        empezarPartida(array);
+        array = [{nombre : "Kevin", puntos: 0, seguidores: 7}];
+        user_Id = "vRiFJ5G2mGzAywQSb";
+         
+        empezarPartida(array, user_Id);
 
 Meteor.startup(function(){
     console.log("Arrancado servidor");
