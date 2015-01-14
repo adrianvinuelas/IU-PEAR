@@ -38,6 +38,10 @@ Meteor.methods ({
 
 });
 
+        Meteor.publish("turnoIU");                //solo lo toca IU
+        var array = [{nombre : "Kevin", puntos: 0}]
+        empezarPartida(array);
+
 Meteor.startup(function(){
     console.log("Arrancado servidor");
 });

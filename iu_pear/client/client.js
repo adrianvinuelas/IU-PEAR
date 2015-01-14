@@ -8,7 +8,28 @@ Tracker.autorun(function(){
     Session.set ("currentUser", currentUser);
 });
 
+var reactiva = null;
+Tracker.autorun(function(){
+
+        reactiva = Turno.find();
+        
+        reactiva.forEach(function(m){
+            console.log(m.EmpezarPartida);
+            //console.log(m.Jugadores);
+            if(m.EmpezarPartida == "SI"){
+                    console.log("1111");
+                    EmpezarTodo(m.Jugadores);
+            }
+        });
+        
+});
+
+
 Meteor.startup(function(){
     console.log("Arrancado Cliente");
-    //Meteor.call ("empezar_partida", {"adri": 1, "kevin": 2, "alvaro": 3, "victor": 4});  
+    Meteor.subscribe("turnoIU");
+});
+
+Accounts.ui.config({
+        passwordSignupFields: 'USERNAME_AND_OPTIONAL_EMAIL'
 });
