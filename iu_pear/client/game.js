@@ -58,7 +58,8 @@ var sprites = {
 
 
 board = new TableroJuego();
-var otrapieza = true;
+otrapieza = true;
+//TextoPidePieza = new TextoPideFicha("Pulsa enter para pedir ficha ",playGame);
 var piezaactual = new PiezaActual();
 var cuadriculaS = new cuadriculaSeguidor();
 var DejarScroll = true;
@@ -74,6 +75,7 @@ var scrollyprima = 0;//estas variables globales son para los calculos de la casi
 //
 var JugadoresIA = []    //variable global para cuando IA nos pasa los jugadores
 User_IdIA = "";
+rotacionTracker = [];
 
 var startGame = function() {
 
@@ -89,6 +91,7 @@ var startGame = function() {
     console.log(Meteor.userId());
     if(Meteor.userId() === User_IdIA){
         Game.setBoard(2,new TextoPideFicha("Pulsa enter para pedir ficha ",playGame));
+        //board.add(TextoPidePieza);
     }
     board.add(new ScrollTeclas());
     Game.setBoard(5,board);
@@ -100,21 +103,22 @@ var startGame = function() {
 var playGame = function() {
 
   if(otrapieza){
-		//turno = Session.get ("currentUser");
-		//mirar en el array de jugadores (o la coleccion)
-		//Metor.callIA 
-		//console.log(JugadoresIA[0].nombre);
-		pedirPieza();
-		Game.setBoard(2,new TextoPideFicha("Pulsa enter para pedir ficha ",playGame));
+	
+    pedirPieza();
+    console.log("termina Pide Pieza");
+    
+
   }
   
 }
 
 var pedirPieza = function () {
+
 	Meteor.call('dame_ficha', function (error, result) {
+	console.log("entra a meteor.call");
 	    var arg;
 	    //Esta mal sin terminar porque no sabemos todavia con exactitud que nos va a devolver la IA
-	    if((result.tipo == 5) || (result.tipo == 6) || (result.tipo == 10) || (result.tipo == 11) || (result.tipo == 12)){
+	    if((result.tipo === 5) || (result.tipo === 6) || (result.tipo === 10) || (result.tipo === 11) || (result.tipo === 12)){
 	    
 	        if (result.escudo == true){
 	            arg = "C" + result.tipo.toString();
@@ -132,20 +136,14 @@ var pedirPieza = function () {
 		
 		var piezaNueva = new pieza (arg, 11.5*64, 8*64);
 		board.add(piezaNueva);
+		console.log("AÑADIDA PRIMERA PIEZA");
 		//Hacemos update para que los demas clientres pinten la pieza que pide el del turno				
 		obj = Turno.findOne({Comando:"EmpezarPartida"});
-		console.log(obj);
+		//console.log(obj);
 		
 		Turno.update(obj._id,{$set: {Comando: "PedirPieza", nombrePieza:arg }});  
-		
-		
-		obj5 = Turno.findOne({Comando:"EmpezarPartida"});
-		console.log("NOOOOO" + obj5);
-		
-		obj2 = Turno.findOne({Comando:"PedirPieza"});
-		console.log(obj2);
-		
-		
+		console.log("Termina meteor.call");
+					
 	});
 	
 	
@@ -219,78 +217,92 @@ pieza = function (nombre, x, y){
     //console.log("colocada = " + colocada);
     if (!colocada){
         otrapieza = false;
-        //if es mi turno 
-        game.onmousedown = function(e){
-        if(e.which == 1){
-            if (!colocada){//límite(76-644)para la x, (167-674) para la y
-                mX = (e.pageX);
-                mY = (e.pageY);
-                if(mX<76||mX>644 ||mY<167 || mY>674){
-					alert('No puedes colocar la pieza ahí!');
-			    }else{
-				    cX =Math.floor((mX-5)/64);
-				    cY = Math.floor((mY-114)/64);				   
-				    x = (cX *64);
-				    y = (cY * 64);
+         
+        if(Meteor.userId() === User_IdIA){
+            game.onmousedown = function(e){
+            if(e.which == 1){
+                if (!colocada){//límite(76-644)para la x, (167-674) para la y
+                    mX = (e.pageX);
+                    mY = (e.pageY);
+                    if(mX<76||mX>644 ||mY<167 || mY>674){
+					    alert('No puedes colocar la pieza ahí!');
+			        }else{
+				        cX =Math.floor((mX-5)/64);
+				        cY = Math.floor((mY-114)/64);				   
+				        x = (cX *64);
+				        y = (cY * 64);
 
-          			// Para quedarnos con la casilla del tablero donde nos pinchan, para pasarselo a IA.
-				    for (i=1;i<9;i++){//
-					    xprima = 64;
-		       		 	for (j=1;j<10;j++){
-						xIAprima = scrollxprima+xprima/64;
-						yIAprima = scrollyprima+yprima/64;
-						xprima += 64;
-					  	if(cX == j && cY == i){
-							xIA = xIAprima;
-							yIA = yIAprima;
-							console.log("giroIA = " + giroIA);
-							console.log("xIA = " + xIA);
-							console.log("yIA = " + yIA);
-						}
-					}
-					yprima += 64;
-				   }//
-				   
-				   Meteor.call("colocar_ficha",[giroIA,xIA,yIA], function (error, result) {
-				  	if(result){
-						board.add(piezaactual);
-						board.add(cuadriculaS); 
-						DejarScroll = false;    //cuando estamos esperando a que pulsen una tecla para elegir la posicion donde colocar el seguidor se mete dibujo para colocar seguidor no se puede mover el scroll
-						board.add(new ColocarSeguidor(cX, cY)); 
-						colocada = true;	
-					}else{
-						noDejan = true;
-						alert('No puedes colocar la pieza ahí!');
-					}
-				   });
-				   xIAprima = 0;
-				   yIAprima = 0;
-				   xprima = 64;
-				   yprima = 64;
+              			// Para quedarnos con la casilla del tablero donde nos pinchan, para pasarselo a IA.
+				        for (i=1;i<9;i++){//
+					        xprima = 64;
+		           		 	for (j=1;j<10;j++){
+						    xIAprima = scrollxprima+xprima/64;
+						    yIAprima = scrollyprima+yprima/64;
+						    xprima += 64;
+					      	if(cX == j && cY == i){
+							    xIA = xIAprima;
+							    yIA = yIAprima;
+							    console.log("giroIA = " + giroIA);
+							    console.log("xIA = " + xIA);
+							    console.log("yIA = " + yIA);
+						    }
+					    }
+					    yprima += 64;
+				       }//
+				       
+				       Meteor.call("colocar_ficha",[giroIA,xIA,yIA], function (error, result) {
+				      	if(result){
+						    board.add(piezaactual);
+						    board.add(cuadriculaS); 
+						    DejarScroll = false;    //cuando estamos esperando a que pulsen una tecla para elegir la posicion donde colocar el seguidor se mete dibujo para colocar seguidor no se puede mover el scroll
+						    board.add(new ColocarSeguidor(cX, cY)); 
+						    colocada = true;	
+					    }else{
+						    noDejan = true;
+						    alert('No puedes colocar la pieza ahí!');
+					    }
+				       });
+				       xIAprima = 0;
+				       yIAprima = 0;
+				       xprima = 64;
+				       yprima = 64;
 				
-			   }
-		  }
-		     
-       }
-    }   
-    //else{miramos la variable global y con esos datos modificamos x e y del objeto pieza y ponemos colocada a true y la variable global la 
-    //ponemos a false     
-          
-	if(Game.keys['giro']){
+			       }
+		      }
+		         
+           }
+        }   
+        //else{miramos la variable global y con esos datos modificamos x e y del objeto pieza y ponemos colocada a true y la variable global la 
+        //ponemos a false     
+              
+	    if(Game.keys['giro']){
 		
-			this.giro = true;
-			piezaactual.giro = true;
-			this.numgiro++;
-			giroIA++;
-			piezaactual.ngiro++;
-			if(this.numgiro == 4){
-				this.numgiro = 0;
-				giroIA = 0;
-				piezaactual.ngiro = 0;
-			}
-			console.log("this.numgiro = " +this.numgiro)
-			Game.keys['giro'] = false;
-	}	
+			    this.giro = true;
+			    piezaactual.giro = true;
+			    this.numgiro++;
+			    giroIA++;
+			    piezaactual.ngiro++;
+			    if(this.numgiro == 4){
+				    this.numgiro = 0;
+				    giroIA = 0;
+				    piezaactual.ngiro = 0;
+			    }
+			    console.log("this.numgiro = " +this.numgiro)
+			    
+			    obj = Turno.findOne({Comando: "PedirPieza"});
+			    
+			    Turno.update(obj._id, {$set: {rotacion: true, numRotacion: this.numgiro}});
+			    Game.keys['giro'] = false;
+	    }
+	    	
+    }else{
+    
+        if(rotacionTracker[0]){
+            this.giro = true;
+            this.numgiro = rotacionTracker[1];
+            rotacionTracker[0] = false;
+        }
+    }
     }
   };
   
@@ -402,7 +414,7 @@ var ColocarSeguidor = function(x, y) {
                 if(result){                                      
                     board.add (new Seguidor (64*x+7.5, 64*y+2.5));  
 	                colocado= true;      
-	                otrapieza = true;     
+	                //otrapieza = true;     
 	                DejarScroll = true;
 	            }else{
 	                alert("No puedes colocar un seguidor en esa posicion \nPrueba otra");
@@ -424,7 +436,7 @@ var ColocarSeguidor = function(x, y) {
                 if(result){                                      
                     board.add (new Seguidor (64*x+22, 64*y+2.5));
 	                colocado= true;      
-	                otrapieza = true;     
+	                //otrapieza = true;     
 	                DejarScroll = true;
 	            }else{
 	                alert("No puedes colocar un seguidor en esa posicion \nPrueba otra");
@@ -447,7 +459,7 @@ var ColocarSeguidor = function(x, y) {
                 if(result){                                      
                     board.add (new Seguidor (64*x+41, 64*y+2.5)); 
 	                colocado= true;      
-	                otrapieza = true;     
+	                //otrapieza = true;     
 	                DejarScroll = true;
 	            }else{
 	                alert("No puedes colocar un seguidor en esa posicion \nPrueba otra");
@@ -470,7 +482,7 @@ var ColocarSeguidor = function(x, y) {
                 if(result){                                      
                     board.add (new Seguidor (64*x+48, 64*y+14.5)); 
 	                colocado= true;      
-	                otrapieza = true;     
+	                //otrapieza = true;     
 	                DejarScroll = true;
 	            }else{
 	                alert("No puedes colocar un seguidor en esa posicion \nPrueba otra");
@@ -493,7 +505,7 @@ var ColocarSeguidor = function(x, y) {
                 if(result){                                      
                     board.add (new Seguidor (64*x+48, 64*y+27));
 	                colocado= true;      
-	                otrapieza = true;     
+	                //otrapieza = true;     
 	                DejarScroll = true;
 	            }else{
 	                alert("No puedes colocar un seguidor en esa posicion \nPrueba otra");
@@ -515,7 +527,7 @@ var ColocarSeguidor = function(x, y) {
                 if(result){                                      
                     board.add (new Seguidor (64*x+48, 64*y+39));
 	                colocado= true;      
-	                otrapieza = true;     
+	                //otrapieza = true;     
 	                DejarScroll = true;
 	            }else{
 	                alert("No puedes colocar un seguidor en esa posicion \nPrueba otra");
@@ -538,7 +550,7 @@ var ColocarSeguidor = function(x, y) {
                 if(result){                                      
                     board.add (new Seguidor (64*x+40, 64*y+48));
 	                colocado= true;      
-	                otrapieza = true;     
+	                //otrapieza = true;     
 	                DejarScroll = true;
 	            }else{
 	                alert("No puedes colocar un seguidor en esa posicion \nPrueba otra");
@@ -559,7 +571,7 @@ var ColocarSeguidor = function(x, y) {
                 if(result){                                      
                     board.add (new Seguidor (64*x+22, 64*y+48));
 	                colocado= true;      
-	                otrapieza = true;     
+	                //otrapieza = true;     
 	                DejarScroll = true;
 	            }else{
 	                alert("No puedes colocar un seguidor en esa posicion \nPrueba otra");
@@ -580,7 +592,7 @@ var ColocarSeguidor = function(x, y) {
                 if(result){                                      
                     board.add (new Seguidor (64*x+7.5, 64*y+48));
 	                colocado= true;      
-	                otrapieza = true;     
+	                //otrapieza = true;     
 	                DejarScroll = true;
 	            }else{
 	                alert("No puedes colocar un seguidor en esa posicion \nPrueba otra");
@@ -601,7 +613,7 @@ var ColocarSeguidor = function(x, y) {
                 if(result){                                      
                     board.add (new Seguidor (64*x, 64*y+39));
 	                colocado= true;      
-	                otrapieza = true;     
+	                //otrapieza = true;     
 	                DejarScroll = true;
 	            }else{
 	                alert("No puedes colocar un seguidor en esa posicion \nPrueba otra");
@@ -622,7 +634,7 @@ var ColocarSeguidor = function(x, y) {
                 if(result){                                      
                     board.add (new Seguidor (64*x, 64*y+27));
 	                colocado= true;      
-	                otrapieza = true;     
+	                //otrapieza = true;     
 	                DejarScroll = true;
 	            }else{
 	                alert("No puedes colocar un seguidor en esa posicion \nPrueba otra");
@@ -644,7 +656,7 @@ var ColocarSeguidor = function(x, y) {
                 if(result){                                      
                     board.add (new Seguidor (64*x, 64*y+14.5));
 	                colocado= true;      
-	                otrapieza = true;     
+	                //otrapieza = true;     
 	                DejarScroll = true;
 	            }else{
 	                alert("No puedes colocar un seguidor en esa posicion \nPrueba otra");
@@ -665,7 +677,7 @@ var ColocarSeguidor = function(x, y) {
                 if(result){                                      
                     board.add (new Seguidor (64*x+24, 64*y+27));
 	                colocado= true;      
-	                otrapieza = true;     
+	                //otrapieza = true;     
 	                DejarScroll = true;
 	            }else{
 	                alert("No puedes colocar un seguidor en esa posicion \nPrueba otra");
@@ -683,7 +695,10 @@ var ColocarSeguidor = function(x, y) {
             
             Meteor.call("colocar_seguidor", function (error, result) {
 	            colocado= true;
-	            otrapieza = true;
+	            //otrapieza = true;
+	            //Poner en todos los casos, solo esta en el caso de N para una prueba
+	            //Recordatorio, 14-1-2015 tiene adri guardado lo de borrar seguidores.
+	            Game.setBoard(2,new CapaBorra());
 	            DejarScroll = true;
                 //NO HAY     
             });     

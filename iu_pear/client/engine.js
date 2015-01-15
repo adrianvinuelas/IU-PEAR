@@ -149,25 +149,6 @@ SpriteSheet = new function() {
 }
 
 
-TitleScreen = function TitleScreen(title,subtitle,callback) {
-  var up = false;
-  
-  // En cada paso, comprobamos si la tecla ha pasado de no pulsada a
-  // pulsada. 
-  this.step = function(dt) {
-	  if(!Game.keys['espacio']) up = true;
-	  if(up && Game.keys['espacio'] && callback) callback();
-  };
-     
-  this.draw = function(ctx) {
-	  ctx.fillStyle = "#FFFFFF";
-	  ctx.font = "bold 40px bangers";
-	  ctx.fillText(title,Game.width/6,Game.height/2);
-	  ctx.font = "bold 20px bangers";
-	  ctx.fillText(subtitle,Game.width/6,Game.height/2 + 40);
-  };
-}
-
 PiezaActual = function() {
 
   this.giro;
@@ -233,13 +214,27 @@ cuadriculaSeguidor = function(){
     };	
 }
 
+CapaBorra = function CapaBorra(){
+    this.step = function(dt) {
+    }
+    
+    this.draw = function(ctx) {
+    }
+
+}
+
 TextoPideFicha =  function TextoPideFicha(title,callback) {
   var up = false;
   
   // En cada paso, comprobamos si la tecla ha pasado de no pulsada a pulsada
   this.step = function(dt) {
-    if(!Game.keys['pedirficha']) up = true;
-    if(up && Game.keys['pedirficha'] && callback) callback();
+  
+    //if(otrapieza && (Meteor.userId() === User_IdIA)) {
+        if(!Game.keys['pedirficha']) up = true;
+        if(up && Game.keys['pedirficha'] && callback){ callback();
+        up = false;
+        }
+    //}
   };
   
   this.draw = function(ctx) {

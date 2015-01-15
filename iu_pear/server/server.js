@@ -4,7 +4,7 @@ Meteor.methods ({
     
     dame_ficha: function(){
         objetoFicha = {
-            tipo: 16,
+            tipo: 11,
             escudo: false
         }
         
@@ -27,13 +27,14 @@ Meteor.methods ({
 
 });
 
-        Meteor.publish("turnoIU");                //solo lo toca IU
-        array = [{nombre : "Kevin", puntos: 0, seguidores: 7}];
-        user_Id = "vRiFJ5G2mGzAywQSb";
-         
-        empezarPartida(array, user_Id);
+    Meteor.publish("turnoIU");                //solo lo toca IU
+    array = [{nombre : "Kevin", puntos: 0, seguidores: 7}];
+    user_Id = "GrwGQ6HJJ7qD3L4fe";
+    //user_Id ="Y6hGfd6uL8Syc9sM4"    
 
 Meteor.startup(function(){
-    console.log("Arrancado servidor");
+    console.log("Arrancado servidor");        
+    empezarPartida(array, user_Id);
+    console.log("Llamamos a EmpezarPartida");
 });
 
