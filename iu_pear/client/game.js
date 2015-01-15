@@ -76,6 +76,9 @@ var scrollyprima = 0;//estas variables globales son para los calculos de la casi
 var JugadoresIA = []    //variable global para cuando IA nos pasa los jugadores
 User_IdIA = "";
 rotacionTracker = [];
+xTracker = 0;
+yTracker = 0;
+colocadaTracker = false;
 
 var startGame = function() {
 
@@ -252,6 +255,8 @@ pieza = function (nombre, x, y){
 				       
 				       Meteor.call("colocar_ficha",[giroIA,xIA,yIA], function (error, result) {
 				      	if(result){
+						    obj = Turno.findOne({Comando:"PedirPieza"});
+						    Turno.update(obj._id,{$set: {Comando:"ColocarPieza",posx: x, posy:y }});  
 						    board.add(piezaactual);
 						    board.add(cuadriculaS); 
 						    DejarScroll = false;    //cuando estamos esperando a que pulsen una tecla para elegir la posicion donde colocar el seguidor se mete dibujo para colocar seguidor no se puede mover el scroll
@@ -301,32 +306,40 @@ pieza = function (nombre, x, y){
             this.giro = true;
             this.numgiro = rotacionTracker[1];
             rotacionTracker[0] = false;
-        }
+        }else if(colocadaTracker){
+		x = xTracker;
+		y = yTracker;
+		colocada = true;
+		colocadaTracker = false;
+	}
     }
     }
   };
   
   this.draw = function(ctx) {
-	  if(colocada && !this.scroll){
-		//console.log("como esta colocada cambio el this.x");
-		this.x = x;
-		this.y = y;
-		this.primeravez = false;
-		this.primer= 1; //si la colocamos ya no es la primeravez que sale a imagen,lo hago para que si es aun la pieza a 
-		this.scroll = true;//colocar pues se pueda pintar fuera de la cuadricula, es decir, si this.primer = 0
-				//(ver draw de spritesheet engine)
-	        alert("Si NO quieres poner seguidor pulsa N.") ; 
-	  }
-	  if(!this.scroll){//esto es para que si aun la pieza es la que tenemos que colocar al hacer scroll no se mueva
-		this.x = x;//si scroll esta a false, la pieza mantiene las coordenadas (11.5*64, 8*64)
-		this.y = y;
-	  }
+		  if(colocada && !this.scroll){
+			//console.log("como esta colocada cambio el this.x");
+			this.x = x;
+			this.y = y;
+			this.primeravez = false;
+			this.primer= 1; //si la colocamos ya no es la primeravez que sale a imagen,lo hago para que si es aun la pieza a 
+			this.scroll = true;//colocar pues se pueda pintar fuera de la cuadricula, es decir, si this.primer = 0
+					//(ver draw de spritesheet engine)
+			 if(Meteor.userId() === User_IdIA){
+				alert("Si NO quieres poner seguidor pulsa N.") ; 
+			}
+		  }
+		  if(!this.scroll){//esto es para que si aun la pieza es la que tenemos que colocar al hacer scroll no se mueva
+			this.x = x;//si scroll esta a false, la pieza mantiene las coordenadas (11.5*64, 8*64)
+			this.y = y;
+		  }
 
-	  if(noDejan){
-		this.x = 11.5*64;
-		this.y = 8*64;
-	  	
-	  }
+		  if(noDejan){
+			this.x = 11.5*64;
+			this.y = 8*64;
+		  	
+		  }
+	 
 	  SpriteSheet.draw(Game.ctx, nombre, this.x, this.y,this.giro,this.numgiro,this.primer);
 
   };

@@ -29,7 +29,7 @@ Meteor.methods ({
 
     Meteor.publish("turnoIU");                //solo lo toca IU
     array = [{nombre : "Kevin", puntos: 0, seguidores: 7}];
-    user_Id = "GrwGQ6HJJ7qD3L4fe";
+    user_Id = "fSgjGKvfxdYcjfw3R";
     //user_Id ="Y6hGfd6uL8Syc9sM4"    
 
 Meteor.startup(function(){

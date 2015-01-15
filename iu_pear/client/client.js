@@ -21,7 +21,9 @@ Tracker.autorun(function(){
                 }
             
             }else if(m.Comando === "ColocarPieza"){
-            
+		colocadaTracker = true;
+            	xTracker = m.posx;
+		yTracker = m.posy;
             } else if (m.Comando === "ColocarSeguidor") {
                 console.log("33333") ; 
                 //colocar seguidor 

@@ -11,7 +11,9 @@ empezarPartida = function(arrayJug, user_Id) {
                   User_id: user_Id,
                   nombrePieza: "",
                   rotacion: false,
-                  numRotacion: 0});
+                  numRotacion: 0,
+		  posx: 0,
+		  posy: 0});
                   
     console.log("insertado EmpiezaPartida"); 
 }
