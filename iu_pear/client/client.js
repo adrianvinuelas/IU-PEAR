@@ -25,6 +25,9 @@ Tracker.autorun(function(){
             	xTracker = m.posx;
 		yTracker = m.posy;
             } else if (m.Comando === "ColocarSeguidor") {
+		colocadoSegTracker = true;
+		xsegTracker = m.posxseg;
+		ysegTracker = m.posyseg;
                 console.log("33333") ; 
                 //colocar seguidor 
             }

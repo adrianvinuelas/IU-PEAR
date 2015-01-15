@@ -22,7 +22,7 @@ Meteor.methods ({
 
     colocar_seguidor: function(posicion){
         console.log("posicion: " + posicion);
-        return false;
+        return true;
     },
 
 });
