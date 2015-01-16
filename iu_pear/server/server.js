@@ -22,13 +22,15 @@ Meteor.methods ({
 
     colocar_seguidor: function(posicion){
         console.log("posicion: " + posicion);
-        return true;
+	array = [{nombre : "Kevin", puntos: 10, seguidores: 6},{nombre : "adri", puntos: 0, seguidores: 7}];
+	arraydummy = [true, array, "vGT5dXZp6ra8tXoZa"];
+        return arraydummy;
     },
 
 });
 
     Meteor.publish("turnoIU");                //solo lo toca IU
-    array = [{nombre : "Kevin", puntos: 0, seguidores: 7}];
+    array = [{nombre : "Kevin", puntos: 0, seguidores: 7},{nombre : "adri", puntos: 0, seguidores: 7}];
     user_Id = "fSgjGKvfxdYcjfw3R";
     //user_Id ="Y6hGfd6uL8Syc9sM4"    
 

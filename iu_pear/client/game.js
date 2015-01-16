@@ -62,7 +62,7 @@ otrapieza = true;
 //TextoPidePieza = new TextoPideFicha("Pulsa enter para pedir ficha ",playGame);
 var piezaactual = new PiezaActual();
 var cuadriculaS = new cuadriculaSeguidor();
-var DejarScroll = true;
+DejarScroll =false;
 //
 var xIA;//estas variables globales son para los calculos de la casilla en la que se pone la ficha para pasarselo a IA
 var yIA;//estas variables globales son para los calculos de la casilla en la que se pone la ficha para pasarselo a IA
@@ -82,6 +82,8 @@ xsegTracker = 0;
 ysegTracker = 0;
 colocadaTracker = false;
 colocadoSegTracker = false;
+ladoScrollTracker = "";
+contadorScroll = 0;
 
 var startGame = function() {
 
@@ -96,6 +98,7 @@ var startGame = function() {
     board.add(new PiezaMadre("1", 5*64, 5*64)); //Pieza madre que siempre esta puesta cuando empieza el juego
     console.log(Meteor.userId());
     if(Meteor.userId() === User_IdIA){
+	DejarScroll =true;
         Game.setBoard(2,new TextoPideFicha("Pulsa enter para pedir ficha ",playGame));
         //board.add(TextoPidePieza);
     }
@@ -106,7 +109,7 @@ var startGame = function() {
 }
 
 
-var playGame = function() {
+playGame = function() {
 
   if(otrapieza){
 	
@@ -144,10 +147,10 @@ var pedirPieza = function () {
 		board.add(piezaNueva);
 		console.log("AÑADIDA PRIMERA PIEZA");
 		//Hacemos update para que los demas clientres pinten la pieza que pide el del turno				
-		obj = Turno.findOne({Comando:"EmpezarPartida"});
+		obj = Turno.findOne({});
 		//console.log(obj);
 		
-		Turno.update(obj._id,{$set: {Comando: "PedirPieza", nombrePieza:arg }});  
+		Turno.update(obj._id,{$set: {Comando: "PedirPieza", nombrePieza:arg ,scroll:false}});  
 		console.log("Termina meteor.call");
 					
 	});
@@ -259,7 +262,7 @@ pieza = function (nombre, x, y){
 				       Meteor.call("colocar_ficha",[giroIA,xIA,yIA], function (error, result) {
 				      	if(result){
 						    obj = Turno.findOne({Comando:"PedirPieza"});
-						    Turno.update(obj._id,{$set: {Comando:"ColocarPieza",posx: x, posy:y }});  
+						    Turno.update(obj._id,{$set: {Comando:"ColocarPieza",posx: x, posy:y,scroll:false }});  
 						    board.add(piezaactual);
 						    board.add(cuadriculaS); 
 						    DejarScroll = false;    //cuando estamos esperando a que pulsen una tecla para elegir la posicion donde colocar el seguidor se mete dibujo para colocar seguidor no se puede mover el scroll
@@ -299,7 +302,7 @@ pieza = function (nombre, x, y){
 			    
 			    obj = Turno.findOne({Comando: "PedirPieza"});
 			    
-			    Turno.update(obj._id, {$set: {rotacion: true, numRotacion: this.numgiro}});
+			    Turno.update(obj._id, {$set: {rotacion: true, numRotacion: this.numgiro,scroll:false}});
 			    Game.keys['giro'] = false;
 	    }
 	    	
@@ -309,7 +312,7 @@ pieza = function (nombre, x, y){
             this.giro = true;
             this.numgiro = rotacionTracker[1];
             rotacionTracker[0] = false;
-        }else if(colocadaTracker){
+        }else if(colocadaTracker){//si ya no es mi turno, mirar colocadaTracker si esta a true o a false
 		x = xTracker;
 		y = yTracker;
 		board.add(new ColocarSeguidor(x, y))
@@ -416,7 +419,7 @@ var ColocarSeguidor = function(x, y) {
     posicion12 = false;
     noseg = false;
     var colocado = false;
-    
+    var ActualizarTurno = false;
     this.step = function(dt) {
     
      if(!colocado){ 
@@ -429,14 +432,17 @@ var ColocarSeguidor = function(x, y) {
 		    
 		    Meteor.call("colocar_seguidor",[0], function (error, result) {
 		    
-		        if(result){                                      
+		        if(result[0]){                                      
 		            board.add (new Seguidor (x+7.5, y+2.5));
+			    User_IdIA = result[2];
+			    JugadoresIA = result[1];
 			    obj = Turno.findOne({Comando:"ColocarPieza"});
-			    Turno.update(obj._id,{$set: {Comando:"ColocarSeguidor",posxseg: x+7.5, posyseg:y+2.5 }});
+			    Turno.update(obj._id,{$set: {Comando:"ColocarSeguidor",posxseg: x+7.5, posyseg:y+2.5,scroll:false}});//,Jugadores: JugadoresIA, User_id:  User_IdIA}});	
 			        colocado= true;      
 			        //otrapieza = true; 
 				Game.setBoard(2,new CapaBorra());    
-			        DejarScroll = true;
+			        DejarScroll = false;
+				ActualizarTurno = true;
 			    }else{
 			        alert("No puedes colocar un seguidor en esa posicion \nPrueba otra");
 			        board.add(piezaactual);
@@ -457,11 +463,11 @@ var ColocarSeguidor = function(x, y) {
 		        if(result){                                      
 		            board.add (new Seguidor (x+22, y+2.5));
 			    obj = Turno.findOne({Comando:"ColocarPieza"});
-			    Turno.update(obj._id,{$set: {Comando:"ColocarSeguidor",posxseg: x+22, posyseg:y+2.5 }});
+			    Turno.update(obj._id,{$set: {Comando:"ColocarSeguidor",posxseg: x+22, posyseg:y+2.5,scroll:false}});
 			        colocado= true;      
 			        //otrapieza = true;
 				Game.setBoard(2,new CapaBorra());     
-			        DejarScroll = true;
+			        DejarScroll = false;
 			    }else{
 			        alert("No puedes colocar un seguidor en esa posicion \nPrueba otra");
 			        board.add(piezaactual);
@@ -483,11 +489,11 @@ var ColocarSeguidor = function(x, y) {
 		        if(result){                                      
 		            board.add (new Seguidor (x+41, y+2.5)); 
 			    obj = Turno.findOne({Comando:"ColocarPieza"});
-			    Turno.update(obj._id,{$set: {Comando:"ColocarSeguidor",posxseg: x+41, posyseg:y+2.5 }});
+			    Turno.update(obj._id,{$set: {Comando:"ColocarSeguidor",posxseg: x+41, posyseg:y+2.5,scroll:false}});
 			        colocado= true;      
 			        //otrapieza = true;   
 				Game.setBoard(2,new CapaBorra());  
-			        DejarScroll = true;
+			        DejarScroll = false;
 			    }else{
 			        alert("No puedes colocar un seguidor en esa posicion \nPrueba otra");
 			        board.add(piezaactual);
@@ -509,11 +515,11 @@ var ColocarSeguidor = function(x, y) {
 		        if(result){                                      
 		            board.add (new Seguidor (x+48, y+14.5));
 			    obj = Turno.findOne({Comando:"ColocarPieza"});
-			    Turno.update(obj._id,{$set: {Comando:"ColocarSeguidor",posxseg: x+48, posyseg:y+14.5 }}); 
+			    Turno.update(obj._id,{$set: {Comando:"ColocarSeguidor",posxseg: x+48, posyseg:y+14.5,scroll:false }}); 
 			        colocado= true;      
 			        //otrapieza = true;
 				Game.setBoard(2,new CapaBorra());     
-			        DejarScroll = true;
+			        DejarScroll = false;
 			    }else{
 			        alert("No puedes colocar un seguidor en esa posicion \nPrueba otra");
 			        board.add(piezaactual);
@@ -535,11 +541,11 @@ var ColocarSeguidor = function(x, y) {
 		        if(result){                                      
 		            board.add (new Seguidor (x+48, y+27));
 			    obj = Turno.findOne({Comando:"ColocarPieza"});
-			    Turno.update(obj._id,{$set: {Comando:"ColocarSeguidor",posxseg: x+48, posyseg:y+27 }});
+			    Turno.update(obj._id,{$set: {Comando:"ColocarSeguidor",posxseg: x+48, posyseg:y+27,scroll:false }});
 			        colocado= true;      
 			        //otrapieza = true; 
 				Game.setBoard(2,new CapaBorra());    
-			        DejarScroll = true;
+			        DejarScroll = false;
 			    }else{
 			        alert("No puedes colocar un seguidor en esa posicion \nPrueba otra");
 			        board.add(piezaactual);
@@ -560,11 +566,11 @@ var ColocarSeguidor = function(x, y) {
 		        if(result){                                      
 		            board.add (new Seguidor (x+48, y+39));
 			    obj = Turno.findOne({Comando:"ColocarPieza"});
-			    Turno.update(obj._id,{$set: {Comando:"ColocarSeguidor",posxseg: x+48, posyseg:y+39 }});
+			    Turno.update(obj._id,{$set: {Comando:"ColocarSeguidor",posxseg: x+48, posyseg:y+39,scroll:false }});
 			        colocado= true;      
 			        //otrapieza = true;
 				Game.setBoard(2,new CapaBorra());     
-			        DejarScroll = true;
+			        DejarScroll = false;
 			    }else{
 			        alert("No puedes colocar un seguidor en esa posicion \nPrueba otra");
 			        board.add(piezaactual);
@@ -586,11 +592,11 @@ var ColocarSeguidor = function(x, y) {
 		        if(result){                                      
 		            board.add (new Seguidor (x+40, y+48));
 			    obj = Turno.findOne({Comando:"ColocarPieza"});
-			    Turno.update(obj._id,{$set: {Comando:"ColocarSeguidor",posxseg: x+40, posyseg:y+48 }});
+			    Turno.update(obj._id,{$set: {Comando:"ColocarSeguidor",posxseg: x+40, posyseg:y+48,scroll:false }});
 			        colocado= true;      
 			        //otrapieza = true; 
 				Game.setBoard(2,new CapaBorra());    
-			        DejarScroll = true;
+			        DejarScroll = false;
 			    }else{
 			        alert("No puedes colocar un seguidor en esa posicion \nPrueba otra");
 			        board.add(piezaactual);
@@ -610,11 +616,11 @@ var ColocarSeguidor = function(x, y) {
 		        if(result){                                      
 		            board.add (new Seguidor (x+22, y+48));
 			    obj = Turno.findOne({Comando:"ColocarPieza"});
-			    Turno.update(obj._id,{$set: {Comando:"ColocarSeguidor",posxseg: x+22, posyseg:y+48 }});
+			    Turno.update(obj._id,{$set: {Comando:"ColocarSeguidor",posxseg: x+22, posyseg:y+48,scroll:false }});
 			        colocado= true;      
 			        //otrapieza = true;
 				Game.setBoard(2,new CapaBorra());     
-			        DejarScroll = true;
+			        DejarScroll = false;
 			    }else{
 			        alert("No puedes colocar un seguidor en esa posicion \nPrueba otra");
 			        board.add(piezaactual);
@@ -634,11 +640,11 @@ var ColocarSeguidor = function(x, y) {
 		        if(result){                                      
 		            board.add (new Seguidor (x+7.5, y+48));
 			    obj = Turno.findOne({Comando:"ColocarPieza"});
-			    Turno.update(obj._id,{$set: {Comando:"ColocarSeguidor",posxseg: x+7.5, posyseg:y+48 }});
+			    Turno.update(obj._id,{$set: {Comando:"ColocarSeguidor",posxseg: x+7.5, posyseg:y+48,scroll:false }});
 			        colocado= true;      
 			        //otrapieza = true; 
 				Game.setBoard(2,new CapaBorra());    
-			        DejarScroll = true;
+			        DejarScroll = false;
 			    }else{
 			        alert("No puedes colocar un seguidor en esa posicion \nPrueba otra");
 			        board.add(piezaactual);
@@ -658,11 +664,11 @@ var ColocarSeguidor = function(x, y) {
 		        if(result){                                      
 		            board.add (new Seguidor (x, y+39));
 			    obj = Turno.findOne({Comando:"ColocarPieza"});
-			    Turno.update(obj._id,{$set: {Comando:"ColocarSeguidor",posxseg: x, posyseg:y+39 }});
+			    Turno.update(obj._id,{$set: {Comando:"ColocarSeguidor",posxseg: x, posyseg:y+39,scroll:false }});
 			        colocado= true;      
 			        //otrapieza = true; 
 				Game.setBoard(2,new CapaBorra());    
-			        DejarScroll = true;
+			        DejarScroll = false;
 			    }else{
 			        alert("No puedes colocar un seguidor en esa posicion \nPrueba otra");
 			        board.add(piezaactual);
@@ -682,11 +688,11 @@ var ColocarSeguidor = function(x, y) {
 		        if(result){                                      
 		            board.add (new Seguidor (x, y+27));
 			    obj = Turno.findOne({Comando:"ColocarPieza"});
-			    Turno.update(obj._id,{$set: {Comando:"ColocarSeguidor",posxseg: x, posyseg:y+27 }});
+			    Turno.update(obj._id,{$set: {Comando:"ColocarSeguidor",posxseg: x, posyseg:y+27,scroll:false }});
 			        colocado= true;      
 			        //otrapieza = true;
 				Game.setBoard(2,new CapaBorra());     
-			        DejarScroll = true;
+			        DejarScroll = false;
 			    }else{
 			        alert("No puedes colocar un seguidor en esa posicion \nPrueba otra");
 			        board.add(piezaactual);
@@ -707,11 +713,11 @@ var ColocarSeguidor = function(x, y) {
 		        if(result){                                      
 		            board.add (new Seguidor (x, y+14.5));
 			    obj = Turno.findOne({Comando:"ColocarPieza"});
-			    Turno.update(obj._id,{$set: {Comando:"ColocarSeguidor",posxseg: x, posyseg:y+14.5 }});
+			    Turno.update(obj._id,{$set: {Comando:"ColocarSeguidor",posxseg: x, posyseg:y+14.5 ,scroll:false}});
 			        colocado= true;      
 			        //otrapieza = true;  
 				Game.setBoard(2,new CapaBorra());   
-			        DejarScroll = true;
+			        DejarScroll = false;
 			    }else{
 			        alert("No puedes colocar un seguidor en esa posicion \nPrueba otra");
 			        board.add(piezaactual);
@@ -731,11 +737,11 @@ var ColocarSeguidor = function(x, y) {
 		        if(result){                                      
 		            board.add (new Seguidor (x+24, y+27));
 			    obj = Turno.findOne({Comando:"ColocarPieza"});
-			    Turno.update(obj._id,{$set: {Comando:"ColocarSeguidor",posxseg: x+24, posyseg:y+27 }});
+			    Turno.update(obj._id,{$set: {Comando:"ColocarSeguidor",posxseg: x+24, posyseg:y+27,scroll:false }});
 			        colocado= true;      
 			        //otrapieza = true;
 				Game.setBoard(2,new CapaBorra());    
-			        DejarScroll = true;
+			        DejarScroll = false;
 			    }else{
 			        alert("No puedes colocar un seguidor en esa posicion \nPrueba otra");
 			        board.add(piezaactual);
@@ -751,24 +757,33 @@ var ColocarSeguidor = function(x, y) {
 		    board.remove(cuadriculaS);
 		    
 		    Meteor.call("colocar_seguidor", function (error, result) {
+			    obj = Turno.findOne({Comando:"ColocarPieza"});
+			    Turno.update(obj._id,{$set: {Comando:"ColocarSeguidor",posxseg: 0, posyseg:0,scroll:false }});
 			    colocado= true;
 			    //otrapieza = true;
 			    //falta hacer update con x e y igual a 0
 			    //Recordatorio, 14-1-2015 tiene adri guardado lo de borrar seguidores.
 			    Game.setBoard(2,new CapaBorra());
-			    DejarScroll = true;
+			    DejarScroll = false;
 		        //NO HAY     
 		    });     
 		}  
       }else{
 	if(colocadoSegTracker){
-		//falta el caso de no seguidor, que seria if(xsegTracker=0 y ysegTracker=0)no board.add
-		board.add (new Seguidor (xsegTracker, ysegTracker));
-		colocado= true;
-		DejarScroll = true;
-		colocadoSegTracker = false;
+		if(xsegTracker != 0 && ysegTracker != 0){
+			board.add (new Seguidor (xsegTracker, ysegTracker));
+			colocado= true;
+			colocadoSegTracker = false;
+		}else{
+			colocado= true;
+			colocadoSegTracker = false;
+		}
 	}
       } 
+     }else if(ActualizarTurno){
+	obj = Turno.findOne({Comando:"ColocarSeguidor"});
+	Turno.update(obj._id,{$set: {Comando:"ActualizarTurno",Jugadores: JugadoresIA, User_id:  User_IdIA,scroll:false}});	
+	ActualizarTurno = false;
      }
     }
         
@@ -806,54 +821,103 @@ var ScrollTeclas = function() {
     this.step = function(dt) {
     
         if (DejarScroll){
-    
-        if(!Game.keys['left']) izq = true;
-        if(izq && Game.keys['left']) {
-            izq = false;
-            if (this.scrollx != 0) {
-                this.scrollx -= 1;
-                this.board.translateScroll(1,0);
-            }
-        }
-        
-        if(!Game.keys['right']) der = true;
-        if(der && Game.keys['right']) {
-            der = false;
-            if (this.scrollx != this.width) {
-                this.scrollx += 1;
-                this.board.translateScroll(-1,0);
+    		if(Meteor.userId() === User_IdIA){
+			if(!Game.keys['left']) izq = true;
+			if(izq && Game.keys['left']) {
+			    izq = false;
+			    if (this.scrollx != 0) {
+				this.scrollx -= 1;
+				this.board.translateScroll(1,0);
+			    }
+			//ScrollTracker = true;
+			contadorScroll++;
+			obj = Turno.findOne({});
+			Turno.update(obj._id,{$set: {scroll:true,ladoscroll:"izq",contador: contadorScroll}});
+			    
+			}
+		
+			if(!Game.keys['right']) der = true;
+			if(der && Game.keys['right']) {
+			    der = false;
+			    if (this.scrollx != this.width) {
+				this.scrollx += 1;
+				this.board.translateScroll(-1,0);
 
-            }
-        }
-        
-        if(!Game.keys['up']) arriba = true;
-        if(arriba && Game.keys['up']) {
-            arriba = false;
-            if (this.scrolly != 0) {
-                this.scrolly -= 1;
-                this.board.translateScroll(0,1);
+			    }
+			   //ScrollTracker = true;
+			   contadorScroll++;
+			   obj = Turno.findOne({});
+			   Turno.update(obj._id,{$set: {scroll:true,ladoscroll:"der",contador: contadorScroll }});
+			}
+		
+			if(!Game.keys['up']) arriba = true;
+			if(arriba && Game.keys['up']) {
+			    arriba = false;
+			    if (this.scrolly != 0) {
+				this.scrolly -= 1;
+				this.board.translateScroll(0,1);
 
-            }
-        }
-        
-        if(!Game.keys['down']) abajo = true;
-        if(abajo && Game.keys['down']) {
-            abajo= false;
-            if (this.scrolly != this.height) {
-                this.scrolly += 1;
-                this.board.translateScroll(0,-1);
-            }
-    
-        }
-        
-	    scrollxprima = this.scrollx;
-   	    scrollyprima = this.scrolly;
-        }   	   
+			    }
+			   //ScrollTracker = true;
+			   contadorScroll++;
+			   obj = Turno.findOne({});
+			   Turno.update(obj._id,{$set: {scroll:true,ladoscroll:"up",contador: contadorScroll }});
+			}
+		
+			if(!Game.keys['down']) abajo = true;
+			if(abajo && Game.keys['down']) {
+			    abajo= false;
+			    if (this.scrolly != this.height) {
+				this.scrolly += 1;
+				this.board.translateScroll(0,-1);
+			    }
+			  //ScrollTracker = true;
+			  contadorScroll++;
+		    	  obj = Turno.findOne({});
+			  Turno.update(obj._id,{$set: {scroll:true,ladoscroll:"down",contador: contadorScroll }});
+			}
+		
+			    scrollxprima = this.scrollx;
+		   	    scrollyprima = this.scrolly;
+		}else{
+			if(ladoScrollTracker == "izq"){
+				console.log("entra a izq");
+				if (this.scrollx != 0) {
+					this.scrollx -= 1;
+					this.board.translateScroll(1,0);
+			   	}
+				//ScrollTracker = false;
+			}else if(ladoScrollTracker == "der"){
+				console.log("entra a der");
+				if (this.scrollx != this.width) {
+					this.scrollx += 1;
+					this.board.translateScroll(-1,0);
+			   	}
+				//ScrollTracker = false;
+			}else if(ladoScrollTracker == "up"){
+				console.log("entra a up");
+				if (this.scrolly != 0) {
+					this.scrolly -= 1;
+					this.board.translateScroll(0,1);
+			    	}
+				//ScrollTracker = false;
+			}else if(ladoScrollTracker == "down"){
+				console.log("entra a down");
+				if (this.scrolly != this.height) {
+					this.scrolly += 1;
+					this.board.translateScroll(0,-1);
+				}
+				//ScrollTracker = false;
+			}
+			scrollxprima = this.scrollx;
+		   	scrollyprima = this.scrolly;
+			DejarScroll = false;
+		}
+	}	   
    	   
     }
 
 }
-
 
 EmpezarTodo = function (arrayJugadores, user_Id) {
 
