@@ -32,6 +32,7 @@ Tracker.autorun(function(){
                 console.log("33333") ; 
                 //colocar seguidor 
             }else if (m.Comando === "ActualizarTurno") {
+						
 				 JugadoresIA = m.Jugadores;
 				 User_IdIA = m.User_id;
 				 console.log("44444")
@@ -42,6 +43,7 @@ Tracker.autorun(function(){
 						console.log("55555") ;
 		  		 }
 		 		console.log("66666") ;
+				Game.setBoard(1,new Jugadores(JugadoresIA));
 			}
 		}else{
 			DejarScroll = true;

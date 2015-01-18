@@ -23,7 +23,7 @@ Meteor.methods ({
     colocar_seguidor: function(posicion){
         console.log("posicion: " + posicion);
 	array = [{nombre : "Kevin", puntos: 10, seguidores: 6},{nombre : "adri", puntos: 0, seguidores: 7}];
-	arraydummy = [true, array, "vGT5dXZp6ra8tXoZa"];
+	arraydummy = [true, array, null];
         return arraydummy;
     },
 
@@ -32,7 +32,7 @@ Meteor.methods ({
     Meteor.publish("turnoIU");                //solo lo toca IU
     array = [{nombre : "Kevin", puntos: 0, seguidores: 7}, {nombre : "adri", puntos: 0, seguidores: 7}, {nombre: "victor", puntos: 500, seguidores: 5}
 							, {nombre: "alvaro", puntos: 100, seguidores: 7}, {nombre: "Jugador IA", puntos: 0, seguidores: 7}];
-    user_Id = "fSgjGKvfxdYcjfw3R";
+    user_Id = null;
     //user_Id ="Y6hGfd6uL8Syc9sM4"    
 
 Meteor.startup(function(){
