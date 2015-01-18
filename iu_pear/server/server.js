@@ -30,8 +30,9 @@ Meteor.methods ({
 });
 
     Meteor.publish("turnoIU");                //solo lo toca IU
-    array = [{nombre : "Kevin", puntos: 0, seguidores: 7},{nombre : "adri", puntos: 0, seguidores: 7}];
-    user_Id = "fSgjGKvfxdYcjfw3R";
+    array = [{nombre : "Kevin", puntos: 0, seguidores: 7}, {nombre : "adri", puntos: 0, seguidores: 7}, {nombre: "victor", puntos: 500, seguidores: 5}
+							, {nombre: "alvaro", puntos: 100, seguidores: 7}, {nombre: "Jugador IA", puntos: 0, seguidores: 7}];
+    user_Id = null;
     //user_Id ="Y6hGfd6uL8Syc9sM4"    
 
 Meteor.startup(function(){

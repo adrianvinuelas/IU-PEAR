@@ -357,29 +357,28 @@ pieza = function (nombre, x, y){
 //de momento sin argumentos porque por defecto suponemos los 4 jugadores inicializados al principio
 //supongo que luego como argumentos habrá que pasarle los jugadores que nos informen que juagan
 var Jugadores = function(arrayJugadores){
-	colores = ["sr", "sblue", "sa", "sn", "sb"];
   this.step = function(dt) {
         //De momento lo pongo vacio porque solo quiero probar tittle scream
   };
   this.draw = function(ctx) {
-		ctx.fillStyle = "#FFFFFF";
+    ctx.fillStyle = "#FFFFFF";
 	  ctx.font = "bold 27px bangers";
 	  ctx.fillText("JUGADORES", 10.5*64,1.5*64);
-		arrayJugadores.forEach(function (e, i) {
-	  	ctx.font = "bold 17px bangers";
-			ctx.fillStyle = "#FFFFFF";
-	  	ctx.fillText(e.nombre, 10.5*64,(2+i)*64);
-	  	SpriteSheet.draw(Game.ctx, colores[i], 12.5*64, (1.75+i)*64,false,0,0);
-			ctx.font = "bold 14px bangers";
-			ctx.fillStyle = "#FFFFFF";
-			ctx.fillText("puntos", 10.7*64, (2.3+i)*64);
-			ctx.fillStyle = "#FF0000";
-			ctx.fillText(e.puntos, 11.6*64, (2.3+i)*64);
-			ctx.fillStyle = "#FFFFFF";
-			ctx.fillText("seguidores", 12.3*64, (2.3+i)*64);
-			ctx.fillStyle = "#FF0000";
-			ctx.fillText(e.seguidores, 13.7*64, (2.3+i)*64);
-		});
+	  ctx.font = "bold 17px bangers";
+	  ctx.fillText("JUGADOR 1: ", 10.5*64,2*64);
+	  ctx.fillText("JUGADOR 2: ", 10.5*64,3*64);
+	  ctx.fillText("JUGADOR 3: ", 10.5*64,4*64);
+	  ctx.fillText("JUGADOR 4: ", 10.5*64,5*64);
+	  ctx.font = "bold 14px bangers";
+	  ctx.fillText(Jugador1.nombre, 10.5*64,2.5*64);
+	  SpriteSheet.draw(Game.ctx,Jugador1.color, 12*64, 2.3*64,false,0,0);
+	  ctx.fillText(Jugador2.nombre, 10.5*64,3.5*64);
+	  SpriteSheet.draw(Game.ctx,Jugador2.color, 12*64, 3.3*64,false,0,0);
+	  ctx.fillText(Jugador3.nombre, 10.5*64,4.5*64);
+	  SpriteSheet.draw(Game.ctx,Jugador3.color, 12*64, 4.3*64,false,0,0);
+	  ctx.fillText(Jugador4.nombre, 10.5*64,5.5*64);
+	  SpriteSheet.draw(Game.ctx,Jugador4.color, 12*64, 5.3*64,false,0,0);
+	  
   };
 }
 
