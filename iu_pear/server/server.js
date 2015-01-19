@@ -38,6 +38,7 @@ Meteor.methods ({
 Meteor.startup(function(){
     console.log("Arrancado servidor");        
     empezarPartida(array, user_Id);
+    console.log("prueba") ; 
     console.log("Llamamos a EmpezarPartida");
 });
 
