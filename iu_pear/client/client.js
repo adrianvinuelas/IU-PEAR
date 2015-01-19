@@ -53,10 +53,13 @@ Tracker.autorun(function(){
 			    console.log("77777")		
 	      	}
 		} else {
-            JugadoresIA = m.Jugadores;
-		    User_IdIA = m.User_id;
-            Game.setBoard(1,new Jugadores(JugadoresIA));
+		    //if(m.Comando === "ActualizarTurno"){
+                JugadoresIA = m.Jugadores;
+		        User_IdIA = m.User_id;
+                Game.setBoard(1,new Jugadores(JugadoresIA));
+            //}
         }
+        
     });
         
 });

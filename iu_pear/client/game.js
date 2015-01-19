@@ -429,11 +429,11 @@ var ColocarSeguidor = function(x, y) {
 	                Meteor.call("colocar_seguidor",[0], function (error, result) {
 	                    if(result[0]){                                  
 	                        board.add (new Seguidor (x+7.5, y+2.5));
-		                    obj = Turno.findOne({Comando:"ColocarPieza"});
+		                    obj = Turno.findOne({Comando:"ColocarPieza"});		                    
 		                    Turno.update(obj._id,{$set: {Comando:"ColocarSeguidor",Jugadores: result[1], User_id: result[2],posxseg: x+7.5, posyseg:y+2.5,scroll:false}});
 		                    colocado= true;
 			                Game.setBoard(2,new CapaBorra());    
-		                    DejarScroll = false;
+		                    DejarScroll = false;	                    
 			                ActualizarTurno = true;
                         }else{
 		                    alert("No puedes colocar un seguidor en esa posicion \nPrueba otra");
@@ -726,7 +726,7 @@ var ColocarSeguidor = function(x, y) {
 	        }
         }else if(ActualizarTurno){            
 	        obj = Turno.findOne({Comando:"ColocarSeguidor"});
-	        Turno.update(obj._id,{$set: {Comando:"ActualizarTurno",Jugadores:JugadoresIA,User_id:User_IdIA,nombrePieza:"",rotacion: false,      numRotacion: 0, posx: 0, posy: 0, posxseg: 0, posyseg:0, scroll: false, ladoscroll: ""}});
+            Turno.update(obj._id,{$set: {Comando:"ActualizarTurno",nombrePieza:"",rotacion: false, numRotacion: 0, posx: 0, posy: 0, posxseg: 0, posyseg:0, scroll: false, ladoscroll: ""}});
 	        ActualizarTurno = false;
         }
     }   

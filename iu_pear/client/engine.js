@@ -57,7 +57,7 @@ Game = new function() {
 	      }
 	    }
       // Ejecutar dentro de 30 ms
-	    setTimeout(Game.loop,30);
+	    setTimeout(Game.loop,100);
     };
     // Para cambiar el panel activo en el juego.
     // Son capas: se dibujan de menor num a mayor
