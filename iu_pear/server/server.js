@@ -23,7 +23,7 @@ Meteor.methods ({
     colocar_seguidor: function(posicion){
         console.log("posicion: " + posicion);
 	array = [{nombre : "Kevin", puntos: 10, seguidores: 6},{nombre : "adri", puntos: 0, seguidores: 7}];
-	arraydummy = [true, array, null];
+	arraydummy = [true, array, "r5A4bZB8hbrkqxS5u"];
         return arraydummy;
     },
 
