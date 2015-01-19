@@ -1,4 +1,4 @@
-empezarPartida = function(id_partida, arrayJug, user_Id) {
+empezarPartida = function(arrayJug, user_Id) {
    
     
     
@@ -7,7 +7,6 @@ empezarPartida = function(id_partida, arrayJug, user_Id) {
     Turno.remove({});
     
     Turno.insert({Comando: "EmpezarPartida",
-                  id_Partida : id_partida,
                   Jugadores: arrayJug,
                   User_id: user_Id,
                   nombrePieza: "",
