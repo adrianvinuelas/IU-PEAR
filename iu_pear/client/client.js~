@@ -8,12 +8,13 @@ Tracker.autorun(function(){
    
         if(m.Comando === "EmpezarPartida" && m.ladoscroll == ""){
             console.log("1111");
-            EmpezarTodo(m.Jugadores, m.User_id);
+            EmpezarTodo(m.id_partida, m.Jugadores, m.User_id);
         }
-        if(Meteor.userId() === User_IdIA){
+        if(Meteor.userId() != User_IdIA){
 		if(!m.scroll){
             if(m.Comando === "PedirPieza"){
-                if(!m.rotacion){     //cuando deja de ser mi turno, solo se pinta si m.rotacion esta a false(cambiar este if)         
+                if(!m.rotacion){     //cuando deja de ser mi turno, solo se pinta si m.rotacion esta a false(cambiar este if) 
+                                     //Dejar toda la base de datos como esta al principio        
                     console.log("2222") ; 
                     var piezaNueva = new pieza (m.nombrePieza, 11.5*64, 8*64);
                     board.add(piezaNueva);

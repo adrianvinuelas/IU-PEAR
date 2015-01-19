@@ -84,6 +84,7 @@ colocadaTracker = false;
 colocadoSegTracker = false;
 ladoScrollTracker = "";
 contadorScroll = 0;
+id_partida = 0;
 
 var startGame = function() {
 
@@ -119,7 +120,7 @@ playGame = function() {
 
 var pedirPieza = function () {
 
-	Meteor.call('dame_ficha', function (error, result) {
+	Meteor.call('dameFicha',id_partida, function (error, result) {
 	console.log("entra a meteor.call");
 	    var arg;
 	    //Esta mal sin terminar porque no sabemos todavia con exactitud que nos va a devolver la IA
@@ -952,11 +953,12 @@ var ScrollTeclas = function() {
 
 }
 
-EmpezarTodo = function (arrayJugadores, user_Id) {
+EmpezarTodo = function (id_Partida, arrayJugadores, user_Id) {
 
     Game.initialize("game",sprites,startGame);       
     JugadoresIA = arrayJugadores;
     User_IdIA = user_Id;
+    id_partida = id_Partida;
 };
 /*
 EmpezarTodo = function (arrayJugadores) {
