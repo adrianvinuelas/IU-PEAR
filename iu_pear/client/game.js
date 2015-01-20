@@ -462,9 +462,9 @@ var ColocarSeguidor = function(x, y, idx, idy) {
 			                Game.setBoard(2,new CapaBorra());    
 		                    DejarScroll = false;	  
 		                             
-			                //ActualizarTurno = true;
+			                ActualizarTurno = true;
 			                arrayRespuestaIA = result[1];
-			                BorrarSeguidor = true;
+			                //BorrarSeguidor = true;
                         }else{
 		                    alert("No puedes colocar un seguidor en esa posicion \nPrueba otra");
 		                    board.add(piezaactual);
@@ -769,21 +769,17 @@ var ColocarSeguidor = function(x, y, idx, idy) {
 		        }
 	        }
         }else if(ActualizarTurno){
-			numcolor++;
-			if(numcolor == longitudcolor){
-				console.log("reiniciamos numcolor a cero");
-				numcolor = 0;
-			}           
-	        obj = Turno.findOne({Comando:"ColocarSeguidor"});
-            Turno.update(obj._id,{$set: {Comando:"ActualizarTurno",nombrePieza:"",rotacion: false, numRotacion: 0, posx: 0, posy: 0, posxseg: 0, posyseg:0, scroll: false, ladoscroll: "",numColor: numcolor}});
+        
+            gestionCambiarTurno(arrayRespuestaIA);
+			
 	        ActualizarTurno = false;
 	        
-        }else if(BorrarSeguidor){
+        }//else if(BorrarSeguidor){
         
-            gestionCambioTurno(arrayRespuestaIA);
-            BorrarSeguidor = false;
+           // gestionBorrarSeguidor(arrayRespuestaIA);
+            //BorrarSeguidor = false;
         
-        }
+        //}
     }   
     this.draw = function(ctx) {
         
@@ -918,21 +914,7 @@ var ScrollTeclas = function() {
 }
 
 
-var gestionCambioTurno = function (result){
-
-    if (result.length > 1){
-        //hay jugador IA
-    }else{
-        //El siguiente es humano
-        var Jug = result[0].arrayResumenJugs;
-        Jug.forEach(function (e, i) {
-            console.log("JUGADORES: " + e.nombre);
-            console.log("Puntos: " + e.puntos);
-            console.log("seguirodes: " + e.seguidores);
-        });
-        
-        var id = result[0].idSiguienteJug;
-        console.log("Prueba HOY: ID: " + id);
+function gestionBorrarSeguidor (result){
         
         seg = result[0].arraySeguidoresQuitar;
         seg.forEach(function (e, i) {
@@ -946,14 +928,43 @@ var gestionCambioTurno = function (result){
         
         
         obj = Turno.findOne({});
-        Turno.update(obj._id,{$set: {Comando:"BorrarSeguidor", arrayQuitarSeg: seg, scroll:false }});
-        //obj = Turno.findOne({Comando:"ColocarSeguidor"});
-        //Turno.update(obj._id,{$set: {Comando:"BorrarSeguidor",casillaX:,rotacion: false, numRotacion: 0, posx: 0, posy: 0, posxseg: 0, posyseg:0, scroll: false, ladoscroll: "",numColor: numcolor}});
-        
-    
-    }
-
+        Turno.update(obj._id,{$set: {Comando:"BorrarSeguidor", arrayQuitarSeg: result[0].arraySeguidoresQuitar, scroll:false }});
+  
 };
+
+function gestionCambiarTurno(result){
+       
+    if (result.length > 1){
+        //hay jugador IA
+    }else{
+        //El siguiente es humano
+        
+        //Primero borramos seguidores
+        
+        gestionBorrarSeguidor(result);
+        
+        numcolor++;
+		if(numcolor == longitudcolor){
+			console.log("reiniciamos numcolor a cero");
+			numcolor = 0;
+		}
+		/*	
+        var Jug = result[0].arrayResumenJugs;
+        Jug.forEach(function (e, i) {
+            console.log("JUGADORES: " + e.nombre);
+            console.log("Puntos: " + e.puntos);
+            console.log("seguirodes: " + e.seguidores);
+        });
+        
+        var id = result[0].idSiguienteJug;
+        console.log("Prueba HOY: ID: " + id);
+        */
+        obj = Turno.findOne({Comando:"BorrarSeguidor"});
+        
+        Turno.update(obj._id,{$set: {Comando:"ActualizarTurno", ID_Partida: Id_Partida, Jugadores: result[0].arrayResumenJugs, User_id: result[0].idSiguienteJug, nombrePieza: "", rotacion: false, numRotacion: 0, casillaX: 0, casillaY: 0, arrayQuitarSeg: [], posx: 0, posy: 0, posxseg: 0, posyseg:0, scroll: false, ladoscroll: "", contador: 0, numColor: numcolor}}); 
+        
+    }
+}
 
 borrarSeguidor = function (idx, idy){
 

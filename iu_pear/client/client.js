@@ -36,12 +36,13 @@ Tracker.autorun(function(){
                     
                     
                 } else if (m.Comando === "BorrarSeguidor") {
-                               	
+                           	
                 	var array = m.arrayQuitarSeg;
                 	array.forEach(function (e, i) {						
 						borrarSeguidor(e.x, e.y);
 						console.log("llamado borrar seguidor desde client");
         			});
+        			
         			console.log("4444");
                 	
                 
@@ -70,9 +71,9 @@ Tracker.autorun(function(){
 	      	}
 		} else {
 		    //if(m.Comando === "ActualizarTurno"){
-                	JugadoresIA = m.Jugadores;
+            	JugadoresIA = m.Jugadores;
 		        User_IdIA = m.User_id;
-               		Game.setBoard(1,new Jugadores(JugadoresIA));
+           		Game.setBoard(1,new Jugadores(JugadoresIA));
             //}
         }
         
