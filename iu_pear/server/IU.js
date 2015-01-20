@@ -18,7 +18,8 @@ empezarPartida = function(arrayJug, user_Id) {
 		          posyseg:0,
 		          scroll: false,
 		          ladoscroll: "",
-		          contador: 0});
+		          contador: 0,
+			  numColor: 0});
                   
     console.log("insertado EmpiezaPartida"); 
 }

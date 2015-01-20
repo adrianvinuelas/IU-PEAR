@@ -29,6 +29,7 @@ Tracker.autorun(function(){
 				    colocadoSegTracker = true;
 				    xsegTracker = m.posxseg;
 				    ysegTracker = m.posyseg;
+				    numColor = m.numColor;
                     console.log("33333") ; 
                     
                 }else if (m.Comando === "ActualizarTurno") {
@@ -37,11 +38,12 @@ Tracker.autorun(function(){
 				     User_IdIA = m.User_id;
 				     console.log("44444")
 				     if(Meteor.userId() === User_IdIA){
+						    numcolor = m.numColor;
 						    otrapieza = true;
 						    DejarScroll = true;
 				       		Game.setBoard(2,new TextoPideFicha("Pulsa enter para pedir ficha ",playGame));
 						    console.log("55555") ;
-		      		 }
+		      		     }
 		     		console.log("66666") ;
 				    Game.setBoard(1,new Jugadores(JugadoresIA));
 			    }
@@ -54,9 +56,9 @@ Tracker.autorun(function(){
 	      	}
 		} else {
 		    //if(m.Comando === "ActualizarTurno"){
-                JugadoresIA = m.Jugadores;
+                	JugadoresIA = m.Jugadores;
 		        User_IdIA = m.User_id;
-                Game.setBoard(1,new Jugadores(JugadoresIA));
+               		Game.setBoard(1,new Jugadores(JugadoresIA));
             //}
         }
         
