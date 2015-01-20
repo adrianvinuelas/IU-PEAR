@@ -393,6 +393,22 @@ TableroJuego = function() {
         }
         });
     };
+    
+    this.borrarSeguidor = function(idx,idy) {
+        _(this.objects).forEach(function (obj) {
+                if(obj.type == "pieza") {      
+                    if(obj.idx == idx && obj.idy == idy){
+                            console.log("entra a borrar seguidor");
+                            console.log("objetox es " + obj.idx);
+                            console.log("objetoy es " + obj.idy);
+                            console.log("encontrado " + obj.color);
+                            console.log("encontrado " + obj.type);
+                            board.remove(obj);
+                            console.log("hace remove");
+                    }                               
+                }
+        })
+    };
 };
 
 

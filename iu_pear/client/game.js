@@ -64,8 +64,8 @@ var piezaactual = new PiezaActual();
 var cuadriculaS = new cuadriculaSeguidor();
 DejarScroll =false;
 //
-var xIA;//estas variables globales son para los calculos de la casilla en la que se pone la ficha para pasarselo a IA
-var yIA;//estas variables globales son para los calculos de la casilla en la que se pone la ficha para pasarselo a IA
+xIA = 0;//estas variables globales son para los calculos de la casilla en la que se pone la ficha para pasarselo a IA
+yIA = 0;//estas variables globales son para los calculos de la casilla en la que se pone la ficha para pasarselo a IA
 var xprima = 64;//estas variables globales son para los calculos de la casilla en la que se pone la ficha para pasarselo a IA
 var yprima = 64;//estas variables globales son para los calculos de la casilla en la que se pone la ficha para pasarselo a IA
 var xIAprima = 0;//estas variables globales son para los calculos de la casilla en la que se pone la ficha para pasarselo a IA
@@ -86,6 +86,8 @@ ladoScrollTracker = "";
 contadorScroll = 0;
 numcolor = 0;
 longitudcolor = 0;
+Id_Partida = 0;
+arrayRespuestaIA = [];
 
 var startGame = function() {
 
@@ -96,7 +98,7 @@ var startGame = function() {
     board.add(new PiezaMadre("1", 5*64, 5*64)); //Pieza madre que siempre esta puesta cuando empieza el juego
     console.log(Meteor.userId());
     if(Meteor.userId() === User_IdIA){
-	DejarScroll =true;
+	    DejarScroll =true;
         Game.setBoard(2,new TextoPideFicha("Pulsa enter para pedir ficha ",playGame));
         //board.add(TextoPidePieza);
     }
@@ -121,7 +123,7 @@ playGame = function() {
 
 var pedirPieza = function () {
 
-	Meteor.call('dame_ficha', function (error, result) {
+	Meteor.call('dameFicha',Id_Partida, function (error, result) {
 	console.log("entra a meteor.call");
 	    var arg;
 	    //Esta mal sin terminar porque no sabemos todavia con exactitud que nos va a devolver la IA
@@ -182,12 +184,14 @@ var PiezaMadre = function (nombre, x, y){
 }
 
 
-var Seguidor = function (x, y,color){//añadir color para que se pinte
+var Seguidor = function (x, y, color, idx, idy){//añadir color para que se pinte
 
     this.x = x;
     this.y = y;
     this.type = "pieza";
 	this.color = color;            // le dejamos mismo tipo que pieza porque en el draw nos interesa que actue igual en algunas cosas
+	this.idx = idx;
+	this.idy = idy;
 	
     this.step = function(dt) {           
 
@@ -270,14 +274,15 @@ pieza = function (nombre, x, y){
 					    yprima += 64;
 				       }//
 				       
-				       Meteor.call("colocar_ficha",[giroIA,xIA,yIA], function (error, result) {
+				       Meteor.call("ponerFicha",Id_Partida,giroIA,{x: xIA,y: yIA}, function (error, result) {
 				      	if(result){
+				      	    noDejan = false;
 						    obj = Turno.findOne({Comando:"PedirPieza"});
-						    Turno.update(obj._id,{$set: {Comando:"ColocarPieza",posx: x, posy:y,scroll:false }});  
+						    Turno.update(obj._id,{$set: {Comando:"ColocarPieza",posx: x, posy:y, casillaX: xIA, casillaY: yIA, scroll:false }});  
 						    board.add(piezaactual);
 						    board.add(cuadriculaS); 
 						    DejarScroll = false;    //cuando estamos esperando a que pulsen una tecla para elegir la posicion donde colocar el seguidor se mete dibujo para colocar seguidor no se puede mover el scroll
-						    board.add(new ColocarSeguidor(x, y)); 
+						    board.add(new ColocarSeguidor(x, y, xIA, yIA)); 
 						    colocada = true;	
 					    }else{
 						    noDejan = true;
@@ -324,12 +329,12 @@ pieza = function (nombre, x, y){
             this.numgiro = rotacionTracker[1];
             rotacionTracker[0] = false;
         }else if(colocadaTracker){//si ya no es mi turno, mirar colocadaTracker si esta a true o a false
-		x = xTracker;
-		y = yTracker;
-		board.add(new ColocarSeguidor(x, y))
-		colocada = true;
-		colocadaTracker = false;
-	}
+		    x = xTracker;
+		    y = yTracker;
+		    board.add(new ColocarSeguidor(x, y, xIA, yIA))
+		    colocada = true;
+		    colocadaTracker = false;
+	    }
     }
     }
   };
@@ -369,29 +374,31 @@ pieza = function (nombre, x, y){
 //supongo que luego como argumentos habrá que pasarle los jugadores que nos informen que juagan
 Jugadores = function(arrayJugadores){
 	colores = ["sr", "sblue", "sa", "sn", "sb"];
-  this.step = function(dt) {
+    this.step = function(dt) {
         //De momento lo pongo vacio porque solo quiero probar tittle scream
-  };
-  this.draw = function(ctx) {
-		ctx.fillStyle = "#FFFFFF";
-	  ctx.font = "bold 27px bangers";
-	  ctx.fillText("JUGADORES", 10.5*64,1.5*64);
-		arrayJugadores.forEach(function (e, i) {
-	  	ctx.font = "bold 17px bangers";
-			ctx.fillStyle = "#FFFFFF";
-	  	ctx.fillText(e.nombre, 10.5*64,(2+i)*64);
-	  	SpriteSheet.draw(Game.ctx, colores[i], 12.5*64, (1.75+i)*64,false,0,0);
-			ctx.font = "bold 14px bangers";
-			ctx.fillStyle = "#FFFFFF";
-			ctx.fillText("puntos", 10.7*64, (2.3+i)*64);
-			ctx.fillStyle = "#FF0000";
-			ctx.fillText(e.puntos, 11.6*64, (2.3+i)*64);
-			ctx.fillStyle = "#FFFFFF";
-			ctx.fillText("seguidores", 12.3*64, (2.3+i)*64);
-			ctx.fillStyle = "#FF0000";
-			ctx.fillText(e.seguidores, 13.7*64, (2.3+i)*64);
-		});
-  };
+    };
+    this.draw = function(ctx) {
+  
+        ctx.fillStyle = "#FFFFFF";
+        ctx.font = "bold 27px bangers";
+        ctx.fillText("JUGADORES", 10.5*64,1.5*64);
+        arrayJugadores.forEach(function (e, i) {
+        ctx.font = "bold 17px bangers";
+        ctx.fillStyle = "#FFFFFF";
+        ctx.fillText(e.nombre, 10.5*64,(2+i)*64);
+        SpriteSheet.draw(Game.ctx, colores[i], 12.5*64, (1.75+i)*64,false,0,0);
+        ctx.font = "bold 14px bangers";
+        ctx.fillStyle = "#FFFFFF";
+        ctx.fillText("puntos", 10.7*64, (2.3+i)*64);
+        ctx.fillStyle = "#FF0000";
+        ctx.fillText(e.puntos, 11.6*64, (2.3+i)*64);
+        ctx.fillStyle = "#FFFFFF";
+        ctx.fillText("seguidores", 12.3*64, (2.3+i)*64);
+        ctx.fillStyle = "#FF0000";
+        ctx.fillText(e.seguidores, 13.7*64, (2.3+i)*64);
+        });
+		
+    };
 }
 
 var cuadricula = function(){
@@ -415,7 +422,7 @@ var cuadricula = function(){
     };	
 }
 
-var ColocarSeguidor = function(x, y) {
+var ColocarSeguidor = function(x, y, idx, idy) {
     posicion0 = false;
     posicion1 = false;
     posicion2 = false;
@@ -432,6 +439,7 @@ var ColocarSeguidor = function(x, y) {
     noseg = false;
     var colocado = false;
     var ActualizarTurno = false;
+    var BorrarSeguidor = false;
 	var colorSeg = "";
     this.step = function(dt) {
     
@@ -442,16 +450,21 @@ var ColocarSeguidor = function(x, y) {
 	                posicion0 = false;
 	                board.remove(piezaactual);  
 	                board.remove(cuadriculaS);
-	                Meteor.call("colocar_seguidor",[0], function (error, result) {
+	                Meteor.call("ponerSeguidor", Id_Partida, 0, User_IdIA, function ( error, result) {
 	                    if(result[0]){
 							colorSeg = verColorSeg();                            
-	                        board.add (new Seguidor (x+7.5, y+2.5,colorSeg)); 
+	                        board.add (new Seguidor (x+7.5, y+2.5,colorSeg, idx, idy)); 
+	                        
 		                    obj = Turno.findOne({Comando:"ColocarPieza"});		                    
-		                    Turno.update(obj._id,{$set: {Comando:"ColocarSeguidor",Jugadores: result[1], User_id: result[2],posxseg: x+7.5, posyseg:y+2.5,scroll:false}});
+		                    Turno.update(obj._id,{$set: {Comando:"ColocarSeguidor",posxseg: x+7.5, posyseg:y+2.5,scroll:false}});
+		                    
 		                    colocado= true;
 			                Game.setBoard(2,new CapaBorra());    
-		                    DejarScroll = false;	                    
-			                ActualizarTurno = true;
+		                    DejarScroll = false;	  
+		                             
+			                //ActualizarTurno = true;
+			                arrayRespuestaIA = result[1];
+			                BorrarSeguidor = true;
                         }else{
 		                    alert("No puedes colocar un seguidor en esa posicion \nPrueba otra");
 		                    board.add(piezaactual);
@@ -464,10 +477,10 @@ var ColocarSeguidor = function(x, y) {
 		            posicion1 = false;
 		            board.remove(piezaactual);  
 		            board.remove(cuadriculaS);
-		            Meteor.call("colocar_seguidor",[1], function (error, result) {
-		                if(result[0]){	
+		            Meteor.call("ponerSeguidor", id_partida, 1, User_IdIA, function ( error, result) {
+		                if(result){	
 							colorSeg = verColorSeg();                                      
-		                    board.add (new Seguidor (x+22, y+2.5,colorSeg)); 
+		                    board.add (new Seguidor (x+22, y+2.5,colorSeg, idx, idy)); 
 			                obj = Turno.findOne({Comando:"ColocarPieza"});
 			                Turno.update(obj._id,{$set: {Comando:"ColocarSeguidor",Jugadores: result[1], User_id: result[2],posxseg: x+22, posyseg:y+2.5,scroll:false}});
 			                colocado= true;      
@@ -486,10 +499,10 @@ var ColocarSeguidor = function(x, y) {
 		            posicion2 = false;
 		            board.remove(piezaactual);  
 		            board.remove(cuadriculaS);
-		            Meteor.call("colocar_seguidor",[2], function (error, result) {
-		                if(result[0]){
+		            Meteor.call("ponerSeguidor", id_partida, 2, User_IdIA, function ( error, result) {
+		                if(result){
 							colorSeg = verColorSeg();                                      
-		                    board.add (new Seguidor (x+41, y+2.5,colorSeg));
+		                    board.add (new Seguidor (x+41, y+2.5,colorSeg, idx, idy));
 			                obj = Turno.findOne({Comando:"ColocarPieza"});
 			                Turno.update(obj._id,{$set: {Comando:"ColocarSeguidor",Jugadores: result[1], User_id: result[2],posxseg: x+41, posyseg:y+2.5,scroll:false}});
 			                colocado= true;        
@@ -509,11 +522,11 @@ var ColocarSeguidor = function(x, y) {
 		            posicion3 = false;
 		            board.remove(piezaactual);  
 		            board.remove(cuadriculaS);  
-		            Meteor.call("colocar_seguidor",[3], function (error, result) {
+		            Meteor.call("ponerSeguidor", id_partida, 3, User_IdIA, function ( error, result) {
 		        
-		                if(result[0]){
+		                if(result){
 							colorSeg = verColorSeg();                                      
-		                    board.add (new Seguidor (x+48, y+14.5,colorSeg));
+		                    board.add (new Seguidor (x+48, y+14.5,colorSeg, idx, idy));
 			                obj = Turno.findOne({Comando:"ColocarPieza"});
 			                Turno.update(obj._id,{$set: {Comando:"ColocarSeguidor",Jugadores: result[1], User_id: result[2],posxseg: x+48, posyseg:y+14.5,scroll:false }}); 
 			                colocado= true;      
@@ -533,10 +546,10 @@ var ColocarSeguidor = function(x, y) {
 		            posicion4 = false;
 		            board.remove(piezaactual);  
 		            board.remove(cuadriculaS);
-		            Meteor.call("colocar_seguidor",[4], function (error, result) {
-		                if(result[0]){
+		            Meteor.call("ponerSeguidor", id_partida, 4, User_IdIA, function ( error, result) {
+		                if(result){
 							colorSeg = verColorSeg();                                      
-		                    board.add (new Seguidor (x+48, y+27,colorSeg));
+		                    board.add (new Seguidor (x+48, y+27,colorSeg, idx, idy));
 			                obj = Turno.findOne({Comando:"ColocarPieza"});
 			                Turno.update(obj._id,{$set: {Comando:"ColocarSeguidor",Jugadores: result[1], User_id: result[2],posxseg: x+48, posyseg:y+27,scroll:false }});
 			                colocado= true;      
@@ -555,10 +568,10 @@ var ColocarSeguidor = function(x, y) {
 		            posicion5 = false;
 		            board.remove(piezaactual);  
 		            board.remove(cuadriculaS);
-		            Meteor.call("colocar_seguidor",[5], function (error, result) {
-		                if(result[0]){  
+		            Meteor.call("ponerSeguidor", id_partida, 5, User_IdIA, function ( error, result) {
+		                if(result){  
 							colorSeg = verColorSeg();                                   
-		                    board.add (new Seguidor (x+48, y+39,colorSeg));
+		                    board.add (new Seguidor (x+48, y+39,colorSeg, idx, idy));
                             
 			                obj = Turno.findOne({Comando:"ColocarPieza"});
 			                Turno.update(obj._id,{$set: {Comando:"ColocarSeguidor",Jugadores: result[1], User_id: result[2],posxseg: x+48, posyseg:y+39,scroll:false }});
@@ -578,10 +591,10 @@ var ColocarSeguidor = function(x, y) {
 		            posicion6 = false;
 		            board.remove(piezaactual);  
 		            board.remove(cuadriculaS);
-		            Meteor.call("colocar_seguidor",[6], function (error, result) {
-		                if(result[0]){
+		            Meteor.call("ponerSeguidor", id_partida, 6, User_IdIA, function ( error, result) {
+		                if(result){
 						colorSeg = verColorSeg();                                     
-		                board.add (new Seguidor (x+40, y+48,colorSeg));
+		                board.add (new Seguidor (x+40, y+48,colorSeg, idx, idy));
 			            obj = Turno.findOne({Comando:"ColocarPieza"});
 			            Turno.update(obj._id,{$set: {Comando:"ColocarSeguidor",Jugadores: result[1], User_id: result[2],posxseg: x+40, posyseg:y+48,scroll:false }});
 			            colocado= true;      
@@ -600,10 +613,10 @@ var ColocarSeguidor = function(x, y) {
 		           posicion7 = false;
 		           board.remove(piezaactual);  
 		           board.remove(cuadriculaS);
-		           Meteor.call("colocar_seguidor",[7], function (error, result) {
-		                if(result[0]){
+		           Meteor.call("ponerSeguidor", id_partida, 7, User_IdIA, function ( error, result) {
+		                if(result){
 							colorSeg = verColorSeg();                                       
-		                    board.add (new Seguidor (x+22, y+48,colorSeg));
+		                    board.add (new Seguidor (x+22, y+48,colorSeg, idx, idy));
 			                obj = Turno.findOne({Comando:"ColocarPieza"});
 			                Turno.update(obj._id,{$set: {Comando:"ColocarSeguidor",Jugadores: result[1], User_id: result[2],posxseg: x+22, posyseg:y+48,scroll:false }});
 			                colocado= true;      
@@ -622,10 +635,10 @@ var ColocarSeguidor = function(x, y) {
 		            posicion8 = false;
 		            board.remove(piezaactual);  
 		            board.remove(cuadriculaS);
-		            Meteor.call("colocar_seguidor",[8], function (error, result) {
-		                if(result[0]){
+		            Meteor.call("ponerSeguidor", id_partida, 8, User_IdIA, function ( error, result) {
+		                if(result){
 							colorSeg = verColorSeg();                                      
-		                    board.add (new Seguidor (x+7.5, y+48,colorSeg));
+		                    board.add (new Seguidor (x+7.5, y+48,colorSeg, idx, idy));
 			                obj = Turno.findOne({Comando:"ColocarPieza"});
 			                Turno.update(obj._id,{$set: {Comando:"ColocarSeguidor",Jugadores: result[1], User_id: result[2],posxseg: x+7.5, posyseg:y+48,scroll:false }});
 			                colocado= true;      
@@ -644,10 +657,10 @@ var ColocarSeguidor = function(x, y) {
 		            posicion9 = false;
 		            board.remove(piezaactual);  
 		            board.remove(cuadriculaS);
-		            Meteor.call("colocar_seguidor",[9], function (error, result) {
-		                if(result[0]){ 
+		            Meteor.call("ponerSeguidor", id_partida, 9, User_IdIA, function ( error, result) {
+		                if(result){ 
 							colorSeg = verColorSeg();                                    
-		                    board.add (new Seguidor (x, y+39,colorSeg));
+		                    board.add (new Seguidor (x, y+39,colorSeg, idx, idy));
 			                obj = Turno.findOne({Comando:"ColocarPieza"});
 			                Turno.update(obj._id,{$set: {Comando:"ColocarSeguidor",Jugadores: result[1], User_id: result[2],posxseg: x, posyseg:y+39,scroll:false }});
 			                colocado= true;       
@@ -666,10 +679,10 @@ var ColocarSeguidor = function(x, y) {
 		            posicion10 = false;
 		            board.remove(piezaactual);  
 		            board.remove(cuadriculaS);
-		            Meteor.call("colocar_seguidor",[10], function (error, result) {
-		                if(result[0]){ 
+		            Meteor.call("ponerSeguidor", id_partida, 10, User_IdIA, function ( error, result) {
+		                if(result){ 
 							colorSeg = verColorSeg();                                    
-		                    board.add (new Seguidor (x, y+27,colorSeg));
+		                    board.add (new Seguidor (x, y+27,colorSeg, idx, idy));
 			                obj = Turno.findOne({Comando:"ColocarPieza"});
 			                Turno.update(obj._id,{$set: {Comando:"ColocarSeguidor",Jugadores: result[1], User_id: result[2],posxseg: x, posyseg:y+27,scroll:false }});
 			                colocado= true;      
@@ -688,10 +701,10 @@ var ColocarSeguidor = function(x, y) {
 		            posicion11 = false;
 		            board.remove(piezaactual);  
 		            board.remove(cuadriculaS);
-		            Meteor.call("colocar_seguidor",[11], function (error, result) {
-		               if(result[0]){
+		            Meteor.call("ponerSeguidor", id_partida, 11, User_IdIA, function ( error, result) {
+		               if(result){
 							colorSeg = verColorSeg();                                     
-		                    board.add (new Seguidor (x, y+14.5,colorSeg));
+		                    board.add (new Seguidor (x, y+14.5,colorSeg, idx, idy));
 			                obj = Turno.findOne({Comando:"ColocarPieza"});
 			                Turno.update(obj._id,{$set: {Comando:"ColocarSeguidor",Jugadores: result[1], User_id: result[2],posxseg: x, posyseg:y+14.5 ,scroll:false}});
 			                colocado= true;       
@@ -710,10 +723,10 @@ var ColocarSeguidor = function(x, y) {
 		            posicion12 = false;
 		            board.remove(piezaactual);  
 		            board.remove(cuadriculaS);
-		            Meteor.call("colocar_seguidor",[12], function (error, result) {
-		                if(result[0]){
+		            Meteor.call("ponerSeguidor", id_partida, 12, User_IdIA, function ( error, result) {
+		                if(result){
 							colorSeg = verColorSeg();                                     
-		                    board.add (new Seguidor (x+24, y+27,colorSeg));
+		                    board.add (new Seguidor (x+24, y+27,colorSeg, idx, idy));
 			                obj = Turno.findOne({Comando:"ColocarPieza"});
 			                Turno.update(obj._id,{$set: {Comando:"ColocarSeguidor",Jugadores: result[1], User_id: result[2],posxseg: x+24, posyseg:y+27,scroll:false }});
 			                colocado= true;      
@@ -732,7 +745,7 @@ var ColocarSeguidor = function(x, y) {
 		            noseg = false;
 		            board.remove(piezaactual);  
 		            board.remove(cuadriculaS);
-		            Meteor.call("colocar_seguidor", function (error, result) {
+		            Meteor.call("ponerSeguidor", id_partida, function ( error, result) {
 			            obj = Turno.findOne({Comando:"ColocarPieza"});
 			            Turno.update(obj._id,{$set: {Comando:"ColocarSeguidor",Jugadores: result[1], User_id: result[2],posxseg: 0, posyseg:0,scroll:false }});
 			            colocado= true;
@@ -745,7 +758,8 @@ var ColocarSeguidor = function(x, y) {
 			    if(colocadoSegTracker){
 				    if(xsegTracker != 0 && ysegTracker != 0){
 						colorSeg = verColorSeg();
-					    board.add (new Seguidor (xsegTracker, ysegTracker,colorSeg));
+					    board.add (new Seguidor (xsegTracker, ysegTracker,colorSeg, idx, idy));
+					    console.log("Pinta seguidor NO turno");
 					    colocado= true;
 					    colocadoSegTracker = false;
 				    }else{
@@ -763,6 +777,12 @@ var ColocarSeguidor = function(x, y) {
 	        obj = Turno.findOne({Comando:"ColocarSeguidor"});
             Turno.update(obj._id,{$set: {Comando:"ActualizarTurno",nombrePieza:"",rotacion: false, numRotacion: 0, posx: 0, posy: 0, posxseg: 0, posyseg:0, scroll: false, ladoscroll: "",numColor: numcolor}});
 	        ActualizarTurno = false;
+	        
+        }else if(BorrarSeguidor){
+        
+            gestionCambioTurno(arrayRespuestaIA);
+            BorrarSeguidor = false;
+        
         }
     }   
     this.draw = function(ctx) {
@@ -897,11 +917,57 @@ var ScrollTeclas = function() {
 
 }
 
-EmpezarTodo = function (arrayJugadores, user_Id) {
+
+var gestionCambioTurno = function (result){
+
+    if (result.length > 1){
+        //hay jugador IA
+    }else{
+        //El siguiente es humano
+        var Jug = result[0].arrayResumenJugs;
+        Jug.forEach(function (e, i) {
+            console.log("JUGADORES: " + e.nombre);
+            console.log("Puntos: " + e.puntos);
+            console.log("seguirodes: " + e.seguidores);
+        });
+        
+        var id = result[0].idSiguienteJug;
+        console.log("Prueba HOY: ID: " + id);
+        
+        seg = result[0].arraySeguidoresQuitar;
+        seg.forEach(function (e, i) {
+            console.log("SegX: " + e.x);
+            casX = e.x;
+            console.log("SegY: " + e.y);
+            casY = e.y;
+            borrarSeguidor(e.x, e.y);
+            console.log("llamado borrar");
+        });
+        
+        
+        obj = Turno.findOne({});
+        Turno.update(obj._id,{$set: {Comando:"BorrarSeguidor", arrayQuitarSeg: seg, scroll:false }});
+        //obj = Turno.findOne({Comando:"ColocarSeguidor"});
+        //Turno.update(obj._id,{$set: {Comando:"BorrarSeguidor",casillaX:,rotacion: false, numRotacion: 0, posx: 0, posy: 0, posxseg: 0, posyseg:0, scroll: false, ladoscroll: "",numColor: numcolor}});
+        
+    
+    }
+
+};
+
+borrarSeguidor = function (idx, idy){
+
+    board.borrarSeguidor(idx,idy);
+
+};
+
+EmpezarTodo = function (id_partida, arrayJugadores, user_Id) {
 
     Game.initialize("game",sprites,startGame);       
     JugadoresIA = arrayJugadores;
     User_IdIA = user_Id;
+    Id_Partida = id_partida;
+    console.log("ID_PARTIDA_RECIBIDO: " + Id_Partida);
     longitudcolor = arrayJugadores.length;
 };
 /*
