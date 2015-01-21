@@ -300,6 +300,7 @@ AyudaScreen = function(title) {
 
 TableroJuego = function() {
     var board = this;
+	var removed = [];
     // Colección de objetos contenidos por este tablero
     this.objects = [];
     // Añade obj a objects
@@ -316,16 +317,23 @@ TableroJuego = function() {
     // se modifica objects.
     // Marcar un objeto para borrar
     this.remove = function(obj) {
-        this.removed.push(obj);
+	console.log("entra a borrar seguidor");
+    console.log("objetox es " + obj.idx);
+    console.log("objetoy es " + obj.idy);
+    console.log("encontrado " + obj.color);
+    console.log("encontrado " + obj.type);
+        removed.push(obj);
+	console.log("entro a remove");
     };
     // Inicializar la lista de objetos pendientes de ser borrados
-    this.resetRemoved = function() { this.removed = []; }
+    //this.resetRemoved = function() { removed = []; }
     // Elimina de objects los objetos pendientes de ser borrados
     this.finalizeRemoved = function() {
-        for(var i=0, len=this.removed.length; i<len;i++) {
+        for(var i=0, len=removed.length; i<len;i++) {
             // Buscamos qué índice tiene en objects[] el objeto i de
             // removed[]
-            var idx = this.objects.indexOf(this.removed[i]);
+            var idx = this.objects.indexOf(removed[i]);
+			
             // splice elimina de objects el objeto en la posición idx
             if(idx != -1) this.objects.splice(idx,1);
         }
@@ -356,7 +364,6 @@ TableroJuego = function() {
     // inicializa la lista de objetos pendientes de borrar, y después
     // se borran los que hayan aparecido en dicha lista
     this.step = function(dt) {
-        this.resetRemoved();
         this.iterate('step',dt);
         this.finalizeRemoved();
     };
@@ -398,11 +405,12 @@ TableroJuego = function() {
         _(this.objects).forEach(function (obj) {
                 if(obj.type == "pieza") {      
                     if(obj.idx == idx && obj.idy == idy){
-                            console.log("entra a borrar seguidor");
+                            /*console.log("entra a borrar seguidor");
                             console.log("objetox es " + obj.idx);
                             console.log("objetoy es " + obj.idy);
                             console.log("encontrado " + obj.color);
-                            console.log("encontrado " + obj.type);
+                            console.log("encontrado " + obj.type);*/
+			                removed = []; //si falla hacer un borrarseguidor
                             board.remove(obj);
                             console.log("hace remove");
                     }                               

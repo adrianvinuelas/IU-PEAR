@@ -37,11 +37,12 @@ Tracker.autorun(function(){
                     
                 } else if (m.Comando === "BorrarSeguidor") {
                            	
+                   	console.log("44441111111");
                 	var array = m.arrayQuitarSeg;
                 	array.forEach(function (e, i) {						
-						borrarSeguidor(e.x, e.y);
-						console.log("llamado borrar seguidor desde client");
-        			});
+			        borrarSeguidor(e.x, e.y);
+			        console.log("llamado borrar seguidor desde client");
+			    });
         			
         			console.log("4444");
                 	
