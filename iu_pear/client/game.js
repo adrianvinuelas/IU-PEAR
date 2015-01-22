@@ -405,7 +405,7 @@ Jugadores = function(arrayJugadores){
         ctx.fillStyle = "#FFFFFF";
         ctx.fillText("seguidores", 12.3*64, (2.3+i)*64);
         ctx.fillStyle = "#FF0000";
-        ctx.fillText(e.seguidores, 13.7*64, (2.3+i)*64);
+        ctx.fillText(e.numSeguidores, 13.7*64, (2.3+i)*64);
         });
 		
     };
@@ -796,6 +796,7 @@ var ColocarSeguidor = function(x, y, idx, idy) {
         }else if(BorrarSeguidor){
             BorrarSeguidor = false;
             gestionCambiarTurno(arrayRespuestaIA);
+            
 			
 	        
 	        
@@ -809,6 +810,7 @@ var ColocarSeguidor = function(x, y, idx, idy) {
                 numcolor = 0;
             }
 
+            
             obj = Turno.findOne({Comando:"BorrarSeguidor"});
 
             Turno.update(obj._id,{$set: {Comando:"ActualizarTurno", ID_Partida: Id_Partida, Jugadores: arrayRespuestaIA[0].arrayResumenJugs, User_id: arrayRespuestaIA[0].idSiguienteJug, nombrePieza: "", rotacion: false, numRotacion: 0, casillaX: 0, casillaY: 0, arrayQuitarSeg: [], posx: 0, posy: 0, posxseg: 0, posyseg:0, scroll: false, ladoscroll: "", contador: 0, numColor: numcolor}}); 

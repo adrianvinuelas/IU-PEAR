@@ -1,20 +1,5 @@
 // Fichero que incluye la lógica del juego.
 
-/*++++++++++++++++++++++++++ cosas a recordar ++++++++++++++++++++++++++++++++
-
-	marcar en que casilla de ficha va el escudo
-		aplicarle el giro
-
-	asignar propietario al insertar una ficha en el tablero
-		aplicar ese cambio de propiedad a las adyacentes
-		aplicar ese cambio de propiedad a las adyacentes de las adyacentes.....
-
-
-	Comprobar:
-		dame ficha,ponerFicha y poner seguidor de la parte de meteor -  no está hechas las llamadas en el server
-
-*/
-
 //*************************************************************************
 //*                                                                       *
 //*                              DATOS                                    *
@@ -328,9 +313,9 @@ function girarDato(dato, giro){
 
 //******* seguidor *******
 var Seguidor = function(pos, idJug, numFicha){
-	this.posSeguidor = pos || -1;
-	this.idJugador = idJug || -1;
-	this.numFicha = numFicha || -1;
+	this.posSeguidor = pos;
+	this.idJugador = idJug;
+	this.numFicha = numFicha;
 	console.log("se va a crear un seguidor: pos: " + this.posSeguidor +  ", idJugador: " + this.idJugador + ", numficha: " + this.numFicha);
 }
 
@@ -501,10 +486,12 @@ Tablero.prototype.generate = function(){
 Tablero.prototype.put = function (ficha,pos){
     console.log("se ha llamado a put y la ficha act es: " + ficha.numFicha);
     console.log("ficha act(tipo): " + ficha.tipo);
-    console.log(",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,ficha act (dato): " + ficha.dato);
+    console.log("ficha act (dato): " + ficha.dato);
     console.log("ficha act (pdato): " + ficha.pdato);
     if(this.encaja(ficha,pos)){
-		if(!this.objetoResumen){
+		if ( !_(this.partida.getJugadorActual().idJugador).isNumber() ){
+		    console.log("oooooooooooooooooooooooooooooooooooooooooooooo                ESTOY CREANDO UN OBJETORESUMEN!!!!!!!");
+		    console.log("idJugadorActual: " + this.partida.getJugadorActual().idJugador);
 			this.objetoResumen = new ObjetoResumen();
 		}
     	console.log("la ficha encaja! y se añade al tablero");
@@ -563,10 +550,10 @@ Tablero.prototype.generarAreas = function(ficha,pos){
                 }
                 break;
             case 'c':
+				contieneCiudad = true;
                 if (!_(this.partida.listaCiudades).any(function(c){
                     return _(c.content).contains(auxPdata);
                 })){
-					contieneCiudad = true;
                     var nuevoCiudad = new Ciudad(auxPdata, ficha.escudo);
                     nuevoCiudad.add(auxPdata);
 					nuevoCiudad.partida = this.partida;
@@ -803,7 +790,7 @@ Tablero.prototype.unificarArea = function(listaAreas){
     })
 }
 
-
+//__________________________________________________
 Tablero.prototype.completarAreas = function(ficha,pos){
     console.log("++++++++++ en completarareasla ficha: " + ficha + " y la pos: " + pos);
     var cogerUbicacion = function(i){
@@ -921,7 +908,7 @@ Tablero.prototype.esPosFree = function(pos){
 		return pos.x == pF.x && pos.y == pF.y;
 	});
 }
-
+//_______________________________________________________________________
 Tablero.prototype.getCellAdyacentes = function(pos){
 	var posAd = this.getPosAdyacentes(pos);
 	console.log("he sacado las posiciones adyacentes y son:");
@@ -1017,11 +1004,9 @@ Tablero.prototype.ponerFicha = function(pos, giro){
 	}
 	return success;
 }
-
-Tablero.prototype.ponerSeguidor = function(posSeguidor,IdPropietario){
+//_________________________________________________________________________________
+Tablero.prototype.ponerSeguidorJugador = function(posSeguidor, IdPropietario){
 	var success = true;
-	var idSiguiente;
-	var objetoResumen;
 	console.log("-------------------- pos seguidor: " + posSeguidor + "idpropietarioes: " + IdPropietario);
 	console.log("++++++++++++++++++++ la ficha actual es: " + this.fichaActual);
     if (posSeguidor != undefined && IdPropietario != undefined){ //se ha llamado a ponerSeguidor y se quiere poner un seguidor.
@@ -1052,8 +1037,8 @@ Tablero.prototype.ponerSeguidor = function(posSeguidor,IdPropietario){
 				},this);
 				break;
     	}
-    	console.log("area: " + area + "  cuantos seguidores hay en ese area: " + area.propSeguidores.length);
 		if (area && area.propSeguidores.length == 0){ //para que no se pueda poner en un cruce.
+		    console.log("area: " + area + "  cuantos seguidores hay en ese area: " + area.propSeguidores.length);
 			success = true;
 			console.log("en ponerSeguidor de tablero: esta es la ficha en la que se pone: " + this.fichaActual.numFicha);
 			var seguidor = new Seguidor (posSeguidor,IdPropietario,this.fichaActual.numFicha);
@@ -1061,26 +1046,49 @@ Tablero.prototype.ponerSeguidor = function(posSeguidor,IdPropietario){
 			var jugad = _(this.partida.jugs).find(function(j){
                 return j.idJugador == IdPropietario;			
 			});
-			console.log("AQUIIIIIIIIIIII el jugador es: " + jugad);
 			jugad.numSeguidores--;
 		}
 	}
+	console.log("SE HA PUESTO SEGUIDOR?????????:       " + success);
+	return success;
+}
 
+Tablero.prototype.ponerSeguidor = function(posSeguidor,IdPropietario){
+	var objetoResumen = [];
+	var success = this.ponerSeguidorJugador(posSeguidor,IdPropietario);
 	if (success){
 		this.completarAreas(this.fichaActual,this.posFull[this.posFull.length - 1]); //preguntar. Yo creo que esta condicion no es valida. Se debe llamar siempre.
-
-		if(this.partida.pasarTurno()){
-			idSiguiente = this.partida.getJugadorActual();
-			this.objetoResumen.cambiarIdJug(idSiguiente)
-		}else{
-			//gestionar fin de partida
+			
+		this.partida.pasarTurno();
+		var siguienteJugador = this.partida.getJugadorActual();
+		if(siguienteJugador){
+		        _(this.partida.jugs).each(function(jug){ this.partida.tablero.objetoResumen.addJugPuntos(jug);},this);
+			this.objetoResumen.cambiarIdJug(siguienteJugador.idJugador)
+			objetoResumen.push(this.objetoResumen);
+			while( _(siguienteJugador.idJugador).isNumber() ){
+				var jugadorIA = this.partida.getJugadorActual();
+				jugadorIA.playTurn();
+				this.partida.pasarTurno();
+				siguienteJugador = this.partida.getJugadorActual();
+				if (!siguienteJugador){
+					//no hay siguiente jugador porque la partida termina. El id del siguiente es null.
+					this.objetoResumen.cambiarIdJug(siguienteJugador); //aqui siguienteJugador == null
+				}else{
+					//aqui el siguienteJugador es un objeto que tiene idJugador valido.
+					this.objetoResumen.cambiarIdJug(siguienteJugador.idJugador);
+				}
+				_(this.partida.jugs).each(function(jug){ this.partida.tablero.objetoResumen.addJugPuntos(jug);},this);
+				objetoResumen.push(this.objetoResumen); //actualizamos el resumenTotal.
+				if (!siguienteJugador) break; //si se acaba la partida salimos del bucle porque la condicion de entrada fallaria.
+			}
+		}else{ //aqui acaba la partida antes de que juegen las IAs. siguienteJugador = null;
+		        _(this.partida.jugs).each(function(jug){ this.partida.tablero.objetoResumen.addJugPuntos(jug);},this);
+			this.objetoResumen.cambiarIdJug(siguienteJugador);
+			objetoResumen.push(this.objetoResumen);
 		}
-		objetoResumen = this.objetoResumen.dameResumen();
-		this.objetoResumen = new ObjetoResumen();
 	}
 	
 	return [success, objetoResumen];
-	
 }
 
 
@@ -1089,7 +1097,7 @@ Tablero.prototype.dameFicha = function(){
     //console.log("la ficha actual en tablero.dameficha es: "+ this.fichaActual.numFicha);
 	return this.fichaActual;
 }
-
+//______________________________________________________________________
 Tablero.prototype.asignarCampoACiudad = function(ficha){
 	var esquinas = [{prev: 11, next: 0}, 
 				   {prev: 2 , next: 3}, 
@@ -1111,14 +1119,41 @@ Tablero.prototype.asignarCampoACiudad = function(ficha){
 		if (ciudadPdato && ciudadPdato != ultCiudad){
 			ultCiudad = ciudadPdato;
 			ciudadesDistintas ++;
-			console.log("*****************************LA PARTIDA ES: " + this.partida.listaCiudades);
-			console.log("*****************************LA ciudadPdato ES: " + ciudadPdato);
+			console.log("*************{[]}{[]}****************LA PARTIDA ES: " + this.partida.listaCiudades);
+			console.log("*************{[]}{[]}****************LA ciudadPdato ES: " + ciudadPdato);
 			var city = _(this.partida.listaCiudades).find (function(c){
 				return _(c.content).contains (ciudadPdato);			
 			});
 			city.camposAdyacentes.push(campoPdato);
 		}
+
 	},this);
+}
+
+Tablero.prototype.recuentoPuntosCampos = function(){	
+	_(this.partida.jugs).each(function(j){
+	console.log("{[]}{[]}{[]}{[]}{[]}{[]}{[]}{[]}{[]}{[]} id jugador: " + j.idJugador);
+		_(this.partida.listaCampos).each(function(f){
+	console.log("{[]}{[]}{[]}{[]}{[]}{[]}{[]}{[]}{[]}{[]} pts por el campo de pdato: " + f.id + " a los jugadores: " + f.jugsConPuntos);
+			if (_(f.jugsConPuntos).contains (j.idJugador)){
+				j.ciudadesIncluidas.push(f.ciudadesIncluidas);
+	console.log("{[]}{[]}{[]}{[]}{[]}{[]}{[]}{[]}{[]}{[]} id jugador: " + j.idJugador + " y tiene ciudades: " + f.ciudadesIncluidas);
+			}
+		});
+	},this);
+	_(this.partida.jugs).each(function(j){
+		if (j.ciudadesIncluidas.length != 0){
+			console.log("{[]}{[]}{[]}{[]}{[]}¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?{[]}{[]}{[]}{[]}{[]} antes de flatten  "+ j.ciudadesIncluidas + "longitud  "+ j.ciudadesIncluidas.length);
+			j.ciudadesIncluidas = _(j.ciudadesIncluidas).flatten();
+		    console.log("{[]}{[]}{[]}{[]}{[]}¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?{[]}{[]}{[]}{[]}{[]} pos-flatten y pre-uniq  "+ j.ciudadesIncluidas + "longitud  "+ j.ciudadesIncluidas.length);
+			j.ciudadesIncluidas = _(j.ciudadesIncluidas).uniq();
+			console.log("{[]}{[]}{[]}{[]}{[]}¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?{[]}{[]}{[]}{[]}{[]} pos-uniq  "+ j.ciudadesIncluidas + "longitud  "+ j.ciudadesIncluidas.length);
+			var puntos = 3 * j.ciudadesIncluidas.length;
+			console.log("{[]}{[]}{[]}{[]}{[]}¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?{[]}{[]}{[]}{[]}{[]} los  puntos son  "+ puntos);
+			j.puntos += puntos;
+			console.log("{[]}{[]}{[]}{[]}{[]}¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?{[]}{[]}{[]}{[]}{[]} los  puntos son  "+ j.puntos);
+		}
+	});
 }
 
 //*************************************************************************
@@ -1137,23 +1172,25 @@ var Partida = function(idPartida,jugs,numJugs){
     this.initialize(jugs,numJugs);
 }
 
-Partida.prototype.initialize = function(jugs,numJugs){
+Partida.prototype.initialize = function(jugadores,numJugs){
     //iran las cosas de jugadores y ia etcetc
     this.listaCampos = [];
     this.listaCiudades = [];
     this.listaCaminos = [];
     this.listaMonasterios = [];
-    this.tablero = new Tablero(this);
+    this.tablero = new Tablero(this);   
     this.jugs = [];
     
     var idIA = 0;
     for (var i = 0; i<numJugs; i++){
-        if (i>= jugs.length){
+        if (i>= jugadores.length){
             var jug = new IAPlayer (idIA);
+            jug.partida = this;
             this.jugs [i] = jug;
             idIA ++;
         }else{
-            var jug = new Jugador (jugs[i].idJugador, jugs[i].nombreJugador);
+            var jug = new Jugador (jugadores[i].idJugador, jugadores[i].nombreJugador);
+            jug.partida = this;
             this.jugs[i] = jug;
         }
     }
@@ -1167,24 +1204,34 @@ Partida.prototype.startCallIU = function(){
         
         _(this.jugs).each(function(j){
                 var obj = {};
-                obj.nombre = j.nombreJugador;
+                obj.nombre = j.nombre;
                 obj.puntos = j.puntos;
-                obj.seguidores = 7;
+                obj.numSeguidores = 7;
                 arrayJugs.push(obj);
         });
 		console.log("EN IA.JS this.idPartida es: " +this.idPartida);
+		console.log("el turno es: " + this.turno);
+		console.log("el jugador act es: " + this.getJugadorActual());
+		console.log("el id del jugador es: " + this.getJugadorActual().idJugador);
+		//
+		//
+		//
+		//DESCOMENTAR ESTA LINEA PARA LLAMAR A IU!!!!!!!!!!!!!!!!!!!!
+		//
+		//
+		//
+		//
         empezarPartida (this.idPartida,arrayJugs,this.getJugadorActual().idJugador);
-
 }
 
 //aqui devuelvo el jugador que tiene el turno
 Partida.prototype.getJugadorActual = function(){
-    return this.jugs[this.turno];
+    return (this.turno != null) ? this.jugs[this.turno] : this.turno;
 }
 
 Partida.prototype.pasarTurno = function(){
     if(this.tablero.mazo.data.length == 0){
-        this.finalizarPartida();
+        this.turno = null;
         return false;
     }else{
         this.turno = (this.turno + 1 > this.jugs.length -1) ? 0 : this.turno +1;
@@ -1197,14 +1244,21 @@ Partida.prototype.finalizarPartida = function(){
     //borrar la partida actual
     //hablar con plataforma
     this.recuentoPuntosFinal();
-    //this.resumenPartida()
+	
+	var objFinal = this.crearObjetoFinal();
+    
+	//this.resumenPartida()
     console.log("partidas antes de finalizar: "+partidas.length);
-    var p = partidas.splice(this.idPartida,1);
-    console.log("la partida que se ha borrado es: " + p.idPartida);
-    console.log("partidas despues de finalizar: "+partidas.length);
+    //var p = partidas.splice(this.idPartida,1);
+    borrarPartida(this.idPartida);
+    //console.log("la partida que se ha borrado es: " + p.idPartida);
+    //console.log("partidas despues de finalizar: "+partidas.length);
     //return this.getPuntos();
     //llamar a plataforma y a IU
+	return objFinal;
 }
+
+//_______________________________________________________________________________________
 
 Partida.prototype.recuentoPuntosFinal = function(){
     var ciudadesNoCerradas = _(this.listaCiudades).filter(function(c){
@@ -1216,22 +1270,35 @@ Partida.prototype.recuentoPuntosFinal = function(){
     var monasteriosNoCerrados = _(this.listaMonasterios).filter(function(m){
         return !m.isClosed;
     });
+
     //tenemos que hacer el metodo en partida para contar los puntos para acceder a los jugadores
-    _(this.listaCampos).each(function(f){
-        f.close();
-    });
+	_(this.listaCampos).each(function(f){
+		f.close();
+	});
+
+    this.tablero.recuentoPuntosCampos();
+
     _(ciudadesNoCerradas).each(function(c){
         c.close();
+        console.log("%%%%%%%%%%%se ha cerrado la ciudad con pdato: " + c.id);
     });
     _(caminosNoCerrados).each(function(r){
         r.close();
+        console.log("%%%%%%%%%%%se ha cerrado el camino con pdato: " + r.id);
     });
     _(monasteriosNoCerrados).each(function(m){
         m.close();
+        console.log("%%%%%%%%%%%se ha cerrado el monasterio con pdato: " + m.id);
     });
 }
-
-
+//__________________________
+Partida.prototype.crearObjetoFinal = function(){
+	var objFinal = [];
+	_(this.jugs).each(function(j){
+		objFinal.push({nombre: j.nombre, puntos: j.puntos});
+	});
+	return objFinal;
+}
 
 //*************************************************************************
 //*                                                                       *
@@ -1247,6 +1314,7 @@ var Campo = function(idCampo){
 	this.seguidores = [];
 	this.propSeguidores = [];
 	this.isClosed = false;
+	this.jugsConPuntos = [];
 }
 
 Campo.prototype.add = function(numSubcelda){
@@ -1297,20 +1365,56 @@ Campo.prototype.unificar = function (camposAIntegrar){
 	this.seguidores = _(seg).flatten();
 	this.seguidores = _(this.seguidores).uniq();
 }
-
+//___________________________________________________________________
 
 Campo.prototype.ponerSeguidor = function (seguidor){
     this.propSeguidores.push(seguidor.idJugador);
 	this.seguidores.push(seguidor);
 }
-Campo.prototype.calcularPuntos = function(){
-    return 3 * this.ciudadesIncluidas.length;
-}
 
 //esto no creo que nos haga falta
 Campo.prototype.close = function(){
- 	
+ 	if(this.propSeguidores.length != 0){
+		var dicNumSeg = _(this.propSeguidores).countBy (function(idJug){
+			for (i = 0; i<this.partida.jugs.length; i++){
+				if (idJug == this.partida.jugs[i].idJugador){
+				console.log("------------------------BBBBBBBBBBBBBBBBBBB    idjug " + idJug + "   this.partida.jugs[i].idJugador    " + this.partida.jugs[i].idJugador);
+					return ("#"+idJug);
+				}
+			}
+		},this);
+		
+		console.log("22222222222222222 los seguidores de la ciudad son: " + this.seguidores);
+		console.log("3333333333333333333333 el propietrario de lso seguidores es "+ this.propSeguidores)
+		var seguidoresJug = [];
+		
+		_(this.partida.jugs).each(function(jug){
+			var obj={};
+			console.log("rrrrrrrrrrrrrrrrrrrrrrr      diccionario con los seguidores es: " + dicNumSeg.toString());
+			var numSeg = dicNumSeg ["#"+jug.idJugador];
+			console.log("eeeeeeeeeee el numSeg es: " + numSeg)
+			if(numSeg && !_(seguidoresJug).any(function(j){ return j.id == jug.idJugador;}) ){
+				obj.id = jug.idJugador;
+				obj.cont = numSeg;
+				console.log("oooooooooooooooooooooooooooo   EXISTE obj??: "+ obj);
+				seguidoresJug.push(obj);
+			}
+		});
+		console.log("111111111111111111111111111111111111111       SeguidoresJug es: " + seguidoresJug);
+		var maxim = _(seguidoresJug).max(function(s){ 
+                                            return s.cont;
+                                        });
+        console.log("00000000000000000000000          MAXIM ES: " + maxim);
+		seguidoresJug = _(seguidoresJug).filter(function(s){
+			return s.cont == maxim.cont;
+		});
+		//almacenamos en jugsConPUntos los ids de los jugadores que se van a llevar puntos.
+		_(seguidoresJug).each(function(s){
+			this.jugsConPuntos.push(s.id);
+		},this);
+    }
 }
+
 
 //Campo.prototype.quitarSeguidor = function(idJugador){
 //    this.seguidores.splice (_(this.seguidores).indexOf(idJugador),1);
@@ -1397,9 +1501,12 @@ Ciudad.prototype.quitarSeguidor = function(idJugador){
 }
 
 Ciudad.prototype.calcularPuntos = function(){
-	var puntos = 2;
-	if (this.idFichas.length > 2){
+	var puntos;
+	
+	if ( (this.idFichas.length > 2) && (this.partida.turno != null) ){
 		puntos = ((this.idFichas.length + this.numEscudos) * 2);
+	}else{
+	    puntos = this.idFichas.length + this.numEscudos;
 	}
 	return puntos; 
 }
@@ -1705,6 +1812,7 @@ var ObjetoResumen = function(){
 
 ObjetoResumen.prototype.addJugPuntos = function(jugador){
 	//aqui jugador.nombre no esta definido por lo que en un principio estará undefined. (Despues de la integracion con plataforma existira)
+	console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% EL JUGADOR TIENE NUMSEGUIDORES: " + jugador.numSeguidores);
 	var res = {nombre: jugador.nombre, puntos: jugador.puntos, numSeguidores: jugador.numSeguidores};
 	this.arrayResumenJugs.push(res);
 }
@@ -1717,8 +1825,24 @@ ObjetoResumen.prototype.cambiarIdJug = function(id){
 	this.idSiguienteJug = id;
 }
 
-ObjetoResumen.prototype.dameResumen = function(){
-	return [this.arrayResumenJugs,this.idSiguienteJug,this.arraySeguidoresQuitar];
+//*************************************************************************
+//*                                                                       *
+//*                             OBJETO RESUMEN IA                         *
+//*                                                                       *
+//*************************************************************************
+
+var ObjetoResumenIA = function(){
+	this.fichaPuesta = [];
+}
+ObjetoResumenIA.prototype = new ObjetoResumen();
+
+ObjetoResumenIA.prototype.addFicha = function(ficha, pos, giro){
+	this.fichaPuesta.push({tipo: ficha.tipo, escudo: ficha.escudo, numFicha: ficha.numFicha, giro: giro});
+	this.fichaPuesta.push(pos);
+}
+
+ObjetoResumenIA.prototype.addSeguidor = function(cuadrante){
+	this.fichaPuesta.push(cuadrante);	
 }
 
 //*************************************************************************
@@ -1735,8 +1859,9 @@ var Jugador = function(idJugador, nombreJugador){
     this.caminos = [];
     this.monasterios = [];
     this.puntos = 0;
-	this.numSeguidores = 7;
+        this.numSeguidores = 7;
 	this.nombre = nombreJugador;
+	this.ciudadesIncluidas = [];
 }
 
 
@@ -1768,15 +1893,51 @@ var IAPlayer = function(idIA){
 IAPlayer.prototype = new Jugador();
 
 IAPlayer.prototype.playTurn = function(){
+    var a = new ObjetoResumenIA();
+    console.log("me he creado un objetoResumenIA para ver si se crea bien: " + a);
+    console.log(_(a).functions());
+    console.log("HOLA CARACOLA")
+	this.partida.tablero.objetoResumen = new ObjetoResumenIA();
+	console.log("El objeto resumen VALIDO es: " + this.partida.tablero.objetoResumen);
+	console.log(_(this.partida.tablero.objetoResumen).functions());
+	console.log("ADIOS CARACOLA")
 	//Aquí jugara su turno la IA. Se la llamará desde partida.
-	this.partida.tablero.dameFicha(); //se almacena en tablero.fichaActual.
+	var ficha = this.partida.tablero.dameFicha(); //se almacena en tablero.fichaActual.
 	var posFree = this.partida.tablero.posFree;
 	var giro = 0;
+	var p;
 	var success = false;
+	var posSeguidor = -1;
 	//va probando en las posiciones libres con un giro inicial de 0, si no ha encajado en ninguna, se cambia el giro
 	//y se vuelve a probar en todas hasta que encaje. Esto es hasta que se hagan 3 giros. 
-	while (!success && giro<4){
-		var i = Math.floor (Math.random() * posFree.length)
+	
+	while(!success && giro<4){
+	    var auxPosFree = _(posFree).clone(); 
+	    while(!success && (auxPosFree.length > 0) ){
+	        var i = Math.floor (Math.random() * (auxPosFree.length) );
+	        success = this.partida.tablero.ponerFicha(auxPosFree[i],giro);
+	        auxPosFree.splice(i,1);
+	    }
+	    giro++;
+	}
+	
+	
+	
+	
+	
+	//
+	//
+	//CONTROLAR QUE PASA SI NO PUEDE PONER SEGUIDOR EN NINGUN CUADRANTE
+	//
+	//
+	
+	
+	
+	
+	
+	
+	/*while (!success && giro<4){
+		var i = Math.floor (Math.random() * (posFree.length-1) );
 		var i_next = i;
 		do{
 			p = posFree[i_next];
@@ -1784,7 +1945,11 @@ IAPlayer.prototype.playTurn = function(){
 			var i_next = (i_next == posFree.length -1)?  0 : i_next ++;
 		}while(!success && i_next != i);
 		giro ++;
-	}
+	}*/
+	console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx this.partida.tablero.objetoResumen " + this.partida.tablero.objetoResumen);
+	console.log("El objeto resumen VALIDO es: " + this.partida.tablero.objetoResumen);
+	console.log(_(this.partida.tablero.objetoResumen).functions());
+	this.partida.tablero.objetoResumen.addFicha(ficha, p, giro);
 	// aqui se ve si se quiere poner seguidor o no, y se hacen los intentos para ponerlo
 	var probPonerS = this.numSeguidores*(1/7);
 	if(Math.random() < probPonerS){
@@ -1792,19 +1957,31 @@ IAPlayer.prototype.playTurn = function(){
 		var i = 13;
 		var posAProbar = _.range(0,12);
 		while (!success && i > 0){
-			var aux = Math.floor (Math.random() * (posAProbar.length - 1) );
-			success = this.partida.tablero.ponerSeguidor(posAProbar[aux],this.idJugador);
+			var aux = ( Math.floor ( Math.random() * (posAProbar.length) ) );
+			success = this.partida.tablero.ponerSeguidorJugador(posAProbar[aux],this.idJugador);
 			if(!success){
 				posAProbar.splice(aux,1);
+			}else{
+				posSeguidor = posAProbar[aux];
 			}
 			i--;
 		}
 	}else{
-		this.partida.tablero.ponerSeguidor();
+		this.partida.tablero.ponerSeguidorJugador();
 	}
-	this.partida.pasarTurno();
+	this.partida.tablero.objetoResumen.addSeguidor(posSeguidor);
+	console.log("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIICHA: {tipo:" + ficha.tipo + ", giro: " + giro + ", posSeguidor: " + posSeguidor);
 	//Ahora partida habrá cambiado el turno y le tocará al jugador correspondiente que podría 
 	//ser otra IA perfectamente.
+	_(this.partida.listaCampos).each(function(c){
+            console.log("campo" + c.id + ":" + c.content + " CIUDADES IIIIIIIIIIIIIIIIIIIIINCLUIDAS: " + c.ciudadesIncluidas);
+    });
+    _(this.partida.listaCiudades).each(function(c){
+            console.log("ciudad" + c.id + ":" + c.content + " id fichas: " + c.idFichas);
+    });
+    _(this.partida.listaCaminos).each(function(c){
+            console.log("camino" + c.id + ":" + c.content + " id fichas: " + c.idFichas);
+    }) 
 }
 
 
@@ -1822,17 +1999,12 @@ IAPlayer.prototype.playTurn = function(){
 //******* para todas las partidas *********
 partidas = [];
 addPartida  = function(partida){
-    partidas[partida.idPartida] = partida;
+    partidas.push(partida);
 }
 
 getTodasLasPartidas = function(){
     return partidas;
 }
-
-
-
-
-
 
 
 
@@ -1852,14 +2024,15 @@ generarMazo = function(){
 }
 
 getPartida = function(id_partida){
-        console.log("se ha llamado a getPartida");
-        console.log("numero de partidas: " + partidas.length);
-        console.log("idPartida almacenada: " + partidas[0].idPartida);
 	return _(partidas).find(function (partida){
-	        console.log("partida id: " + partida.idPartida);
-			console.log("LA PARTIDA QUE NOS PASAN ES: " + id_partida);
 		return partida.idPartida == id_partida;
 	});
+}
+
+borrarPartida = function(idPartida){
+    partidas = _(partidas).reject(function(p){
+        return p.idPartida == idPartida;
+    })
 }
 
 

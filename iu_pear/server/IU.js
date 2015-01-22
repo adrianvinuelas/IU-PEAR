@@ -1,5 +1,6 @@
 empezarPartida = function(id_partida, arrayJug, user_Id) {
    
+   console.log("IU: NOS LLEGA LA LLAMADA DE IA DE EMPEZARPARTIDA");
     
     arrayJug.forEach(function (e, i) {
         console.log("JUGADORES: " + e.nombre);
