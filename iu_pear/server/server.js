@@ -262,7 +262,7 @@ Meteor.methods ({
     },
 
     ponerSeguidor: function(id_partida,posSeguidor,id_usuario){
-       
+       /*
         var partida = getPartida(id_partida);
         
         var resumenTurno = partida.tablero.ponerSeguidor (posSeguidor,id_usuario);
@@ -274,6 +274,31 @@ Meteor.methods ({
         console.log("numero de seguidores a quitar: " + resumenTurno[1][0].arraySeguidoresQuitar.length);
         console.log("resumenTurno[0]: " + resumenTurno[0]);
         return resumenTurno;
+        */
+
+        ObjetoResumen = {arrayResumenJugs: [{nombre: "Kevin", puntos: 10, numSeguidores: 6}, {nombre: "Victor", puntos: 0, numSeguidores: 7}],
+                         idSiguienteJug: "sd", 
+                         arraySeguidoresQuitar: []
+                         }
+         
+       
+        ObjetoResumenIA = {arrayResumenJugs: [{nombre: "Kevin", puntos: 10, numSeguidores: 6}, {nombre: "Victor", puntos: 0, numSeguidores: 3}],
+                         idSiguienteJug: "sa", 
+                         arraySeguidoresQuitar: [{x:50,y:51}],
+                         fichaPuesta: [{tipo:16, escudo:false, numFicha:4, giro:2}, {x:51, y:50}, 7]
+                         }
+                         
+        ObjetoResumenIA2 = {arrayResumenJugs: [{nombre: "Kevin", puntos: 10, numSeguidores: 6}, {nombre: "Victor", puntos: 0, numSeguidores: 2}],
+                         idSiguienteJug: "2A3xSdfDJxXatruCY", 
+                         arraySeguidoresQuitar: [{x:50,y:51}],
+                         fichaPuesta: [{tipo:16, escudo:false, numFicha:4, giro:2}, {x:52, y:50}, 5]
+                         }
+                        
+                    
+                        
+        arrayRespuesta = [true, [ObjetoResumen, ObjetoResumenIA, ObjetoResumenIA2]];
+       
+        return arrayRespuesta;
     },
 
     generarPartidaPL: function(objetoPartidaPL){

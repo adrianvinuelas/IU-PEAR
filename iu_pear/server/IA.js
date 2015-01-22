@@ -1738,9 +1738,10 @@ Camino.prototype.updateLibres = function(bool){
 var Monasterio = function(idMonasterio,pos){
     this.id = idMonasterio;
     this.isClosed = false;
-	this.setPosAdyacentes(pos);
+        this.setPosAdyacentes(pos);
 	this.seguidores = [];
 	this.propSeguidores = [];
+	this.numFichas = 1;
 }
 
 Monasterio.prototype.setPosAdyacentes = function(pos){
@@ -1755,9 +1756,12 @@ Monasterio.prototype.setPosAdyacentes = function(pos){
 }
 
 Monasterio.prototype.updateAdyacentes = function(pos){
-	this.posAdyacentes = _(this.posAdyacentes).filter (function(p){
+        var adyacentes = _(this.posAdyacentes).filter (function(p){
 		return p.x != pos.x && p.y != pos.y;
 	});
+	var n = this.posAdyacentes.length - adyacentes.length;
+	this.numFichas += n;
+	this.posAdyacentes = adyacentes;
 	if (this.posAdyacentes.length == 0){
 		this.close();
 	} 
@@ -1765,7 +1769,7 @@ Monasterio.prototype.updateAdyacentes = function(pos){
 
 //Hay que cambiar este metodo para que tenga en cuenta los no cerrados.
 Monasterio.prototype.calcularPuntos = function(){
-    return 9;
+    return this.numFichas;
 }
 
 Monasterio.prototype.close = function(){

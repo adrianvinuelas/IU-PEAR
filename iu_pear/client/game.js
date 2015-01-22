@@ -94,6 +94,7 @@ IATurno = false;
 GestionResumenIA = false;
 BorrarSegIA = false;
 iGlobal = 0;
+NumIAs = 0;
 
 var startGame = function() {
 
@@ -813,7 +814,9 @@ var ColocarSeguidor = function(x, y, idx, idy) {
             
             obj = Turno.findOne({Comando:"BorrarSeguidor"});
 
-            Turno.update(obj._id,{$set: {Comando:"ActualizarTurno", ID_Partida: Id_Partida, Jugadores: arrayRespuestaIA[0].arrayResumenJugs, User_id: arrayRespuestaIA[0].idSiguienteJug, nombrePieza: "", rotacion: false, numRotacion: 0, casillaX: 0, casillaY: 0, arrayQuitarSeg: [], posx: 0, posy: 0, posxseg: 0, posyseg:0, scroll: false, ladoscroll: "", contador: 0, numColor: numcolor}}); 
+            Turno.update(obj._id,{$set: {Comando:"ActualizarTurno", ID_Partida: Id_Partida, Jugadores: arrayRespuestaIA[iGlobal].arrayResumenJugs, User_id: arrayRespuestaIA[iGlobal].idSiguienteJug, nombrePieza: "", rotacion: false, numRotacion: 0, casillaX: 0, casillaY: 0, arrayQuitarSeg: [], posx: 0, posy: 0, posxseg: 0, posyseg:0, scroll: false, ladoscroll: "", contador: 0, numColor: numcolor}}); 
+            
+            IATurno = false;
             
         
         }else if(GestionResumenIA && GestionResumenIAlocal){
@@ -824,8 +827,14 @@ var ColocarSeguidor = function(x, y, idx, idy) {
    
         }else if(BorrarSegIA && BorrarSegIAlocal){
 			BorrarSegIA = false;
-			BorrarSegIAlocal = false;
-			gestionBorrarSeguidor(arrayRespuestaIA[iGlobal]);			
+		    
+			gestionBorrarSeguidor(arrayRespuestaIA[iGlobal]);
+			
+		    if (numIAs === iGlobal){
+			    BorrarSegIAlocal = false;
+			    console.log("ULTIMA IA");
+                ActualizarTurnoGlobal = true;
+			}			
 		}
     }   
     this.draw = function(ctx) {
@@ -975,7 +984,8 @@ function gestionBorrarSeguidor (result){
 };
 
 function gestionCambiarTurno(result){
-       
+    
+    iGlobal = 0;   
     if (result.length > 1){
         
         //hay jugador IA
@@ -1001,6 +1011,7 @@ function gestionTurnoIA (result){
  //ActualizarTurnoGlobal = true;
         
         var tamañoArray = result.length;
+        numIAs = tamañoArray - 1;
         
         for (i = 1; i< tamañoArray; i++){
 			iGlobal = i;
@@ -1017,8 +1028,9 @@ function gestionTurnoIA (result){
             //gestionBorrarSeguidor(result[i]);     ----> ponerlo luego lo ultimo
             pintarInfoIA(result[i]);
 	    	BorrarSegIA = true;
-            setTimeout(function(){},110);
+            setTimeout(function(){},150);
         }
+        
         
 
 }
@@ -1094,7 +1106,7 @@ function pintarInfoIA (ObjetoIA){
             break;
         case 5:
             board.add (new Seguidor (posCanvasX+48, posCanvasY+39,verColorSeg(), xRec, yRec)); 
-            obj = Turno.findOne({Comando:"BorrarSeguidor"});
+            obj = Turno.findOne({});
             Turno.update(obj._id,{$set: {Comando:"JugadaIA", nombrePieza: arg, posx: posCanvasX, posy: posCanvasY, casillaX: xRec, casillaY: yRec, posxseg: posCanvasX+48, posyseg:posCanvasY+39, numRotacion: giroRec, numColor: numcolor, scroll:false }});  
             break;
         case 6:
