@@ -92,6 +92,8 @@ arrayRespuestaIA = [];
 ActualizarTurnoGlobal = false;
 IATurno = false;
 GestionResumenIA = false;
+BorrarSegIA = false;
+iGlobal = 0;
 
 var startGame = function() {
 
@@ -450,6 +452,8 @@ var ColocarSeguidor = function(x, y, idx, idy) {
     var BorrarSeguidor = false;
 	var colorSeg = "";
 	var GestionResumenIAlocal = true;
+	var BorrarSegIAlocal = true;
+
     this.step = function(dt) {
     
         if(!colocado){ 
@@ -816,7 +820,11 @@ var ColocarSeguidor = function(x, y, idx, idy) {
             
             gestionTurnoIA(arrayRespuestaIA);
    
-        }
+        }else if(BorrarSegIA && BorrarSegIAlocal){
+			BorrarSegIA = false;
+			BorrarSegIAlocal = false;
+			gestionBorrarSeguidor(arrayRespuestaIA[iGlobal]);			
+		}
     }   
     this.draw = function(ctx) {
         
@@ -993,6 +1001,7 @@ function gestionTurnoIA (result){
         var tamañoArray = result.length;
         
         for (i = 1; i< tamañoArray; i++){
+			iGlobal = i;
             console.log("METEEEE2222");
             IATurno = true;
             console.log("color: " + numcolor)
@@ -1005,7 +1014,8 @@ function gestionTurnoIA (result){
             
             //gestionBorrarSeguidor(result[i]);     ----> ponerlo luego lo ultimo
             pintarInfoIA(result[i]);
-           
+	    	BorrarSegIA = true;
+            setTimeout(function(){},110);
         }
         
 
