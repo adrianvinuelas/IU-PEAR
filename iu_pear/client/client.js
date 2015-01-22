@@ -13,9 +13,9 @@ Tracker.autorun(function(){
         if(Meteor.userId() != User_IdIA){
 		    if(!m.scroll){
                 if(m.Comando === "PedirPieza"){
-                    if(!m.rotacion){     //cuando deja de ser mi turno, solo se pinta si m.rotacion esta a false(cambiar este if)         
+                    if(!m.rotacion){            
                         console.log("2222") ; 
-                        var piezaNueva = new pieza (m.nombrePieza, 11.5*64, 8*64);
+                        var piezaNueva = new pieza (m.nombrePieza, 11.5*64, 8*64, false, 0, false);
                         board.add(piezaNueva);
                     }else{
                         rotacionTracker = [m.rotacion, m.numRotacion];
@@ -40,9 +40,9 @@ Tracker.autorun(function(){
                    	console.log("44441111111");
                 	var array = m.arrayQuitarSeg;
                 	array.forEach(function (e, i) {						
-			        borrarSeguidor(e.x, e.y);
-			        console.log("llamado borrar seguidor desde client");
-			    });
+			            borrarSeguidor(e.x, e.y);
+			            console.log("llamado borrar seguidor desde client");
+			        });
         			
         			console.log("4444");
                 	
@@ -62,13 +62,22 @@ Tracker.autorun(function(){
 		      		     }
 		     		console.log("77777") ;
 				    Game.setBoard(1,new Jugadores(JugadoresIA));
+				    
+			    }else if (m.Comando === "JugadaIA") {
+			        console.log("8888888");
+			        var piezaNueva = new pieza (m.nombrePieza, m.posx, m.posy, true, m.numRotacion, true);
+	                board.add(piezaNueva);
+			        var seguidor = new Seguidor (m.posxseg, m.posyseg,m.numColor, m.casillaX, m.casillaY);
+			        board.add (seguidor);
+			    
+			    
 			    }
 		    }else{
 			    DejarScroll = true;
 			    ladoScrollTracker = m.ladoscroll;
 			    contadorScroll++;
 			    //ScrollTracker = false;
-			    console.log("88888")		
+			    console.log("999999")		
 	      	}
 		} else {
 		    //if(m.Comando === "ActualizarTurno"){

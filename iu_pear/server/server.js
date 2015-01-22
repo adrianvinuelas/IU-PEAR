@@ -360,15 +360,21 @@ Meteor.methods ({
 	return true;
 	*/
 
-	
 	ObjetoResumen = {arrayResumenJugs: [{nombre: "Kevin", puntos: 10, seguidores: 6}, {nombre: "Victor", puntos: 0, seguidores: 7}],
-	                 idSiguienteJug: "Cc2eDC4STQZdCPHbg",  
+	                 idSiguienteJug: "HKezcWmF48PhSytCm",  
 	                 arraySeguidoresQuitar: [{x:50,y:51}]
 	                 }
+	
+	
+	ObjetoResumenIA = {arrayResumenJugs: [{nombre: "Kevin", puntos: 10, seguidores: 6}, {nombre: "Victor", puntos: 0, seguidores: 3}],
+	                 idSiguienteJug: "HKezcWmF48PhSytCm",  
+	                 arraySeguidoresQuitar: [{x:50,y:51}],
+	                 fichaPuesta: [{tipo:16, escudo:false, numFicha:4, giro:2}, {x:51, y:50}, 7]
+	                 }
 	                 
+	             
 	                 
-	                 
-	arrayRespuesta = [true, [ObjetoResumen]];
+	arrayRespuesta = [true, [ObjetoResumen, ObjetoResumenIA]];
 	
 	return arrayRespuesta;
     },
