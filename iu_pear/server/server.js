@@ -362,7 +362,7 @@ Meteor.methods ({
 
 	ObjetoResumen = {arrayResumenJugs: [{nombre: "Kevin", puntos: 10, seguidores: 6}, {nombre: "Victor", puntos: 0, seguidores: 7}],
 	                 idSiguienteJug: "HKezcWmF48PhSytCm",  
-	                 arraySeguidoresQuitar: [{x:50,y:51}]
+	                 arraySeguidoresQuitar: []
 	                 }
 	
 	

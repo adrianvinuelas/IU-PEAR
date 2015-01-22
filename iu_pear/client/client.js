@@ -31,7 +31,7 @@ Tracker.autorun(function(){
 				    colocadoSegTracker = true;
 				    xsegTracker = m.posxseg;
 				    ysegTracker = m.posyseg;
-				    numColor = m.numColor;
+				    numcolor = m.numColor;
                     console.log("33333"); 
                     
                     
@@ -67,7 +67,8 @@ Tracker.autorun(function(){
 			        console.log("8888888");
 			        var piezaNueva = new pieza (m.nombrePieza, m.posx, m.posy, true, m.numRotacion, true);
 	                board.add(piezaNueva);
-			        var seguidor = new Seguidor (m.posxseg, m.posyseg,m.numColor, m.casillaX, m.casillaY);
+					numcolor = m.numColor;
+			        var seguidor = new Seguidor (m.posxseg, m.posyseg,verColorSeg(), m.casillaX, m.casillaY);
 			        board.add (seguidor);
 			    
 			    
