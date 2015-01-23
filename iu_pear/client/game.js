@@ -803,7 +803,6 @@ var ColocarSeguidor = function(x, y, idx, idy) {
 		        if(Game.keys['NOSeguidor']) noseg = true;
 		        if(noseg && !Game.keys['NOSeguidor']) {
 		            noseg = false;
-					piezaactual = globalPiezaActualFallo;
 		            board.remove(piezaactual);  
 		            board.remove(cuadriculaS);
 		            Meteor.call("ponerSeguidor", Id_Partida, function ( error, result) {
@@ -852,7 +851,7 @@ var ColocarSeguidor = function(x, y, idx, idy) {
 
             Turno.update(obj._id,{$set: {Comando:"ActualizarTurno", ID_Partida: Id_Partida, Jugadores: arrayRespuestaIA[iGlobal].arrayResumenJugs, User_id: arrayRespuestaIA[iGlobal].idSiguienteJug, nombrePieza: "", rotacion: false, numRotacion: 0, casillaX: 0, casillaY: 0, arrayQuitarSeg: [], posx: 0, posy: 0, posxseg: 0, posyseg:0, scroll: false, ladoscroll: "", contador: 0, numColor: numcolor}}); 
             
-            IATurno = false;
+            //IATurno = false;
             
         
         }else if(GestionResumenIA && GestionResumenIAlocal){
@@ -863,7 +862,8 @@ var ColocarSeguidor = function(x, y, idx, idy) {
    
         }else if(BorrarSegIA && BorrarSegIAlocal){
 			BorrarSegIA = false;
-		    
+		    console.log("iglobal antes de borrar ias es = "+iGlobal);
+		    console.log("arrayRespuestaIA[iGlobal]  es = " + arrayRespuestaIA[iGlobal]);
 			gestionBorrarSeguidor(arrayRespuestaIA[iGlobal]);
 			
 		    if (numIAs === iGlobal){
@@ -1007,11 +1007,16 @@ var ScrollTeclas = function() {
 
 
 function gestionBorrarSeguidor (result){
-        
-        seg = result.arraySeguidoresQuitar;
-        seg.forEach(function (e, i) {            
+        console.log("ENTRA A GESTION BORRAR SEGUIDOR");
+        console.log("result.arraySeguidoresQuitar es = "+ result.arraySeguidoresQuitar);
+        var seg = result.arraySeguidoresQuitar;
+        //if(seg!=undefined){
+        	seg.forEach(function (e, i) { 
+        	console.log("entra a seg.foreach");           
             borrarSeguidor(e.x, e.y);
-        });
+        	});
+        //}
+        
         
         
         obj = Turno.findOne({});
@@ -1027,8 +1032,10 @@ function gestionCambiarTurno(result){
         //hay jugador IA
         //Primero tenemos que hacer el resumen del jugador humano, borrar
         console.log("METEEEE");
-        gestionBorrarSeguidor(result[0]);
-        GestionResumenIA = true;
+        setTimeout(function(){
+	        gestionBorrarSeguidor(result[0]);
+	        GestionResumenIA = true;
+    	},500);
        
         //IATurno = false;        //Importante pñoner esto a false en algun momento
     }else{
@@ -1050,12 +1057,15 @@ function gestionTurnoIA (result){
         numIAs = tamañoArray - 1;
         
         if(result[1] != undefined){
+        	setTimeout(function(){
         	console.log("entra a 1");
         	iGlobal = 1;
         	IATurno = true;
         	numcolor++;
         	pintarInfoIA(result[1]);
         	BorrarSegIA = true;
+        	
+        	},1500);
         }
         if(result[2] != undefined){
         	setTimeout(function(){
@@ -1065,7 +1075,8 @@ function gestionTurnoIA (result){
         	numcolor++;
         	pintarInfoIA(result[2]);
         	BorrarSegIA = true;
-        	},1500);
+
+        	},2500);
         	
         }
         if(result[3] != undefined){
@@ -1076,7 +1087,7 @@ function gestionTurnoIA (result){
         	numcolor++;
         	pintarInfoIA(result[3]);
         	BorrarSegIA = true;
-        	},3000);
+        	},3500);
         	
         }
         if(result[4] != undefined){
@@ -1090,6 +1101,9 @@ function gestionTurnoIA (result){
         	},4500);
         	
         }
+        setTimeout(function(){
+        	IATurno = false;
+        },6000);
         /*for (i = 1; i< tamañoArray; i++){
         	iGlobal = i;
         	setTimeout(function(i){

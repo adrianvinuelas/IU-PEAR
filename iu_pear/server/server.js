@@ -4,8 +4,8 @@ var partidaPrueba;
 
 //generamos una partida para que el cliente pueda probar la interfaz sin problemas de sincronía
 console.log("server: voy a generar una partida");
-generarPartida(0,[{idJugador:"vxWGtB9R9uD7h8P2g",nombreJugador:'adri'},
-				  {idJugador:"NuPPmQETnsSnGvhFH",nombreJugador:'crishiano'}
+generarPartida(0,[{idJugador:"JEReQM2XB4qbp8XzE",nombreJugador:'Jorge'}
+				  //{idJugador:"SY9xke5KQNt9ZN6Wj",nombreJugador:'Alberto'}
 				  //{idJugador:"C",nombreJugador:'c'},
 				  //{idJugador:"D",nombreJugador:'d'},
                     //{idJugador:"E",nombreJugador:'e'}
@@ -225,13 +225,6 @@ Meteor.methods ({
     //                      Interfaz con IU                               //
     //********************************************************************//
 
-    
-
-    dimeTurno: function(id_partida){
-        var partida = getPartida (id_partida);
-        return partida.getTurno();
-    }, 
-
     /* Comneto este método porque no funcionaba.
     No funcionaba puesto que devolviamos un objeto que tiene dependencia circular. 
     Puesto que este método no lo vamos a utilizar... Se borrará en un futuro.
@@ -267,15 +260,43 @@ Meteor.methods ({
         var partida = getPartida(id_partida);
         
         var resumenTurno = partida.tablero.ponerSeguidor (posSeguidor,id_usuario);
-	/*
-        console.log("resumenTurno[1]: " + resumenTurno[1]);
-        console.log("numero de los jugadores: " + resumenTurno[1][0].arrayResumenJugs.length);
-        console.log("numero de seguidores del primer jugador: " + resumenTurno[1][0].arrayResumenJugs[0].numSeguidores);
-        console.log("numero de seguidores del segun jugador: " + resumenTurno[1][0].arrayResumenJugs[1].numSeguidores);
-        console.log("id del siguiente jugador: " + resumenTurno[1][0].idSiguienteJug);
-        console.log("numero de seguidores a quitar: " + resumenTurno[1][0].arraySeguidoresQuitar.length);
-        console.log("resumenTurno[0]: " + resumenTurno[0]);
-	*/
+	
+        /*console.log("poner seguidor con exito: " + resumenTurno[0]);
+        console.log("ha habido numero turnos: " + resumenTurno[1].length);
+        console.log("voy a pintar los resumenes de los turnos: sólo los puntos de los jugadores: ");
+        console.log("el primer turno: ");
+        _(resumenTurno[1][0].arrayResumenJugs).each(function(jug){
+            console.log(jug.nombre);
+            console.log(jug.puntos);
+            console.log(jug.numSeguidores);
+        });
+        console.log("siguiente turno: " + resumenTurno[1][0].idSiguienteJug);
+        console.log("hay que quitar seguidor????: " + resumenTurno[1][0].arraySeguidoresQuitar.length);
+        console.log("arraySeguidoresQuitar: " + resumenTurno[1][0].arraySeguidoresQuitar);
+        //aqui pinto los resumenes de puntos del turno de la IA.
+        if (resumenTurno[1].length > 1){
+            console.log("estas son las keys del objetoResumenIA: " + _(resumenTurno[1][0]));
+            console.log("voy a pintar los turnos de las IAs y los seguidores: ");
+            for (i = 1; i < resumenTurno[1].length; i++){
+                console.log("estas son las keys del objetoResumenIA: " + _(resumenTurno[1][i]).keys());
+                _(_(resumenTurno[1][i].fichaPuesta).keys()).each(function(key){
+                    console.log(key + ": " + resumenTurno[1][i].fichaPuesta[key]);
+                });
+                _(resumenTurno[1][i].arrayResumenJugs).each(function(jug){
+                    console.log(jug.nombre);
+                    console.log(jug.puntos);
+                    console.log(jug.numSeguidores);
+                });
+                console.log("siguiente turno: " + resumenTurno[1][i].idSiguienteJug);
+                _(resumenTurno[1][i].arraySeguidoresQuitar).each(function(pos){
+                    console.log("sequidor a quitar que se encontraba en la pos: " + pos);
+                });
+                console.log("hay que quitar seguidor????: " + resumenTurno[1][i].arraySeguidoresQuitar.length);
+                console.log("arraySeguidoresQuitar: " + resumenTurno[1][i].arraySeguidoresQuitar);
+            }
+            
+        }*/
+	
         return resumenTurno;
         
 	/*
