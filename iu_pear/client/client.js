@@ -81,10 +81,26 @@ Tracker.autorun(function(){
 			    console.log("999999")		
 	      	}
 		} else {
+				if(m.Comando === "ActualizarTurno") {
+						
+				     JugadoresIA = m.Jugadores;
+				     User_IdIA = m.User_id;
+				     console.log("55555")
+				     if(Meteor.userId() === User_IdIA){
+						    numcolor = m.numColor;
+						    otrapieza = true;
+						    DejarScroll = true;
+				       		Game.setBoard(2,new TextoPideFicha("Pulsa enter para pedir ficha ",playGame));
+						    console.log("66666") ;
+		      		     }
+		     		console.log("77777") ;
+				    Game.setBoard(1,new Jugadores(JugadoresIA));
+				}else{
 		    //if(m.Comando === "ActualizarTurno"){
-            	JugadoresIA = m.Jugadores;
-		        User_IdIA = m.User_id;
-           		Game.setBoard(1,new Jugadores(JugadoresIA));
+		        	JugadoresIA = m.Jugadores;
+				    User_IdIA = m.User_id;
+		       		Game.setBoard(1,new Jugadores(JugadoresIA));
+           		}
             //}
         }
         

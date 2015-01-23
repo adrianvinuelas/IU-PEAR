@@ -60,8 +60,8 @@ var sprites = {
 board = new TableroJuego();
 otrapieza = true;
 //TextoPidePieza = new TextoPideFicha("Pulsa enter para pedir ficha ",playGame);
-var piezaactual = new PiezaActual();
-var cuadriculaS = new cuadriculaSeguidor();
+piezaactual = "";
+cuadriculaS = "";
 DejarScroll =false;
 //
 xIA = 0;//estas variables globales son para los calculos de la casilla en la que se pone la ficha para pasarselo a IA
@@ -95,6 +95,9 @@ GestionResumenIA = false;
 BorrarSegIA = false;
 iGlobal = 0;
 NumIAs = 0;
+nombreCuadricula = "";
+numgiroCuadricula = 0;
+giroCuadricula = false;
 
 var startGame = function() {
 
@@ -119,7 +122,7 @@ var startGame = function() {
 playGame = function() {
 
   if(otrapieza){
-	
+	cuadriculaS = new cuadriculaSeguidor();
     pedirPieza();
     console.log("termina Pide Pieza");
     
@@ -200,7 +203,7 @@ Seguidor = function (x, y, color, idx, idy){//añadir color para que se pinte
 	this.idx = idx;
 	this.idy = idy;
 	console.log("PINTADO SEGUIDOR");
-	
+	console.log("this.color es = "+ this.color);
     this.step = function(dt) {           
 
     }
@@ -212,6 +215,7 @@ Seguidor = function (x, y, color, idx, idy){//añadir color para que se pinte
 }
 
 verColorSeg = function(){
+	console.log("numcolor en vercolorseg = "+ numcolor);
 	if(numcolor ==0){
 		return "sr";
 	}else if(numcolor ==1){ 
@@ -220,7 +224,7 @@ verColorSeg = function(){
 		return "sa";
 	}else if(numcolor ==3){
 		return "sn";
-	}else if(numcolor ==3){
+	}else if(numcolor ==4){
 		return "sb";
 	}
 }
@@ -231,14 +235,11 @@ pieza = function (nombre, x, y, colocadaRec, giroRec, dejarGiro){
     this.w = 64;
     this.h = 64;
     this.nombre = nombre;
-    piezaactual.nombre = nombre;
     var colocada = colocadaRec;
     var noDejan = false;
     this.giro = dejarGiro;
-    piezaactual.giro= false;
     this.numgiro = giroRec;
     var giroIA = 0;
-    piezaactual.ngiro= 0;
     this.type = "pieza";
     this.scroll = false;
     this.primeravez = true;
@@ -286,9 +287,17 @@ pieza = function (nombre, x, y, colocadaRec, giroRec, dejarGiro){
 				      	if(result){
 				      	    noDejan = false;
 						    obj = Turno.findOne({Comando:"PedirPieza"});
-						    Turno.update(obj._id,{$set: {Comando:"ColocarPieza",posx: x, posy:y, casillaX: xIA, casillaY: yIA, scroll:false }});  
+						    Turno.update(obj._id,{$set: {Comando:"ColocarPieza",posx: x, posy:y, casillaX: xIA, casillaY: yIA, scroll:false }});
+							globalPiezaActualFallo = piezaactual;
+							nombreCuadricula = nombre;
+							console.log(" nombreCuadricula =" + nombreCuadricula);
+							numgiroCuadricula = giroIA;
+							console.log(" numgiroCuadricula =" + numgiroCuadricula);
+							console.log(" giroCuadricula =" + giroCuadricula);
+							piezaactual = new PiezaActual(nombreCuadricula,numgiroCuadricula,giroCuadricula);
 						    board.add(piezaactual);
-						    board.add(cuadriculaS); 
+						    board.add(cuadriculaS);
+							console.log("añadido cuadriculaS y piezaActual"); 
 						    DejarScroll = false;    //cuando estamos esperando a que pulsen una tecla para elegir la posicion donde colocar el seguidor se mete dibujo para colocar seguidor no se puede mover el scroll
 						    board.add(new ColocarSeguidor(x, y, xIA, yIA)); 
 						    colocada = true;	
@@ -313,14 +322,12 @@ pieza = function (nombre, x, y, colocadaRec, giroRec, dejarGiro){
 	    if(Game.keys['giro']){
 		
 			    this.giro = true;
-			    piezaactual.giro = true;
+				giroCuadricula = true;
 			    this.numgiro++;
 			    giroIA++;
-			    piezaactual.ngiro++;
 			    if(this.numgiro == 4){
 				    this.numgiro = 0;
 				    giroIA = 0;
-				    piezaactual.ngiro = 0;
 			    }
 			    console.log("this.numgiro = " +this.numgiro)
 			    
@@ -360,7 +367,7 @@ pieza = function (nombre, x, y, colocadaRec, giroRec, dejarGiro){
 			 if((Meteor.userId() === User_IdIA) && (!IATurno)){
 				alert("Si NO quieres poner seguidor pulsa N.") ; 
 			}else if((Meteor.userId() === User_IdIA) && (IATurno)){
-			    alert("Turno de IA") ; 
+			   // alert("Turno de IA") ; 
 			}
 		  }
 		  if(!this.scroll){//esto es para que si aun la pieza es la que tenemos que colocar al hacer scroll no se mueva
@@ -480,9 +487,12 @@ var ColocarSeguidor = function(x, y, idx, idy) {
 			                
                         }else{
 		                    alert("No puedes colocar un seguidor en esa posicion \nPrueba otra");
+							piezaactual = new PiezaActual(nombreCuadricula,numgiroCuadricula,giroCuadricula);
+							cuadriculaS = new cuadriculaSeguidor();
 		                    board.add(piezaactual);
 				            board.add(cuadriculaS); 
 		                }
+
                     });
                 }		
 		        if(Game.keys['pos1']) posicion1 = true;
@@ -503,6 +513,8 @@ var ColocarSeguidor = function(x, y, idx, idy) {
 			                BorrarSeguidor = true;
 			            }else{
 			                alert("No puedes colocar un seguidor en esa posicion \nPrueba otra");
+							piezaactual = new PiezaActual(nombreCuadricula,numgiroCuadricula,giroCuadricula);
+							cuadriculaS = new cuadriculaSeguidor();
 			                board.add(piezaactual);
 					        board.add(cuadriculaS); 
 			            }
@@ -526,8 +538,10 @@ var ColocarSeguidor = function(x, y, idx, idy) {
 			                BorrarSeguidor = true;
 			            }else{
 			                alert("No puedes colocar un seguidor en esa posicion \nPrueba otra");
+							piezaactual = new PiezaActual(nombreCuadricula,numgiroCuadricula,giroCuadricula);
+							cuadriculaS = new cuadriculaSeguidor();
 			                board.add(piezaactual);
-						        board.add(cuadriculaS); 
+						    board.add(cuadriculaS); 
 			            }
 		            });
 		        
@@ -551,6 +565,8 @@ var ColocarSeguidor = function(x, y, idx, idy) {
 			                BorrarSeguidor = true;
 			            }else{
 			                alert("No puedes colocar un seguidor en esa posicion \nPrueba otra");
+							piezaactual = new PiezaActual(nombreCuadricula,numgiroCuadricula,giroCuadricula);
+							cuadriculaS = new cuadriculaSeguidor();
 			                board.add(piezaactual);
 						    board.add(cuadriculaS); 
 			            }
@@ -575,6 +591,8 @@ var ColocarSeguidor = function(x, y, idx, idy) {
 			                BorrarSeguidor = true;
 			            }else{
 			                alert("No puedes colocar un seguidor en esa posicion \nPrueba otra");
+							piezaactual = new PiezaActual(nombreCuadricula,numgiroCuadricula,giroCuadricula);
+							cuadriculaS = new cuadriculaSeguidor();
 			                board.add(piezaactual);
 					        board.add(cuadriculaS); 
 			            }
@@ -599,6 +617,8 @@ var ColocarSeguidor = function(x, y, idx, idy) {
 			                BorrarSeguidor = true;
 			            }else{
 			                alert("No puedes colocar un seguidor en esa posicion \nPrueba otra");
+							piezaactual = new PiezaActual(nombreCuadricula,numgiroCuadricula,giroCuadricula);
+							cuadriculaS = new cuadriculaSeguidor();
 			                board.add(piezaactual);
 						    board.add(cuadriculaS); 
 			            }	        
@@ -622,6 +642,8 @@ var ColocarSeguidor = function(x, y, idx, idy) {
 		                    BorrarSeguidor = true;
 			            }else{
 			                alert("No puedes colocar un seguidor en esa posicion \nPrueba otra");
+							piezaactual = new PiezaActual(nombreCuadricula,numgiroCuadricula,giroCuadricula);
+							cuadriculaS = new cuadriculaSeguidor();
 			                board.add(piezaactual);
 						    board.add(cuadriculaS); 
 			            }	        
@@ -645,6 +667,8 @@ var ColocarSeguidor = function(x, y, idx, idy) {
 			                BorrarSeguidor = true;
 			            }else{
 			                alert("No puedes colocar un seguidor en esa posicion \nPrueba otra");
+							piezaactual = new PiezaActual(nombreCuadricula,numgiroCuadricula,giroCuadricula);
+							cuadriculaS = new cuadriculaSeguidor();
 			                board.add(piezaactual);
 						    board.add(cuadriculaS); 
 			            }	        
@@ -657,7 +681,7 @@ var ColocarSeguidor = function(x, y, idx, idy) {
 		            board.remove(cuadriculaS);
 		            Meteor.call("ponerSeguidor", Id_Partida, 8, User_IdIA, function ( error, result) {
 		                if(result[0]){
-							colorSeg = verColorSeg();                                      
+							colorSeg = verColorSeg();                              
 		                    board.add (new Seguidor (x+7.5, y+48,colorSeg, idx, idy));
 			                obj = Turno.findOne({Comando:"ColocarPieza"});
 			                Turno.update(obj._id,{$set: {Comando:"ColocarSeguidor",posxseg: x+7.5, posyseg:y+48,scroll:false }});
@@ -668,6 +692,8 @@ var ColocarSeguidor = function(x, y, idx, idy) {
 			                BorrarSeguidor = true;
 			            }else{
 			                alert("No puedes colocar un seguidor en esa posicion \nPrueba otra");
+							piezaactual = new PiezaActual(nombreCuadricula,numgiroCuadricula,giroCuadricula);
+							cuadriculaS = new cuadriculaSeguidor();
 			                board.add(piezaactual);
 						    board.add(cuadriculaS); 
 			            }	        
@@ -691,6 +717,8 @@ var ColocarSeguidor = function(x, y, idx, idy) {
 			                BorrarSeguidor = true;
 			            }else{
 			                alert("No puedes colocar un seguidor en esa posicion \nPrueba otra");
+							piezaactual = new PiezaActual(nombreCuadricula,numgiroCuadricula,giroCuadricula);
+							cuadriculaS = new cuadriculaSeguidor();
 			                board.add(piezaactual);
 						    board.add(cuadriculaS); 
 			            }	        
@@ -714,6 +742,8 @@ var ColocarSeguidor = function(x, y, idx, idy) {
 			                BorrarSeguidor = true;
 			            }else{
 			                alert("No puedes colocar un seguidor en esa posicion \nPrueba otra");
+							piezaactual = new PiezaActual(nombreCuadricula,numgiroCuadricula,giroCuadricula);
+							cuadriculaS = new cuadriculaSeguidor();
 			                board.add(piezaactual);
 						    board.add(cuadriculaS); 
 			            }	        
@@ -737,6 +767,8 @@ var ColocarSeguidor = function(x, y, idx, idy) {
 			                BorrarSeguidor = true;
 			            }else{
 			                alert("No puedes colocar un seguidor en esa posicion \nPrueba otra");
+							piezaactual = new PiezaActual(nombreCuadricula,numgiroCuadricula,giroCuadricula);
+							cuadriculaS = new cuadriculaSeguidor();
 			                board.add(piezaactual);
 						    board.add(cuadriculaS); 
 			            }	        
@@ -759,7 +791,10 @@ var ColocarSeguidor = function(x, y, idx, idy) {
 					        arrayRespuestaIA = result[1];
 			                BorrarSeguidor = true;
 			            }else{
+
 			                alert("No puedes colocar un seguidor en esa posicion \nPrueba otra");
+							piezaactual = new PiezaActual(nombreCuadricula,numgiroCuadricula,giroCuadricula);
+							cuadriculaS = new cuadriculaSeguidor();
 			                board.add(piezaactual);
 				            board.add(cuadriculaS); 
 			            }	        
@@ -768,6 +803,7 @@ var ColocarSeguidor = function(x, y, idx, idy) {
 		        if(Game.keys['NOSeguidor']) noseg = true;
 		        if(noseg && !Game.keys['NOSeguidor']) {
 		            noseg = false;
+					piezaactual = globalPiezaActualFallo;
 		            board.remove(piezaactual);  
 		            board.remove(cuadriculaS);
 		            Meteor.call("ponerSeguidor", Id_Partida, function ( error, result) {
@@ -810,8 +846,8 @@ var ColocarSeguidor = function(x, y, idx, idy) {
                 
                 numcolor = 0;
             }
-
-            
+            console.log("longitudcolor al actualizar es = " + longitudcolor);
+            console.log("numcolor al actualizar es = " + numcolor);
             obj = Turno.findOne({Comando:"BorrarSeguidor"});
 
             Turno.update(obj._id,{$set: {Comando:"ActualizarTurno", ID_Partida: Id_Partida, Jugadores: arrayRespuestaIA[iGlobal].arrayResumenJugs, User_id: arrayRespuestaIA[iGlobal].idSiguienteJug, nombrePieza: "", rotacion: false, numRotacion: 0, casillaX: 0, casillaY: 0, arrayQuitarSeg: [], posx: 0, posy: 0, posxseg: 0, posyseg:0, scroll: false, ladoscroll: "", contador: 0, numColor: numcolor}}); 
@@ -822,7 +858,7 @@ var ColocarSeguidor = function(x, y, idx, idy) {
         }else if(GestionResumenIA && GestionResumenIAlocal){
             GestionResumenIA = false;
             GestionResumenIAlocal = false;
-            
+            console.log("antes de entrar a gestionar el turno de ia ");
             gestionTurnoIA(arrayRespuestaIA);
    
         }else if(BorrarSegIA && BorrarSegIAlocal){
@@ -1013,23 +1049,69 @@ function gestionTurnoIA (result){
         var tamañoArray = result.length;
         numIAs = tamañoArray - 1;
         
-        for (i = 1; i< tamañoArray; i++){
-			iGlobal = i;
-            console.log("METEEEE2222");
-            IATurno = true;
-            console.log("color: " + numcolor)
-            numcolor++;
-            console.log("color2: " + numcolor)
-            //if(numcolor == longitudcolor){
-                
-               // numcolor = 0;
-            //}
-            
-            //gestionBorrarSeguidor(result[i]);     ----> ponerlo luego lo ultimo
-            pintarInfoIA(result[i]);
-	    	BorrarSegIA = true;
-            setTimeout(function(){},150);
+        if(result[1] != undefined){
+        	console.log("entra a 1");
+        	iGlobal = 1;
+        	IATurno = true;
+        	numcolor++;
+        	pintarInfoIA(result[1]);
+        	BorrarSegIA = true;
         }
+        if(result[2] != undefined){
+        	setTimeout(function(){
+        	console.log("entra a 2");
+        	iGlobal = 2;
+        	IATurno = true;
+        	numcolor++;
+        	pintarInfoIA(result[2]);
+        	BorrarSegIA = true;
+        	},1500);
+        	
+        }
+        if(result[3] != undefined){
+        	setTimeout(function(){
+        	console.log("entra a 3");
+        	iGlobal = 3;
+        	IATurno = true;
+        	numcolor++;
+        	pintarInfoIA(result[3]);
+        	BorrarSegIA = true;
+        	},3000);
+        	
+        }
+        if(result[4] != undefined){
+        	setTimeout(function(){
+        	console.log("entra a 4");
+        	iGlobal = 3;
+        	IATurno = true;
+        	numcolor++;
+        	pintarInfoIA(result[4]);
+        	BorrarSegIA = true;
+        	},4500);
+        	
+        }
+        /*for (i = 1; i< tamañoArray; i++){
+        	iGlobal = i;
+        	setTimeout(function(i){
+        		console.log("funcion set time out");
+	            /*console.log("METEEEE2222");
+	            IATurno = true;
+	            console.log("color: " + numcolor)
+	            numcolor++;
+	            console.log("color2: " + numcolor)
+	            //if(numcolor == longitudcolor){
+	                
+	               // numcolor = 0;
+	            //}
+	            
+	            //gestionBorrarSeguidor(result[i]);     ----> ponerlo luego lo ultimo
+	            console.log("iGlobalsettimeout = "+iGlobal);
+	            pintarInfoIA(result[iGlobal]);
+		    	BorrarSegIA = true;
+	        	},3000);
+			
+            
+        }*/
         
         
 
@@ -1115,6 +1197,7 @@ function pintarInfoIA (ObjetoIA){
             Turno.update(obj._id,{$set: {Comando:"JugadaIA", nombrePieza: arg, posx: posCanvasX, posy: posCanvasY, casillaX: xRec, casillaY: yRec, posxseg: posCanvasX+40, posyseg:posCanvasY+48, numRotacion: giroRec, numColor: numcolor, scroll:false }});  
             break;
         case 7:
+        	console.log("verColorSeg() = " +verColorSeg());
             board.add (new Seguidor (posCanvasX+22, posCanvasY+48,verColorSeg(), xRec, yRec)); 
             obj = Turno.findOne({Comando:"BorrarSeguidor"});
             Turno.update(obj._id,{$set: {Comando:"JugadaIA", nombrePieza: arg, posx: posCanvasX, posy: posCanvasY, casillaX: xRec, casillaY: yRec, posxseg: posCanvasX+22, posyseg:posCanvasY+48, numRotacion: giroRec, numColor: numcolor, scroll:false }});  

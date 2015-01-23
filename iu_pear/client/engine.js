@@ -149,11 +149,11 @@ SpriteSheet = new function() {
 }
 
 
-PiezaActual = function() {
+PiezaActual = function(nombre,numgiro,giro) {
 
-  this.giro;
-  this.ngiro;
-  this.nombre;
+  this.giro = giro;
+  this.ngiro = numgiro;
+  this.nombre = nombre;
   
   this.step = function(dt) {
 	
