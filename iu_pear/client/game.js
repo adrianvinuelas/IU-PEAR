@@ -1040,8 +1040,8 @@ var ScrollTeclas = function() {
 				//ScrollTracker = false;
 			}else if(ladoScrollTracker == "down"){
 				
-				if (this.scrolly != this.height) {
-					this.scrolly < 92;
+				if (this.scrolly < 92) {
+					this.scrolly += 1 ;
 					this.board.translateScroll(0,-1);
 				}
 				//ScrollTracker = false;
