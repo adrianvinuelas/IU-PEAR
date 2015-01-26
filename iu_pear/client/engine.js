@@ -291,6 +291,7 @@ AyudaScreen = function(title) {
    
 };
 
+
 // GameBoard implementa un tablero de juego que gestiona la
 // interacción entre los elementos del juego sobre el que se disponen
 // los elementos del juego (fichas, cartas, naves, proyectiles, etc.)

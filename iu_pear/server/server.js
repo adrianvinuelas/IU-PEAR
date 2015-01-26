@@ -4,12 +4,12 @@ var partidaPrueba;
 
 //generamos una partida para que el cliente pueda probar la interfaz sin problemas de sincronía
 console.log("server: voy a generar una partida");
-generarPartida(0,[{idJugador:"JEReQM2XB4qbp8XzE",nombreJugador:'Jorge'}
-				  //{idJugador:"SY9xke5KQNt9ZN6Wj",nombreJugador:'Alberto'}
+generarPartida(0,[{idJugador:"rqvdqzZ9dPAF6bifd",nombreJugador:'Jorge'},
+				  {idJugador:"gnPBDe5BS9K8LNpWz",nombreJugador:'Alberto'}
 				  //{idJugador:"C",nombreJugador:'c'},
 				  //{idJugador:"D",nombreJugador:'d'},
                     //{idJugador:"E",nombreJugador:'e'}
-				],3); 
+				],2); 
 console.log("server: he generado la partida");
 
 
@@ -249,6 +249,7 @@ Meteor.methods ({
     },
    
     ponerFicha: function(id_partida,giro,posFicha){
+        console.log("pos que nos dice IU: " + posFicha);
         var success = false;
         var partida = getPartida(id_partida);
         success = partida.tablero.ponerFicha(posFicha,giro);

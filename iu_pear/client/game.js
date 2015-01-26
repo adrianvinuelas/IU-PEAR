@@ -98,6 +98,9 @@ NumIAs = 0;
 nombreCuadricula = "";
 numgiroCuadricula = 0;
 giroCuadricula = false;
+resumenFinal = [];
+finalizarPartida = false;
+arrayFinalConstruido = [];
 
 var startGame = function() {
 
@@ -440,6 +443,29 @@ var cuadricula = function(){
     };	
 }
 
+var final = function(array){
+    this.step = function(dt) {
+        
+    };
+    this.draw = function(ctx) {
+  
+        var img1 = new Image();
+        var img2 = new Image();
+        img1.src = 'background.jpg';
+        Game.ctx.drawImage(img1, 50, 50, 900, 650);
+        
+        ctx.save();  
+        var b = 1.8;
+        for (i = 0; i<array.length; i++){
+            ctx.fillStyle = "black";
+            ctx.strokeStyle="#FFFFFF";
+            ctx.fillText(array[i],2.1*64,b*64,300);           
+            b = b+1;
+        }
+        ctx.restore(); 
+    };	
+}
+
 var ColocarSeguidor = function(x, y, idx, idy) {
     posicion0 = false;
     posicion1 = false;
@@ -461,6 +487,7 @@ var ColocarSeguidor = function(x, y, idx, idy) {
 	var colorSeg = "";
 	var GestionResumenIAlocal = true;
 	var BorrarSegIAlocal = true;
+	var finalizarPartidalocal = true;
 
     this.step = function(dt) {
     
@@ -840,18 +867,29 @@ var ColocarSeguidor = function(x, y, idx, idy) {
             ActualizarTurno = false;
             ActualizarTurnoGlobal = false;
             numcolor++;
-            console.log("NO TIENE QUE LLEGAR");
             if(numcolor == longitudcolor){
                 
                 numcolor = 0;
             }
-            console.log("longitudcolor al actualizar es = " + longitudcolor);
-            console.log("numcolor al actualizar es = " + numcolor);
-            obj = Turno.findOne({Comando:"BorrarSeguidor"});
-
-            Turno.update(obj._id,{$set: {Comando:"ActualizarTurno", ID_Partida: Id_Partida, Jugadores: arrayRespuestaIA[iGlobal].arrayResumenJugs, User_id: arrayRespuestaIA[iGlobal].idSiguienteJug, nombrePieza: "", rotacion: false, numRotacion: 0, casillaX: 0, casillaY: 0, arrayQuitarSeg: [], posx: 0, posy: 0, posxseg: 0, posyseg:0, scroll: false, ladoscroll: "", contador: 0, numColor: numcolor}}); 
+            //console.log("longitudcolor al actualizar es = " + longitudcolor);
+            //console.log("numcolor al actualizar es = " + numcolor);
             
-            //IATurno = false;
+            if (!arrayRespuestaIA[iGlobal].idSiguienteJug){
+            
+                Meteor.call("finalizarPartida", Id_Partida, function ( error, result) {
+                    resumenFinal = result;
+                    console.log("se hace el meteor.call de finalizar partida");
+                    finalizarPartida = true;
+                });
+            
+            
+            }else{
+            
+                obj = Turno.findOne({Comando:"BorrarSeguidor"});
+
+                Turno.update(obj._id,{$set: {Comando:"ActualizarTurno", ID_Partida: Id_Partida, Jugadores: arrayRespuestaIA[iGlobal].arrayResumenJugs, User_id: arrayRespuestaIA[iGlobal].idSiguienteJug, nombrePieza: "", rotacion: false, numRotacion: 0, casillaX: 0, casillaY: 0, arrayQuitarSeg: [], posx: 0, posy: 0, posxseg: 0, posyseg:0, scroll: false, ladoscroll: "", contador: 0, numColor: numcolor}}); 
+            
+            }
             
         
         }else if(GestionResumenIA && GestionResumenIAlocal){
@@ -871,6 +909,19 @@ var ColocarSeguidor = function(x, y, idx, idy) {
 			    console.log("ULTIMA IA");
                 ActualizarTurnoGlobal = true;
 			}			
+		}else if(finalizarPartida && finalizarPartidalocal){
+	        finalizarPartida = false;
+	        finalizarPartidalocal = false;
+		    
+		    resumenFinal.forEach(function (e, i) {		
+		        console.log(e);				
+		        var stringFinalPartida;
+                stringFinalPartida = "Nombre del jugador: " + e.nombre + "  ----------->  " + "Puntos: " + e.puntos;
+                arrayFinalConstruido.push(stringFinalPartida);
+	        });
+		    
+		    Game.setBoard(6,new final(arrayFinalConstruido));
+		
 		}
     }   
     this.draw = function(ctx) {
@@ -1158,7 +1209,8 @@ function pintarInfoIA (ObjetoIA){
     
     var xRec = info[1].x;
     var yRec = info[1].y;
-    
+    console.log("posicion donde colocar la xIA: " + xRec);
+    console.log("posicion donde colocar la yIA: " + yRec);
     
     //calculamos la posicion del canvas con la casilla del tablero que nos pasan
     var posTableroX = xRec - scrollxprima;
