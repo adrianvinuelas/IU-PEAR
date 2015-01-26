@@ -189,9 +189,9 @@ var PiezaMadre = function (nombre, x, y){
 	
   }
   
-  this.draw = function(ctx) {
+  this.draw = function(ctxt) {
 
-	  SpriteSheet.draw(Game.ctx, nombre, this.x, this.y,this.giro,this.numgiro,1);
+	  SpriteSheet.draw(Game.ctxt, nombre, this.x, this.y,this.giro,this.numgiro,1);
   };	
 
 }
@@ -211,8 +211,8 @@ Seguidor = function (x, y, color, idx, idy){//añadir color para que se pinte
 
     }
   
-    this.draw = function(ctx) {
-        SpriteSheet.draw(Game.ctx, this.color, this.x, this.y, false, 0, 1);
+    this.draw = function(ctxt) {
+        SpriteSheet.draw(Game.ctxt, this.color, this.x, this.y, false, 0, 1);
     };	
 
 }
@@ -255,16 +255,16 @@ pieza = function (nombre, x, y, colocadaRec, giroRec, dejarGiro){
         otrapieza = false;
          
         if(Meteor.userId() === User_IdIA){
-            game.onmousedown = function(e){
+            gameC.onmousedown = function(e){
             if(e.which == 1){
                 if (!colocada){//límite(76-644)para la x, (167-674) para la y
                     mX = (e.pageX);
                     mY = (e.pageY);
-                    if(mX<76||mX>644 ||mY<167 || mY>674){
+                    if(mX<373||mX>947 ||mY<433.5 || mY>946){
 					    alert('No puedes colocar la pieza ahí!');
 			        }else{
-				        cX =Math.floor((mX-5)/64);
-				        cY = Math.floor((mY-114)/64);				   
+				        cX =(Math.floor((mX-5)/64)) - 5;
+				        cY = (Math.floor((mY-114)/64)) - 4;						   
 				        x = (cX *64);
 				        y = (cY * 64);
 
@@ -357,7 +357,7 @@ pieza = function (nombre, x, y, colocadaRec, giroRec, dejarGiro){
     }
   };
   
-  this.draw = function(ctx) {
+  this.draw = function(ctxt) {
 		  if(colocada && !this.scroll){
 			//console.log("como esta colocada cambio el this.x");
 			this.x = x;
@@ -384,7 +384,7 @@ pieza = function (nombre, x, y, colocadaRec, giroRec, dejarGiro){
 		  	
 		  }
 	 
-	  SpriteSheet.draw(Game.ctx, nombre, this.x, this.y,this.giro,this.numgiro,this.primer);
+	  SpriteSheet.draw(Game.ctxt, nombre, this.x, this.y,this.giro,this.numgiro,this.primer);
 
   };
 }
@@ -398,25 +398,25 @@ Jugadores = function(arrayJugadores){
     this.step = function(dt) {
         //De momento lo pongo vacio porque solo quiero probar tittle scream
     };
-    this.draw = function(ctx) {
+    this.draw = function(ctxt) {
   
-        ctx.fillStyle = "#FFFFFF";
-        ctx.font = "bold 27px bangers";
-        ctx.fillText("JUGADORES", 10.5*64,1.5*64);
+        ctxt.fillStyle = "#FFFFFF";
+        ctxt.font = "bold 27px bangers";
+        ctxt.fillText("JUGADORES", 10.5*64,1.5*64);
         arrayJugadores.forEach(function (e, i) {
-        ctx.font = "bold 17px bangers";
-        ctx.fillStyle = "#FFFFFF";
-        ctx.fillText(e.nombre, 10.5*64,(2+i)*64);
-        SpriteSheet.draw(Game.ctx, colores[i], 12.5*64, (1.75+i)*64,false,0,0);
-        ctx.font = "bold 14px bangers";
-        ctx.fillStyle = "#FFFFFF";
-        ctx.fillText("puntos", 10.7*64, (2.3+i)*64);
-        ctx.fillStyle = "#FF0000";
-        ctx.fillText(e.puntos, 11.6*64, (2.3+i)*64);
-        ctx.fillStyle = "#FFFFFF";
-        ctx.fillText("seguidores", 12.3*64, (2.3+i)*64);
-        ctx.fillStyle = "#FF0000";
-        ctx.fillText(e.numSeguidores, 13.7*64, (2.3+i)*64);
+        ctxt.font = "bold 17px bangers";
+        ctxt.fillStyle = "#FFFFFF";
+        ctxt.fillText(e.nombre, 10.5*64,(2+i)*64);
+        SpriteSheet.draw(Game.ctxt, colores[i], 12.5*64, (1.75+i)*64,false,0,0);
+        ctxt.font = "bold 14px bangers";
+        ctxt.fillStyle = "#FFFFFF";
+        ctxt.fillText("puntos", 10.7*64, (2.3+i)*64);
+        ctxt.fillStyle = "#FF0000";
+        ctxt.fillText(e.puntos, 11.6*64, (2.3+i)*64);
+        ctxt.fillStyle = "#FFFFFF";
+        ctxt.fillText("seguidores", 12.3*64, (2.3+i)*64);
+        ctxt.fillStyle = "#FF0000";
+        ctxt.fillText(e.numSeguidores, 13.7*64, (2.3+i)*64);
         });
 		
     };
@@ -426,18 +426,18 @@ var cuadricula = function(){
     this.step = function(dt) {
         
     };
-    this.draw = function(ctx) {
+    this.draw = function(ctxt) {
       //Pantalla que va a aparecer DESPUES de pulsar espacio
       var img1 = new Image();
       var img2 = new Image();
       img1.src = 'background.jpg';
       img2.src = 'menu.jpg';
-      Game.ctx.drawImage(img1, 50, 50, 655, 650);
-      Game.ctx.drawImage(img2, 655, 50, 245, 650);
+      Game.ctxt.drawImage(img1, 50, 50, 655, 650);
+      Game.ctxt.drawImage(img2, 655, 50, 245, 650);
 	    for (i=1;i<9;i++){
         for (j=1;j<10;j++){
-          Game.ctx.strokeStyle = "#ffffff";
-          Game.ctx.strokeRect(j*64,i*64,64,64);
+          Game.ctxt.strokeStyle = "#ffffff";
+          Game.ctxt.strokeRect(j*64,i*64,64,64);
         }
       }
     };	
@@ -447,22 +447,22 @@ var final = function(array){
     this.step = function(dt) {
         
     };
-    this.draw = function(ctx) {
+    this.draw = function(ctxt) {
   
         var img1 = new Image();
         var img2 = new Image();
         img1.src = 'background.jpg';
-        Game.ctx.drawImage(img1, 50, 50, 900, 650);
+        Game.ctxt.drawImage(img1, 50, 50, 900, 650);
         
-        ctx.save();  
+        ctxt.save();  
         var b = 1.8;
         for (i = 0; i<array.length; i++){
-            ctx.fillStyle = "black";
-            ctx.strokeStyle="#FFFFFF";
-            ctx.fillText(array[i],2.1*64,b*64,300);           
+            ctxt.fillStyle = "black";
+            ctxt.strokeStyle="#FFFFFF";
+            ctxt.fillText(array[i],2.1*64,b*64,300);           
             b = b+1;
         }
-        ctx.restore(); 
+        ctxt.restore(); 
     };	
 }
 
@@ -924,7 +924,7 @@ var ColocarSeguidor = function(x, y, idx, idy) {
 		
 		}
     }   
-    this.draw = function(ctx) {
+    this.draw = function(ctxt) {
         
     }
 }
@@ -943,16 +943,16 @@ var ScrollTeclas = function() {
     var abajo = false;
 
 
-    this.draw = function (ctx) {
-        ctx.save();
+    this.draw = function (ctxt) {
+        ctxt.save();
         for(var y=0; y<=550; y=y+64){
             for(var x=0; x<=600; x=x+64){
-                ctx.fillText((this.scrollx+x/64) + ".",7+x,11+y);
-                ctx.fillText((this.scrolly+y/64),32+x,11+y);
+                ctxt.fillText((this.scrollx+x/64) + ".",7+x,11+y);
+                ctxt.fillText((this.scrolly+y/64),32+x,11+y);
             };
         };
 
-        ctx.restore();
+        ctxt.restore();
     }
     
     this.step = function(dt) {
@@ -1313,7 +1313,7 @@ borrarSeguidor = function (idx, idy){
 
 EmpezarTodo = function (id_partida, arrayJugadores, user_Id) {
 
-    Game.initialize("game",sprites,startGame);       
+    Game.initialize("gameC",sprites,startGame);       
     JugadoresIA = arrayJugadores;
     User_IdIA = user_Id;
     Id_Partida = id_partida;

@@ -4,11 +4,12 @@ Game = new function() {
 
   // Inicializa el juego
   this.initialize = function(canvasElementId,sprite_data,callback) {
-	  this.canvas = document.getElementById(canvasElementId)
+	  this.canvas = document.getElementById(canvasElementId);
+	  console.log("ALVARO " + canvasElementId);
 	  this.width = this.canvas.width;
 	  this.height= this.canvas.height;
-	  this.ctx = this.canvas.getContext && this.canvas.getContext('2d');
-	  if(!this.ctx) { return alert("Please upgrade your browser to play"); }
+	  this.ctxt = this.canvas.getContext && this.canvas.getContext('2d');
+	  if(!this.ctxt) { return alert("Please upgrade your browser to play"); }
       //Modificamos las propiedades del canvas
       //Pantalla que va a aparecer ANTES de pulsar espacio (En el caso de que se necesite)
       this.setupInput();
@@ -53,7 +54,7 @@ Game = new function() {
 	    for(var i=0,len = boards.length;i<len;i++) {
 	      if(boards[i]) { 
 		      boards[i].step(dt);
-		      boards[i].draw(Game.ctx);
+		      boards[i].draw(Game.ctxt);
 	      }
 	    }
       // Ejecutar dentro de 30 ms
@@ -76,71 +77,71 @@ SpriteSheet = new function() {
     this.image.src = 'sprites.jpg';
   };
 
-  this.draw = function(ctx,sprite,x,y,girar,numgiro,primeravez,seguidor) {
+  this.draw = function(ctxt,sprite,x,y,girar,numgiro,primeravez,seguidor) {
     var s = this.map[sprite];
     
     if(girar){
-	    ctx.save();	    
-	    ctx.translate(x,y);
-	    ctx.translate(s.w/2, s.h/2);
+	    ctxt.save();	    
+	    ctxt.translate(x,y);
+	    ctxt.translate(s.w/2, s.h/2);
 	     
 	    if(numgiro == 1){
 		    //console.log("entro a rotar 90");		    
-		    ctx.rotate(90*Math.PI/180);
+		    ctxt.rotate(90*Math.PI/180);
 		    if((x>=64 && x<=576) && (y<=512 && y>=64) && primeravez == 1){
-		   	 ctx.drawImage(this.image, s.sx , s.sy, s.w, s.h, Math.floor(-s.w/2) , Math.floor(-s.h/2),s.w, s.h);
+		   	 ctxt.drawImage(this.image, s.sx , s.sy, s.w, s.h, Math.floor(-s.w/2) , Math.floor(-s.h/2),s.w, s.h);
 		    }else if (primeravez == 0){
 			if (seguidor){
-			ctx.drawImage(this.image, s.sx, s.sy, s.w, s.h,Math.floor(-s.w/2) , Math.floor(-s.h/2)-64*2,3*s.w, 3*s.h);
+			ctxt.drawImage(this.image, s.sx, s.sy, s.w, s.h,Math.floor(-s.w/2) , Math.floor(-s.h/2)-64*2,3*s.w, 3*s.h);
 			}else{
-			ctx.drawImage(this.image, s.sx , s.sy, s.w, s.h, Math.floor(-s.w/2) , Math.floor(-s.h/2),s.w, s.h);
+			ctxt.drawImage(this.image, s.sx , s.sy, s.w, s.h, Math.floor(-s.w/2) , Math.floor(-s.h/2),s.w, s.h);
 			}
 		    }
 	    }else if (numgiro == 2){
 		    //console.log("entro a rotar 180");
-		    ctx.rotate(180*Math.PI/180);
+		    ctxt.rotate(180*Math.PI/180);
 		    if((x>=64 && x<=576) && (y<=512 && y>=64) && primeravez == 1){
-		    	ctx.drawImage(this.image, s.sx, s.sy, s.w, s.h, Math.floor(-s.w/2) , Math.floor(-s.h/2),s.w, s.h);
+		    	ctxt.drawImage(this.image, s.sx, s.sy, s.w, s.h, Math.floor(-s.w/2) , Math.floor(-s.h/2),s.w, s.h);
 		    }else if (primeravez == 0){
 			if (seguidor){
-			 ctx.drawImage(this.image, s.sx, s.sy, s.w, s.h,Math.floor(-s.w/2)-2*64 , Math.floor(-s.h/2)-64*2,3*s.w, 3*s.h);
+			 ctxt.drawImage(this.image, s.sx, s.sy, s.w, s.h,Math.floor(-s.w/2)-2*64 , Math.floor(-s.h/2)-64*2,3*s.w, 3*s.h);
 			}else{
-			 ctx.drawImage(this.image, s.sx, s.sy, s.w, s.h, Math.floor(-s.w/2) , Math.floor(-s.h/2),s.w, s.h);
+			 ctxt.drawImage(this.image, s.sx, s.sy, s.w, s.h, Math.floor(-s.w/2) , Math.floor(-s.h/2),s.w, s.h);
 			}
 		    }
 	    }else if (numgiro == 3){
 		    //console.log("entro a rotar 270");
-		    ctx.rotate(270*Math.PI/180);
+		    ctxt.rotate(270*Math.PI/180);
 		    if((x>=64 && x<=576) && (y<=512 && y>=64) && primeravez == 1){
-		    	ctx.drawImage(this.image, s.sx , s.sy, s.w, s.h, Math.floor(-s.w/2) , Math.floor(-s.h/2),s.w, s.h);
+		    	ctxt.drawImage(this.image, s.sx , s.sy, s.w, s.h, Math.floor(-s.w/2) , Math.floor(-s.h/2),s.w, s.h);
 		     }else if (primeravez == 0){
 			if (seguidor){
-			  ctx.drawImage(this.image, s.sx, s.sy, s.w, s.h,Math.floor(-s.w/2)-2*64 , Math.floor(-s.h/2),3*s.w, 3*s.h);
+			  ctxt.drawImage(this.image, s.sx, s.sy, s.w, s.h,Math.floor(-s.w/2)-2*64 , Math.floor(-s.h/2),3*s.w, 3*s.h);
 			}else{
-			  ctx.drawImage(this.image, s.sx , s.sy, s.w, s.h, Math.floor(-s.w/2) , Math.floor(-s.h/2),s.w, s.h);
+			  ctxt.drawImage(this.image, s.sx , s.sy, s.w, s.h, Math.floor(-s.w/2) , Math.floor(-s.h/2),s.w, s.h);
 			}
 		    }
 	    }else if(numgiro == 00){//Vuelve al estado normal
 		if((x>=64 && x<=576) && (y<=512 && y>=64) && primeravez == 1){
-		     ctx.drawImage(this.image, s.sx , s.sy, s.w, s.h, Math.floor(-s.w/2) , Math.floor(-s.h/2),s.w, s.h);
+		     ctxt.drawImage(this.image, s.sx , s.sy, s.w, s.h, Math.floor(-s.w/2) , Math.floor(-s.h/2),s.w, s.h);
 		 }else if (primeravez == 0){
 			if(seguidor){
-				ctx.drawImage(this.image, s.sx, s.sy, s.w, s.h, Math.floor(-s.w/2), Math.floor(-s.h/2), 3*s.w, 3*s.h);
+				ctxt.drawImage(this.image, s.sx, s.sy, s.w, s.h, Math.floor(-s.w/2), Math.floor(-s.h/2), 3*s.w, 3*s.h);
 			}else{
-			  	ctx.drawImage(this.image, s.sx , s.sy, s.w, s.h, Math.floor(-s.w/2) , Math.floor(-s.h/2),s.w, s.h);
+			  	ctxt.drawImage(this.image, s.sx , s.sy, s.w, s.h, Math.floor(-s.w/2) , Math.floor(-s.h/2),s.w, s.h);
 			}
 		}
 	    }
-	    ctx.restore();
+	    ctxt.restore();
     }else{
 	if(seguidor){
-		ctx.drawImage(this.image, s.sx, s.sy, s.w, s.h, Math.floor(x), Math.floor(y), 3*s.w, 3*s.h);
+		ctxt.drawImage(this.image, s.sx, s.sy, s.w, s.h, Math.floor(x), Math.floor(y), 3*s.w, 3*s.h);
 	}else{
 	       //console.log("x en draw = " + x + ", y en draw = " + y + " y primeravez = " + primeravez);
 	       if((x>=64 && x<=639) && (y<=575 && y>=64) && primeravez == 1){//límite(76-644)para la x, (167-674) para la y
-	      		ctx.drawImage(this.image, s.sx, s.sy, s.w, s.h, Math.floor(x), Math.floor(y), s.w, s.h);
+	      		ctxt.drawImage(this.image, s.sx, s.sy, s.w, s.h, Math.floor(x), Math.floor(y), s.w, s.h);
 		}else if (primeravez == 0){//si primeravez es 0 , es porque es la pieza que tenemos que colocar(esta fuera de la cuadricula)
-			ctx.drawImage(this.image, s.sx, s.sy, s.w, s.h, Math.floor(x), Math.floor(y), s.w, s.h);
+			ctxt.drawImage(this.image, s.sx, s.sy, s.w, s.h, Math.floor(x), Math.floor(y), s.w, s.h);
 		}
 	}
     }
@@ -159,8 +160,8 @@ PiezaActual = function(nombre,numgiro,giro) {
 	
   };
      
-  this.draw = function(ctx) {
-	 SpriteSheet.draw(ctx,this.nombre,10.5*64,6*64,this.giro,this.ngiro,0,true);
+  this.draw = function(ctxt) {
+	 SpriteSheet.draw(ctxt,this.nombre,10.5*64,6*64,this.giro,this.ngiro,0,true);
 
   };
 }
@@ -171,42 +172,42 @@ cuadriculaSeguidor = function(){
     
     };
     
-    this.draw = function(ctx) {
+    this.draw = function(ctxt) {
       
 	    for (i=6;i<9;i++){
         for (j=10.5;j<13.5;j++){
-          Game.ctx.strokeStyle = "red";
-          Game.ctx.strokeRect(j*64,i*64,64,64);
-          Game.ctx.beginPath();
-          Game.ctx.moveTo(10.5*64,6*64);
-          Game.ctx.lineTo(11.5*64,7*64); 
-          Game.ctx.stroke();
-          Game.ctx.beginPath();
-          Game.ctx.moveTo(13.5*64,6*64);
-          Game.ctx.lineTo(12.5*64,7*64); 
-          Game.ctx.stroke();
-          Game.ctx.beginPath();
-          Game.ctx.moveTo(13.5*64,9*64);
-          Game.ctx.lineTo(12.5*64,8*64); 
-          Game.ctx.stroke();
-          Game.ctx.beginPath();
-          Game.ctx.moveTo(10.5*64,9*64);
-          Game.ctx.lineTo(11.5*64,8*64); 
-          Game.ctx.stroke();
-          ctx.fillStyle = "red";
-          ctx.fillText("0",10.5*64+40,6*64+15);
-          ctx.fillText("1",11.5*64+30,6*64+15);
-          ctx.fillText("2",12.5*64+20,6*64+15);
-          ctx.fillText("3",12.5*64+40,6*64+50);
-          ctx.fillText("4",12.5*64+40,7*64+30);
-          ctx.fillText("5",12.5*64+40,8*64+15);
-          ctx.fillText("6",12.5*64+20,8*64+50);
-          ctx.fillText("7",11.5*64+30,8*64+50);
-          ctx.fillText("8",10.5*64+40,8*64+50);
-          ctx.fillText("9",10.5*64+10,8*64+15);
-          ctx.fillText("Q",10.5*64+10,7*64+30);
-          ctx.fillText("W",10.5*64+10,6*64+50);
-          ctx.fillText("E",11.5*64+30,7*64+15);
+          Game.ctxt.strokeStyle = "red";
+          Game.ctxt.strokeRect(j*64,i*64,64,64);
+          Game.ctxt.beginPath();
+          Game.ctxt.moveTo(10.5*64,6*64);
+          Game.ctxt.lineTo(11.5*64,7*64); 
+          Game.ctxt.stroke();
+          Game.ctxt.beginPath();
+          Game.ctxt.moveTo(13.5*64,6*64);
+          Game.ctxt.lineTo(12.5*64,7*64); 
+          Game.ctxt.stroke();
+          Game.ctxt.beginPath();
+          Game.ctxt.moveTo(13.5*64,9*64);
+          Game.ctxt.lineTo(12.5*64,8*64); 
+          Game.ctxt.stroke();
+          Game.ctxt.beginPath();
+          Game.ctxt.moveTo(10.5*64,9*64);
+          Game.ctxt.lineTo(11.5*64,8*64); 
+          Game.ctxt.stroke();
+          ctxt.fillStyle = "red";
+          ctxt.fillText("0",10.5*64+40,6*64+15);
+          ctxt.fillText("1",11.5*64+30,6*64+15);
+          ctxt.fillText("2",12.5*64+20,6*64+15);
+          ctxt.fillText("3",12.5*64+40,6*64+50);
+          ctxt.fillText("4",12.5*64+40,7*64+30);
+          ctxt.fillText("5",12.5*64+40,8*64+15);
+          ctxt.fillText("6",12.5*64+20,8*64+50);
+          ctxt.fillText("7",11.5*64+30,8*64+50);
+          ctxt.fillText("8",10.5*64+40,8*64+50);
+          ctxt.fillText("9",10.5*64+10,8*64+15);
+          ctxt.fillText("Q",10.5*64+10,7*64+30);
+          ctxt.fillText("W",10.5*64+10,6*64+50);
+          ctxt.fillText("E",11.5*64+30,7*64+15);
       
         }
       }
@@ -218,7 +219,7 @@ CapaBorra = function CapaBorra(){
     this.step = function(dt) {
     }
     
-    this.draw = function(ctx) {
+    this.draw = function(ctxt) {
     }
 
 }
@@ -237,11 +238,11 @@ TextoPideFicha =  function TextoPideFicha(title,callback) {
     //}
   };
   
-  this.draw = function(ctx) {
-    ctx.fillStyle = "#FFFFFF";   
-    ctx.font = "bold 12px bangers";
-    ctx.fillText(title,10.5*64,7.8*64);
-    ctx.fillText("Pulsa tecla r para rotar",10.5*64,9.3*64);
+  this.draw = function(ctxt) {
+    ctxt.fillStyle = "#FFFFFF";   
+    ctxt.font = "bold 12px bangers";
+    ctxt.fillText(title,10.5*64,7.8*64);
+    ctxt.fillText("Pulsa tecla r para rotar",10.5*64,9.3*64);
   };   
 }
 
@@ -259,33 +260,33 @@ AyudaScreen = function(title) {
     }
     };
    
-    this.draw = function(ctx) {
+    this.draw = function(ctxt) {
 
-    ctx.fillStyle = "#FFFFFF";   
-    ctx.font = "bold 12px bangers";
-    ctx.fillText(title,10.5*64,6.8*64);
+    ctxt.fillStyle = "#FFFFFF";   
+    ctxt.font = "bold 12px bangers";
+    ctxt.fillText(title,10.5*64,6.8*64);
   
     
     if (this.ayuda == true) {
-        ctx.save();  
-        ctx.fillStyle = '#D28C12';
-        ctx.fillRect(120,90,520,320);
-        ctx.strokeStyle="#FFFFFF";
-        ctx.strokeRect(120,90,520,320);
-        var gradient=ctx.createLinearGradient(0,0,800,0);
+        ctxt.save();  
+        ctxt.fillStyle = '#D28C12';
+        ctxt.fillRect(120,90,520,320);
+        ctxt.strokeStyle="#FFFFFF";
+        ctxt.strokeRect(120,90,520,320);
+        var gradient=ctxt.createLinearGradient(0,0,800,0);
         gradient.addColorStop("0","magenta");
         gradient.addColorStop("0.5","blue");
         gradient.addColorStop("1.0","red");
-        ctx.fillStyle=gradient;
-        ctx.fillText("En este menú encontraras toda la ayuda que necesites",2.1*64,1.8*64);
-        ctx.fillText("Dinámica del juego: ",2.1*64,2.1*64);
-        ctx.fillText("1º) Obten la pieza pulsando al enter.",2.1*64,2.4*64);
-        ctx.fillText("2º) Rota la pieza de la forma que quieras para conseguir la puntuación máxima",2.1*64,2.7*64);
-        ctx.fillText("3º) Haz click izquierdo sobre la cuadrícula para colocar la pieza",2.1*64,3*64);
-        ctx.fillText("4º) Ahora puedes colocar un seguidor si quieres, pulsando s",2.1*64,3.3*64);
-        ctx.fillText("5º) Coloca a tu seguidor de la forma que puedas conseguir la puntuacion máxima",2.1*64,3.6*64);
-        ctx.fillText("6º) ¡Ya ha finalizado tu turno! Espera de forma paciente a los demás",2.1*64,3.9*64);
-        ctx.restore(); 
+        ctxt.fillStyle=gradient;
+        ctxt.fillText("En este menú encontraras toda la ayuda que necesites",2.1*64,1.8*64);
+        ctxt.fillText("Dinámica del juego: ",2.1*64,2.1*64);
+        ctxt.fillText("1º) Obten la pieza pulsando al enter.",2.1*64,2.4*64);
+        ctxt.fillText("2º) Rota la pieza de la forma que quieras para conseguir la puntuación máxima",2.1*64,2.7*64);
+        ctxt.fillText("3º) Haz click izquierdo sobre la cuadrícula para colocar la pieza",2.1*64,3*64);
+        ctxt.fillText("4º) Ahora puedes colocar un seguidor si quieres, pulsando s",2.1*64,3.3*64);
+        ctxt.fillText("5º) Coloca a tu seguidor de la forma que puedas conseguir la puntuacion máxima",2.1*64,3.6*64);
+        ctxt.fillText("6º) ¡Ya ha finalizado tu turno! Espera de forma paciente a los demás",2.1*64,3.9*64);
+        ctxt.restore(); 
     }
     };
    
@@ -370,8 +371,8 @@ TableroJuego = function() {
     };
     // Cuando Game.loop() llame a draw(), hay que llamar al método
     // draw() de todos los objetos contenidos en el tablero
-    this.draw= function(ctx) {
-        this.iterate('draw',ctx);
+    this.draw= function(ctxt) {
+        this.iterate('draw',ctxt);
     };
     // Comprobar si hay intersección entre los rectángulos que
     // circunscriben a los objetos o1 y o2

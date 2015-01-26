@@ -1,2 +1,2 @@
-
-IU = new Mongo.Collection("iu");
+//Collections
+Turno = new Meteor.Collection('turno');
