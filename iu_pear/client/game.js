@@ -119,7 +119,7 @@ var startGame = function() {
     Game.setBoard(5,board);
    
     
-}
+};
 
 
 playGame = function() {
@@ -134,37 +134,74 @@ playGame = function() {
   
 }
 
+function pintaResumen(resumenFinal){
+
+    resumenFinal.forEach(function (e, i) {		
+	        console.log(e);				
+	        var stringFinalPartida;
+            stringFinalPartida = "Nombre del jugador: " + e.nombre + "  ----------->  " + "Puntos: " + e.puntos;
+            arrayFinalConstruido.push(stringFinalPartida);
+    });
+		    
+    Game.setBoard(6,new final(arrayFinalConstruido));
+    
+    obj = Turno.findOne({});
+
+    Turno.update(obj._id,{$set: {Comando:"FinPartida", resumenFinal: arrayFinalConstruido}}); 
+
+};
+
+function finalizarPartidaHumano (){
+
+    Meteor.call("finalizarPartida", Id_Partida, function ( error, result) {
+            resumenFinal = result;
+            console.log("se hace el meteor.call de finalizar partida");
+            console.log(resumenFinal[0]);
+            pintaResumen(result);
+    });
+
+
+}
+
 var pedirPieza = function () {
 
 	Meteor.call('dameFicha',Id_Partida, function (error, result) {
-	console.log("entra a meteor.call");
-	    var arg;
-	    //Esta mal sin terminar porque no sabemos todavia con exactitud que nos va a devolver la IA
-	    if((result.tipo === 5) || (result.tipo === 6) || (result.tipo === 10) || (result.tipo === 11) || (result.tipo === 12)){
-	    
-	        if (result.escudo == true){
-	            arg = "C" + result.tipo.toString();
-	            console.log(arg);
-	        }else{
-	            arg = "S" + result.tipo.toString();
-	        }
+	
+	    if(!result){
+	        console.log("debe acabar la partida");
+	        otrapieza = false;
+	        finalizarPartidaHumano();
 	    
 	    }else{
-	    
-	        arg = result.tipo.toString();
+	        var arg;
+	        //Esta mal sin terminar porque no sabemos todavia con exactitud que nos va a devolver la IA
+	        if((result.tipo === 5) || (result.tipo === 6) || (result.tipo === 10) || (result.tipo === 11) || (result.tipo === 12)){
 	        
-	    }
-	    
+	            if (result.escudo == true){
+	                arg = "C" + result.tipo.toString();
+	                console.log(arg);
+	            }else{
+	                arg = "S" + result.tipo.toString();
+	            }
+	        
+	        }else{
+	        
+	            arg = result.tipo.toString();
+	            
+	        }
+	        
 		
-		var piezaNueva = new pieza (arg, 11.5*64, 8*64, false, 0, false);
-		board.add(piezaNueva);
-		console.log("AÑADIDA PRIMERA PIEZA");
-		//Hacemos update para que los demas clientres pinten la pieza que pide el del turno				
-		obj = Turno.findOne({});
-		//console.log(obj);
+		    var piezaNueva = new pieza (arg, 11.5*64, 8*64, false, 0, false);
+		    board.add(piezaNueva);
+		    console.log("AÑADIDA PRIMERA PIEZA");
+		    //Hacemos update para que los demas clientres pinten la pieza que pide el del turno				
+		    obj = Turno.findOne({});
+		    //console.log(obj);
 		
-		Turno.update(obj._id,{$set: {Comando: "PedirPieza", nombrePieza:arg ,scroll:false}});  
-		console.log("Termina meteor.call");
+		    Turno.update(obj._id,{$set: {Comando: "PedirPieza", nombrePieza:arg ,scroll:false}});  
+		    console.log("Termina meteor.call");
+		
+		}
 					
 	});
 	
@@ -443,7 +480,7 @@ var cuadricula = function(){
     };	
 }
 
-var final = function(array){
+final = function(array){
     this.step = function(dt) {
         
     };
@@ -881,7 +918,7 @@ var ColocarSeguidor = function(x, y, idx, idy) {
                     console.log("se hace el meteor.call de finalizar partida");
                     finalizarPartida = true;
                 });
-            
+                
             
             }else{
             
@@ -921,6 +958,11 @@ var ColocarSeguidor = function(x, y, idx, idy) {
 	        });
 		    
 		    Game.setBoard(6,new final(arrayFinalConstruido));
+	        
+	        obj = Turno.findOne({});
+
+            Turno.update(obj._id,{$set: {Comando:"FinPartida", resumenFinal: arrayFinalConstruido}}); 
+		    
 		
 		}
     }   
@@ -1114,8 +1156,6 @@ function gestionTurnoIA (result){
         	IATurno = true;
         	numcolor++;
         	pintarInfoIA(result[1]);
-        	BorrarSegIA = true;
-        	
         	},1500);
         }
         if(result[2] != undefined){
@@ -1125,8 +1165,6 @@ function gestionTurnoIA (result){
         	IATurno = true;
         	numcolor++;
         	pintarInfoIA(result[2]);
-        	BorrarSegIA = true;
-
         	},2500);
         	
         }
@@ -1137,7 +1175,6 @@ function gestionTurnoIA (result){
         	IATurno = true;
         	numcolor++;
         	pintarInfoIA(result[3]);
-        	BorrarSegIA = true;
         	},3500);
         	
         }
@@ -1148,7 +1185,6 @@ function gestionTurnoIA (result){
         	IATurno = true;
         	numcolor++;
         	pintarInfoIA(result[4]);
-        	BorrarSegIA = true;
         	},4500);
         	
         }
@@ -1187,120 +1223,126 @@ function pintarInfoIA (ObjetoIA){
     var arg;
     
     info = ObjetoIA.fichaPuesta;
-    var tipoPieza = info[0].tipo;
-    var escudo = info[0].escudo;
-    var giroRec = info[0].giro;
-    console.log("GIROOOOOOO: " + giroRec);
-    
-    if((tipoPieza === 5) || (tipoPieza === 6) || (tipoPieza === 10) || (tipoPieza === 11) || (tipoPieza === 12)){
-	    
-	        if (escudo === true){
-	            arg = "C" + tipoPieza.toString();
-	            console.log(arg);
-	        }else{
-	            arg = "S" + tipoPieza.toString();
-	        }
-	    
-	    }else{
-	    
-	        arg = tipoPieza.toString();
-	        
-    }
-    
-    var xRec = info[1].x;
-    var yRec = info[1].y;
-    console.log("posicion donde colocar la xIA: " + xRec);
-    console.log("posicion donde colocar la yIA: " + yRec);
-    
-    //calculamos la posicion del canvas con la casilla del tablero que nos pasan
-    var posTableroX = xRec - scrollxprima;
-    var posTableroY = yRec - scrollyprima;
-    var posCanvasX = (posTableroX * 64);
-    var posCanvasY = (posTableroY * 64);
-    
-    //Añadimos la pieza de IA
-    var piezaNueva = new pieza (arg, posCanvasX, posCanvasY, true, giroRec, true);
-	board.add(piezaNueva);
-	
-	//Calculamos la posicion del seguidor para pintarlo correctamente
-	var posSeg = info[2];
-    
-    switch (posSeg)
-    {
-        case 0: 
-            board.add (new Seguidor (posCanvasX+7.5, posCanvasY+2.5,verColorSeg(), xRec, yRec));
-            obj = Turno.findOne({Comando:"BorrarSeguidor"});
-            Turno.update(obj._id,{$set: {Comando:"JugadaIA", nombrePieza: arg, posx: posCanvasX, posy: posCanvasY, casillaX: xRec, casillaY: yRec, posxseg: posCanvasX+7.5, posyseg:posCanvasY+2.5, numRotacion: giroRec, numColor: numcolor, scroll:false }}); 
-            break;
-        case 1:
-            board.add (new Seguidor (posCanvasX+22, posCanvasY+2.5,verColorSeg(), xRec, yRec));
-            obj = Turno.findOne({Comando:"BorrarSeguidor"});
-            Turno.update(obj._id,{$set: {Comando:"JugadaIA", nombrePieza: arg, posx: posCanvasX, posy: posCanvasY, casillaX: xRec, casillaY: yRec, posxseg: posCanvasX+22, posyseg:posCanvasY+2.5, numRotacion: giroRec, numColor: numcolor, scroll:false }});  
-            break;
-        case 2:
-            board.add (new Seguidor (posCanvasX+41, posCanvasY+2.5,verColorSeg(), xRec, yRec)); 
-            obj = Turno.findOne({Comando:"BorrarSeguidor"});
-            Turno.update(obj._id,{$set: {Comando:"JugadaIA", nombrePieza: arg, posx: posCanvasX, posy: posCanvasY, casillaX: xRec, casillaY: yRec, posxseg: posCanvasX+41, posyseg:posCanvasY+2.5, numRotacion: giroRec, numColor: numcolor, scroll:false }});  
-            break;
-        case 3:
-            board.add (new Seguidor (posCanvasX+48, posCanvasY+14.5,verColorSeg(), xRec, yRec)); 
-            obj = Turno.findOne({Comando:"BorrarSeguidor"});
-            Turno.update(obj._id,{$set: {Comando:"JugadaIA", nombrePieza: arg, posx: posCanvasX, posy: posCanvasY, casillaX: xRec, casillaY: yRec, posxseg: posCanvasX+48, posyseg:posCanvasY+14.5, numRotacion: giroRec, numColor: numcolor, scroll:false }});  
-            break;
-        case 4:
-            board.add (new Seguidor (posCanvasX+48, posCanvasY+27,verColorSeg(), xRec, yRec)); 
-            obj = Turno.findOne({Comando:"BorrarSeguidor"});
-            Turno.update(obj._id,{$set: {Comando:"JugadaIA", nombrePieza: arg, posx: posCanvasX, posy: posCanvasY, casillaX: xRec, casillaY: yRec, posxseg: posCanvasX+48, posyseg:posCanvasY+27, numRotacion: giroRec, numColor: numcolor, scroll:false }});  
-            break;
-        case 5:
-            board.add (new Seguidor (posCanvasX+48, posCanvasY+39,verColorSeg(), xRec, yRec)); 
-            obj = Turno.findOne({});
-            Turno.update(obj._id,{$set: {Comando:"JugadaIA", nombrePieza: arg, posx: posCanvasX, posy: posCanvasY, casillaX: xRec, casillaY: yRec, posxseg: posCanvasX+48, posyseg:posCanvasY+39, numRotacion: giroRec, numColor: numcolor, scroll:false }});  
-            break;
-        case 6:
-            board.add (new Seguidor (posCanvasX+40, posCanvasY+48,verColorSeg(), xRec, yRec)); 
-            obj = Turno.findOne({Comando:"BorrarSeguidor"});
-            Turno.update(obj._id,{$set: {Comando:"JugadaIA", nombrePieza: arg, posx: posCanvasX, posy: posCanvasY, casillaX: xRec, casillaY: yRec, posxseg: posCanvasX+40, posyseg:posCanvasY+48, numRotacion: giroRec, numColor: numcolor, scroll:false }});  
-            break;
-        case 7:
-        	console.log("verColorSeg() = " +verColorSeg());
-            board.add (new Seguidor (posCanvasX+22, posCanvasY+48,verColorSeg(), xRec, yRec)); 
-            obj = Turno.findOne({Comando:"BorrarSeguidor"});
-            Turno.update(obj._id,{$set: {Comando:"JugadaIA", nombrePieza: arg, posx: posCanvasX, posy: posCanvasY, casillaX: xRec, casillaY: yRec, posxseg: posCanvasX+22, posyseg:posCanvasY+48, numRotacion: giroRec, numColor: numcolor, scroll:false }});  
-            break;
-        case 8:
-            board.add (new Seguidor (posCanvasX+7.5, posCanvasY+48,verColorSeg(), xRec, yRec)); 
-            obj = Turno.findOne({Comando:"BorrarSeguidor"});
-            Turno.update(obj._id,{$set: {Comando:"JugadaIA", nombrePieza: arg, posx: posCanvasX, posy: posCanvasY, casillaX: xRec, casillaY: yRec, posxseg: posCanvasX+7.5, posyseg:posCanvasY+48, numRotacion: giroRec, numColor: numcolor, scroll:false }});  
-            break;
-        case 9:
-            board.add (new Seguidor (posCanvasX, posCanvasY+39,verColorSeg(), xRec, yRec));
-            obj = Turno.findOne({Comando:"BorrarSeguidor"});
-            Turno.update(obj._id,{$set: {Comando:"JugadaIA", nombrePieza: arg, posx: posCanvasX, posy: posCanvasY, casillaX: xRec, casillaY: yRec, posxseg: posCanvasX, posyseg:posCanvasY+39, numRotacion: giroRec, numColor: numcolor, scroll:false }});   
-            break;
-        case 10:
-            board.add (new Seguidor (posCanvasX, posCanvasY+27,verColorSeg(), xRec, yRec)); 
-            obj = Turno.findOne({Comando:"BorrarSeguidor"});
-            Turno.update(obj._id,{$set: {Comando:"JugadaIA", nombrePieza: arg, posx: posCanvasX, posy: posCanvasY, casillaX: xRec, casillaY: yRec, posxseg: posCanvasX, posyseg:posCanvasY+27, numRotacion: giroRec, numColor: numcolor, scroll:false }});  
-            break;
-        case 11:
-            board.add (new Seguidor (posCanvasX, posCanvasY+14.5,verColorSeg(), xRec, yRec));
-            obj = Turno.findOne({Comando:"BorrarSeguidor"});
-            Turno.update(obj._id,{$set: {Comando:"JugadaIA", nombrePieza: arg, posx: posCanvasX, posy: posCanvasY, casillaX: xRec, casillaY: yRec, posxseg: posCanvasX, posyseg:posCanvasY+14.5, numRotacion: giroRec, numColor: numcolor, scroll:false }});   
-            break;
-        case 12:
-            board.add (new Seguidor (posCanvasX+24, posCanvasY+27,verColorSeg(), xRec, yRec)); 
-            obj = Turno.findOne({Comando:"BorrarSeguidor"});
-            Turno.update(obj._id,{$set: {Comando:"JugadaIA", nombrePieza: arg, posx: posCanvasX, posy: posCanvasY, casillaX: xRec, casillaY: yRec, posxseg: posCanvasX+24, posyseg:posCanvasY+27, numRotacion: giroRec, numColor: numcolor, scroll:false }});  
-            break;
-        default:
-            obj = Turno.findOne({Comando:"BorrarSeguidor"});
-            Turno.update(obj._id,{$set: {Comando:"JugadaIA", nombrePieza: arg, posx: posCanvasX, posy: posCanvasY, casillaX: xRec, casillaY: yRec, posxseg: 0, posyseg:0, numRotacion: giroRec, numColor: numcolor, scroll:false }});  
-            break;
+    if (!info){
+        console.log("termina partida IA todo null");
+        finalizarPartidaHumano();
+    }else{
+        var tipoPieza = info[0].tipo;
+        var escudo = info[0].escudo;
+        var giroRec = info[0].giro;
+        console.log("GIROOOOOOO: " + giroRec);
         
-    }
+        if((tipoPieza === 5) || (tipoPieza === 6) || (tipoPieza === 10) || (tipoPieza === 11) || (tipoPieza === 12)){
+	        
+	            if (escudo === true){
+	                arg = "C" + tipoPieza.toString();
+	                console.log(arg);
+	            }else{
+	                arg = "S" + tipoPieza.toString();
+	            }
+	        
+	        }else{
+	        
+	            arg = tipoPieza.toString();
+	            
+        }
+        
+        var xRec = info[1].x;
+        var yRec = info[1].y;
+        console.log("posicion donde colocar la xIA: " + xRec);
+        console.log("posicion donde colocar la yIA: " + yRec);
+        
+        //calculamos la posicion del canvas con la casilla del tablero que nos pasan
+        var posTableroX = xRec - scrollxprima;
+        var posTableroY = yRec - scrollyprima;
+        var posCanvasX = (posTableroX * 64);
+        var posCanvasY = (posTableroY * 64);
+        
+        //Añadimos la pieza de IA
+        var piezaNueva = new pieza (arg, posCanvasX, posCanvasY, true, giroRec, true);
+	    board.add(piezaNueva);
 	
-}
+	    //Calculamos la posicion del seguidor para pintarlo correctamente
+	    var posSeg = info[2];
+        
+        switch (posSeg)
+        {
+            case 0: 
+                board.add (new Seguidor (posCanvasX+7.5, posCanvasY+2.5,verColorSeg(), xRec, yRec));
+                obj = Turno.findOne({Comando:"BorrarSeguidor"});
+                Turno.update(obj._id,{$set: {Comando:"JugadaIA", nombrePieza: arg, posx: posCanvasX, posy: posCanvasY, casillaX: xRec, casillaY: yRec, posxseg: posCanvasX+7.5, posyseg:posCanvasY+2.5, numRotacion: giroRec, numColor: numcolor, scroll:false }}); 
+                break;
+            case 1:
+                board.add (new Seguidor (posCanvasX+22, posCanvasY+2.5,verColorSeg(), xRec, yRec));
+                obj = Turno.findOne({Comando:"BorrarSeguidor"});
+                Turno.update(obj._id,{$set: {Comando:"JugadaIA", nombrePieza: arg, posx: posCanvasX, posy: posCanvasY, casillaX: xRec, casillaY: yRec, posxseg: posCanvasX+22, posyseg:posCanvasY+2.5, numRotacion: giroRec, numColor: numcolor, scroll:false }});  
+                break;
+            case 2:
+                board.add (new Seguidor (posCanvasX+41, posCanvasY+2.5,verColorSeg(), xRec, yRec)); 
+                obj = Turno.findOne({Comando:"BorrarSeguidor"});
+                Turno.update(obj._id,{$set: {Comando:"JugadaIA", nombrePieza: arg, posx: posCanvasX, posy: posCanvasY, casillaX: xRec, casillaY: yRec, posxseg: posCanvasX+41, posyseg:posCanvasY+2.5, numRotacion: giroRec, numColor: numcolor, scroll:false }});  
+                break;
+            case 3:
+                board.add (new Seguidor (posCanvasX+48, posCanvasY+14.5,verColorSeg(), xRec, yRec)); 
+                obj = Turno.findOne({Comando:"BorrarSeguidor"});
+                Turno.update(obj._id,{$set: {Comando:"JugadaIA", nombrePieza: arg, posx: posCanvasX, posy: posCanvasY, casillaX: xRec, casillaY: yRec, posxseg: posCanvasX+48, posyseg:posCanvasY+14.5, numRotacion: giroRec, numColor: numcolor, scroll:false }});  
+                break;
+            case 4:
+                board.add (new Seguidor (posCanvasX+48, posCanvasY+27,verColorSeg(), xRec, yRec)); 
+                obj = Turno.findOne({Comando:"BorrarSeguidor"});
+                Turno.update(obj._id,{$set: {Comando:"JugadaIA", nombrePieza: arg, posx: posCanvasX, posy: posCanvasY, casillaX: xRec, casillaY: yRec, posxseg: posCanvasX+48, posyseg:posCanvasY+27, numRotacion: giroRec, numColor: numcolor, scroll:false }});  
+                break;
+            case 5:
+                board.add (new Seguidor (posCanvasX+48, posCanvasY+39,verColorSeg(), xRec, yRec)); 
+                obj = Turno.findOne({});
+                Turno.update(obj._id,{$set: {Comando:"JugadaIA", nombrePieza: arg, posx: posCanvasX, posy: posCanvasY, casillaX: xRec, casillaY: yRec, posxseg: posCanvasX+48, posyseg:posCanvasY+39, numRotacion: giroRec, numColor: numcolor, scroll:false }});  
+                break;
+            case 6:
+                board.add (new Seguidor (posCanvasX+40, posCanvasY+48,verColorSeg(), xRec, yRec)); 
+                obj = Turno.findOne({Comando:"BorrarSeguidor"});
+                Turno.update(obj._id,{$set: {Comando:"JugadaIA", nombrePieza: arg, posx: posCanvasX, posy: posCanvasY, casillaX: xRec, casillaY: yRec, posxseg: posCanvasX+40, posyseg:posCanvasY+48, numRotacion: giroRec, numColor: numcolor, scroll:false }});  
+                break;
+            case 7:
+            	console.log("verColorSeg() = " +verColorSeg());
+                board.add (new Seguidor (posCanvasX+22, posCanvasY+48,verColorSeg(), xRec, yRec)); 
+                obj = Turno.findOne({Comando:"BorrarSeguidor"});
+                Turno.update(obj._id,{$set: {Comando:"JugadaIA", nombrePieza: arg, posx: posCanvasX, posy: posCanvasY, casillaX: xRec, casillaY: yRec, posxseg: posCanvasX+22, posyseg:posCanvasY+48, numRotacion: giroRec, numColor: numcolor, scroll:false }});  
+                break;
+            case 8:
+                board.add (new Seguidor (posCanvasX+7.5, posCanvasY+48,verColorSeg(), xRec, yRec)); 
+                obj = Turno.findOne({Comando:"BorrarSeguidor"});
+                Turno.update(obj._id,{$set: {Comando:"JugadaIA", nombrePieza: arg, posx: posCanvasX, posy: posCanvasY, casillaX: xRec, casillaY: yRec, posxseg: posCanvasX+7.5, posyseg:posCanvasY+48, numRotacion: giroRec, numColor: numcolor, scroll:false }});  
+                break;
+            case 9:
+                board.add (new Seguidor (posCanvasX, posCanvasY+39,verColorSeg(), xRec, yRec));
+                obj = Turno.findOne({Comando:"BorrarSeguidor"});
+                Turno.update(obj._id,{$set: {Comando:"JugadaIA", nombrePieza: arg, posx: posCanvasX, posy: posCanvasY, casillaX: xRec, casillaY: yRec, posxseg: posCanvasX, posyseg:posCanvasY+39, numRotacion: giroRec, numColor: numcolor, scroll:false }});   
+                break;
+            case 10:
+                board.add (new Seguidor (posCanvasX, posCanvasY+27,verColorSeg(), xRec, yRec)); 
+                obj = Turno.findOne({Comando:"BorrarSeguidor"});
+                Turno.update(obj._id,{$set: {Comando:"JugadaIA", nombrePieza: arg, posx: posCanvasX, posy: posCanvasY, casillaX: xRec, casillaY: yRec, posxseg: posCanvasX, posyseg:posCanvasY+27, numRotacion: giroRec, numColor: numcolor, scroll:false }});  
+                break;
+            case 11:
+                board.add (new Seguidor (posCanvasX, posCanvasY+14.5,verColorSeg(), xRec, yRec));
+                obj = Turno.findOne({Comando:"BorrarSeguidor"});
+                Turno.update(obj._id,{$set: {Comando:"JugadaIA", nombrePieza: arg, posx: posCanvasX, posy: posCanvasY, casillaX: xRec, casillaY: yRec, posxseg: posCanvasX, posyseg:posCanvasY+14.5, numRotacion: giroRec, numColor: numcolor, scroll:false }});   
+                break;
+            case 12:
+                board.add (new Seguidor (posCanvasX+24, posCanvasY+27,verColorSeg(), xRec, yRec)); 
+                obj = Turno.findOne({Comando:"BorrarSeguidor"});
+                Turno.update(obj._id,{$set: {Comando:"JugadaIA", nombrePieza: arg, posx: posCanvasX, posy: posCanvasY, casillaX: xRec, casillaY: yRec, posxseg: posCanvasX+24, posyseg:posCanvasY+27, numRotacion: giroRec, numColor: numcolor, scroll:false }});  
+                break;
+            default:
+                obj = Turno.findOne({Comando:"BorrarSeguidor"});
+                Turno.update(obj._id,{$set: {Comando:"JugadaIA", nombrePieza: arg, posx: posCanvasX, posy: posCanvasY, casillaX: xRec, casillaY: yRec, posxseg: 0, posyseg:0, numRotacion: giroRec, numColor: numcolor, scroll:false }});  
+                break;
+            
+        }
+        
+        BorrarSegIA = true;
+	}
+};
 
 
 
@@ -1313,12 +1355,16 @@ borrarSeguidor = function (idx, idy){
 
 EmpezarTodo = function (id_partida, arrayJugadores, user_Id) {
 
+    //ctxt.save();
+
     Game.initialize("gameC",sprites,startGame);       
     JugadoresIA = arrayJugadores;
     User_IdIA = user_Id;
     Id_Partida = id_partida;
     console.log("ID_PARTIDA_RECIBIDO: " + Id_Partida);
     longitudcolor = arrayJugadores.length;
+    
+    //ctxt.restore();
 };
 /*
 EmpezarTodo = function (arrayJugadores) {

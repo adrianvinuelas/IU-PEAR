@@ -477,6 +477,10 @@ Tracker.autorun(function(){
 			        board.add (seguidor);
 			    
 			    
+			    }else if (m.Comando === "FinPartida"){
+			        console.log("10000000");
+			        Game.setBoard(6,new final(m.resumenFinal));   
+			    
 			    }
 		    }else{
 			    DejarScroll = true;
