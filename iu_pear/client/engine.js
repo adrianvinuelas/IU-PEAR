@@ -47,7 +47,7 @@ Game = new function() {
     var boards = [];
     this.loop = function() { 
 	    // segundos transcurridos
-	    var dt = 30 / 1000;
+	    var dt = 100 / 1000;
 
 	    // Para cada board, de 0 en adelante, se 
 	    // llama a su método step() y luego a draw()
@@ -249,47 +249,48 @@ TextoPideFicha =  function TextoPideFicha(title,callback) {
 
 AyudaScreen = function(title) {
     this.ayuda = false;
-   
+  
     var up = false;
     this.step = function (dt) {
-  
+ 
     if(!Game.keys['espacio']) up = true;
     if(up && Game.keys['espacio']) {
     up = false;
     this.ayuda = !this.ayuda;
     }
     };
-   
+  
     this.draw = function(ctxt) {
 
-    ctxt.fillStyle = "#FFFFFF";   
+    ctxt.fillStyle = "#FFFFFF";  
     ctxt.font = "bold 12px bangers";
-    ctxt.fillText(title,10.5*64,6.8*64);
-  
-    
+    ctxt.fillText(title,10.5*64,1*64);
+ 
+   
     if (this.ayuda == true) {
-        ctxt.save();  
-        ctxt.fillStyle = '#D28C12';
+        ctxt.save(); 
+        ctxt.fillStyle = '#6D0A0A';
         ctxt.fillRect(120,90,520,320);
-        ctxt.strokeStyle="#FFFFFF";
+        ctxt.strokeStyle="black";
         ctxt.strokeRect(120,90,520,320);
-        var gradient=ctxt.createLinearGradient(0,0,800,0);
-        gradient.addColorStop("0","magenta");
-        gradient.addColorStop("0.5","blue");
-        gradient.addColorStop("1.0","red");
-        ctxt.fillStyle=gradient;
+        ctxt.fillStyle='black';
         ctxt.fillText("En este menú encontraras toda la ayuda que necesites",2.1*64,1.8*64);
         ctxt.fillText("Dinámica del juego: ",2.1*64,2.1*64);
         ctxt.fillText("1º) Obten la pieza pulsando al enter.",2.1*64,2.4*64);
-        ctxt.fillText("2º) Rota la pieza de la forma que quieras para conseguir la puntuación máxima",2.1*64,2.7*64);
-        ctxt.fillText("3º) Haz click izquierdo sobre la cuadrícula para colocar la pieza",2.1*64,3*64);
-        ctxt.fillText("4º) Ahora puedes colocar un seguidor si quieres, pulsando s",2.1*64,3.3*64);
-        ctxt.fillText("5º) Coloca a tu seguidor de la forma que puedas conseguir la puntuacion máxima",2.1*64,3.6*64);
-        ctxt.fillText("6º) ¡Ya ha finalizado tu turno! Espera de forma paciente a los demás",2.1*64,3.9*64);
-        ctxt.restore(); 
+        ctxt.fillText("2º) Rota la pieza de la forma que quieras para conseguir la puntuación",2.1*64,2.7*64);
+    ctxt.fillText("máxima pulsando la tecla r",2.1*64,3*64);
+        ctxt.fillText("3º) Haz click izquierdo sobre la cuadrícula para colocar la pieza",2.1*64,3.3*64);
+        ctxt.fillText("4º) Ahora puedes colocar un seguidor si quieres, mira la cuadricula roja ",2.1*64,3.6*64);
+    ctxt.fillText("que está abajo a la derecha del tablero",2.1*64,3.9*64);
+        ctxt.fillText("5º) Coloca a tu seguidor de la forma que puedas conseguir la puntuacion",2.1*64,4.2*64);
+    ctxt.fillText("máxima",2.1*64,4.5*64);
+        ctxt.fillText("6º) ¡Ya ha finalizado tu turno! Espera de forma paciente a los demás",2.1*64,4.8*64);
+    ctxt.font = "bold 22px sans-serif";
+    ctxt.fillText("ENJOY IT!",4.6*64,5.5*64);
+        ctxt.restore();
     }
     };
-   
+  
 };
 
 
@@ -325,7 +326,7 @@ TableroJuego = function() {
     console.log("encontrado " + obj.color);
     console.log("encontrado " + obj.type);
         removed.push(obj);
-	console.log("entro a remove");
+	console.log("removed" + removed);
     };
     // Inicializar la lista de objetos pendientes de ser borrados
     //this.resetRemoved = function() { removed = []; }
@@ -404,6 +405,7 @@ TableroJuego = function() {
     };
     
     this.borrarSeguidor = function(idx,idy) {
+         removed = [];
         _(this.objects).forEach(function (obj) {
                 if(obj.type == "pieza") {      
                     if(obj.idx == idx && obj.idy == idy){
@@ -412,12 +414,13 @@ TableroJuego = function() {
                             console.log("objetoy es " + obj.idy);
                             console.log("encontrado " + obj.color);
                             console.log("encontrado " + obj.type);*/
-			                removed = []; //si falla hacer un borrarseguidor
+			                //removed = []; //si falla hacer un borrarseguidor
                             board.remove(obj);
                             console.log("hace remove");
                     }                               
                 }
         })
+        board.finalizeRemoved();
     };
 };
 

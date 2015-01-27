@@ -106,7 +106,7 @@ var startGame = function() {
 
     Game.setBoard(0,new cuadricula());
     Game.setBoard(1,new Jugadores(JugadoresIA));       
-    Game.setBoard(3,new AyudaScreen("Pulsa espacio para ayuda"));
+    board.add (new AyudaScreen("Pulsa espacio para ayuda"));
     console.log("Pintada pieza madre");
     board.add(new PiezaMadre("1", 5*64, 5*64)); //Pieza madre que siempre esta puesta cuando empieza el juego
     console.log(Meteor.userId());
@@ -482,25 +482,32 @@ var cuadricula = function(){
 
 final = function(array){
     this.step = function(dt) {
-        
+       
     };
     this.draw = function(ctxt) {
-  
+ 
         var img1 = new Image();
         var img2 = new Image();
         img1.src = 'background.jpg';
         Game.ctxt.drawImage(img1, 50, 50, 900, 650);
-        
-        ctxt.save();  
-        var b = 1.8;
+       
+        ctxt.save(); 
+        var b = 2.2;
+        ctxt.fillStyle = '#9C1B14';
+        ctxt.fillRect(120,90,520,320);
+        ctxt.strokeStyle="black";
+        ctxt.strokeRect(120,90,520,320);
         for (i = 0; i<array.length; i++){
+            ctxt.font = "bold 18pt sans-serif";
+            ctxt.fillText("RESUMEN FINAL DE LA PARTIDA :", 2.1 *64,1.8*64 ) ;
             ctxt.fillStyle = "black";
-            ctxt.strokeStyle="#FFFFFF";
-            ctxt.fillText(array[i],2.1*64,b*64,300);           
+            ctxt.font = "italic bold 15pt courier" ;
+            ctxt.strokeStyle="black";
+            ctxt.fillText(array[i],2.1*64,b*64,300);          
             b = b+1;
         }
-        ctxt.restore(); 
-    };	
+        ctxt.restore();
+    };   
 }
 
 var ColocarSeguidor = function(x, y, idx, idy) {
