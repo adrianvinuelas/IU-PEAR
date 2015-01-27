@@ -351,7 +351,7 @@ Meteor.methods ({
         };
         
     },*/
-    
+    /*
 	crearPartida: function(id,jugs,num){
 		partidaPrueba = generarPartida(id,jugs,num);
         console.log("se ha generado la partida");
