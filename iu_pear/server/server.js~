@@ -28,6 +28,10 @@ var partidaPrueba;
         return Matches_games.find ({}, {fields: {match_name:1,num_players:1,difficulty:1,owner:1,owner_name:1,score:1,status:1,players_array:1}});  
     });
 
+    Meteor.publish('users_score_cc', function() {
+        return Users_score_cc.find ({}, {fields: {user:1, score:1}});  
+    });
+    
     Meteor.publish("users_score", function(current_game){
 		
 			game_criteria = {game_id: current_game};
@@ -351,7 +355,7 @@ Meteor.methods ({
         };
         
     },*/
-    
+    /*
 	crearPartida: function(id,jugs,num){
 		partidaPrueba = generarPartida(id,jugs,num);
         console.log("se ha generado la partida");
@@ -375,49 +379,134 @@ Meteor.methods ({
     //                      Interfaz con IU                               //
     //********************************************************************//
 
-
+    /* Comneto este método porque no funcionaba.
+    No funcionaba puesto que devolviamos un objeto que tiene dependencia circular. 
+    Puesto que este método no lo vamos a utilizar... Se borrará en un futuro.
+    buscaPartida: function(id_partida){
+        console.log("han llamado a buscar partida.");
+        var partida = getPartida(id_partida);
+        console.log("partida: "+ partida.idPartida);
+        //return partida;
+    },
+    */
+    //pre: id_partida, id_jugador; post: fichaIU (tipo, escudo y numFicha)
     dameFicha: function(id_partida){
-		console.log("EN SERVER.JS id_partida es: " + id_partida);
+        /*
         var partida = getPartida (id_partida);
-        console.log("partida: " + partida);
         var fichaIU;
-        var ficha = partida.tablero.dameFicha();
-        fichaIU = {
-        tipo: ficha.tipo,
-        escudo: ficha.escudo,
-        numFicha: ficha.numFicha
-     };
+             var ficha = partida.tablero.dameFicha();
+             fichaIU = {
+                tipo: ficha.tipo,
+                escudo: ficha.escudo,
+                numFicha: ficha.numFicha
+             };
         return fichaIU;
+        */
+        return null;
     },
    
     ponerFicha: function(id_partida,giro,posFicha){
+        console.log("pos que nos dice IU: " + posFicha);
         var success = false;
-		console.log("LO QUE RECIBIMOS COMO GIRO ES: " + giro);
         var partida = getPartida(id_partida);
         success = partida.tablero.ponerFicha(posFicha,giro);
         return success;
     },
 
-    ponerSeguidor: function(id_partida,posSeguidor,id_jugador){
-        ObjetoResumen = {arrayResumenJugs: [{nombre: "Kevin", puntos: 10, seguidores: 6}, {nombre: "Victor", puntos: 0, seguidores: 7}],
-                     idSiguienteJug: "Cc2eDC4STQZdCPHbg", 
-                     arraySeguidoresQuitar: [{x:50,y:51}]
-                     }
+    ponerSeguidor: function(id_partida,posSeguidor,id_usuario){
+       
+        var partida = getPartida(id_partida);
+        
+        var resumenTurno = partida.tablero.ponerSeguidor (posSeguidor,id_usuario);
+	
+        /*console.log("poner seguidor con exito: " + resumenTurno[0]);
+        console.log("ha habido numero turnos: " + resumenTurno[1].length);
+        console.log("voy a pintar los resumenes de los turnos: sólo los puntos de los jugadores: ");
+        console.log("el primer turno: ");
+        _(resumenTurno[1][0].arrayResumenJugs).each(function(jug){
+            console.log(jug.nombre);
+            console.log(jug.puntos);
+            console.log(jug.numSeguidores);
+        });
+        console.log("siguiente turno: " + resumenTurno[1][0].idSiguienteJug);
+        console.log("hay que quitar seguidor????: " + resumenTurno[1][0].arraySeguidoresQuitar.length);
+        console.log("arraySeguidoresQuitar: " + resumenTurno[1][0].arraySeguidoresQuitar);
+        //aqui pinto los resumenes de puntos del turno de la IA.
+        if (resumenTurno[1].length > 1){
+            console.log("estas son las keys del objetoResumenIA: " + _(resumenTurno[1][0]));
+            console.log("voy a pintar los turnos de las IAs y los seguidores: ");
+            for (i = 1; i < resumenTurno[1].length; i++){
+                console.log("estas son las keys del objetoResumenIA: " + _(resumenTurno[1][i]).keys());
+                _(_(resumenTurno[1][i].fichaPuesta).keys()).each(function(key){
+                    console.log(key + ": " + resumenTurno[1][i].fichaPuesta[key]);
+                });
+                _(resumenTurno[1][i].arrayResumenJugs).each(function(jug){
+                    console.log(jug.nombre);
+                    console.log(jug.puntos);
+                    console.log(jug.numSeguidores);
+                });
+                console.log("siguiente turno: " + resumenTurno[1][i].idSiguienteJug);
+                _(resumenTurno[1][i].arraySeguidoresQuitar).each(function(pos){
+                    console.log("sequidor a quitar que se encontraba en la pos: " + pos);
+                });
+                console.log("hay que quitar seguidor????: " + resumenTurno[1][i].arraySeguidoresQuitar.length);
+                console.log("arraySeguidoresQuitar: " + resumenTurno[1][i].arraySeguidoresQuitar);
+            }
+            
+        }
+	*/
+        return resumenTurno;
+        
+	/*
+        ObjetoResumen = {arrayResumenJugs: [{nombre: "Kevin", puntos: 10, numSeguidores: 6}, {nombre: "Victor", puntos: 0, numSeguidores: 7}],
+                         idSiguienteJug: "xBjKiSvZPNEqndfcg", 
+                         arraySeguidoresQuitar: []
+                         }
+         
+       
+        ObjetoResumenIA = {arrayResumenJugs: [{nombre: "Kevin", puntos: 10, numSeguidores: 6}, {nombre: "Victor", puntos: 0, numSeguidores: 3}],
+                         idSiguienteJug: null, 
+                         arraySeguidoresQuitar: [],
+                         fichaPuesta: [{tipo:16, escudo:false, numFicha:4, giro:2}, {x:53, y:53}, 7]
+                         
+                         }
+                         
+        ObjetoResumenIA2 = {arrayResumenJugs: [{nombre: "Kevin", puntos: 10, numSeguidores: 6}, {nombre: "Victor", puntos: 0, numSeguidores: 2}],
+                         idSiguienteJug: "vxWGtB9R9uD7h8P2g", 
+                         arraySeguidoresQuitar: [],
+                         fichaPuesta: [{tipo:16, escudo:false, numFicha:4, giro:2}, {x:52, y:52}, 5]
+                         }
+                         
+        ObjetoResumenIA3 = {arrayResumenJugs: [{nombre: "Kevin", puntos: 10, numSeguidores: 6}, {nombre: "Victor", puntos: 0, numSeguidores: 2}],
+                         idSiguienteJug: null, 
+                         arraySeguidoresQuitar: [{x:53,y:53},{x:52,y:52},{x:52, y:53}],
+                         fichaPuesta: [{tipo:17, escudo:false, numFicha:4, giro:2}, {x:52, y:53}, 6]
+                         }
+                        
                     
-                    
-                    
-    arrayRespuesta = [true, [ObjetoResumen]];
-   
-    return arrayRespuesta;
+                        
+        arrayRespuesta = [true, [ObjetoResumen, ObjetoResumenIA, ObjetoResumenIA2,ObjetoResumenIA3]];
+       
+        return arrayRespuesta;
+	*/
     },
 
     generarPartidaPL: function(objetoPartidaPL){
         generarPartida(objetoPartidaPL.idPartida, objetoPartidaPL.arrayJugadores, objetoPartidaPL.numJugadores);
-    }
-    
+    },
+
+
+    finalizarPartida: function(id_partida){ 
+        var partida = getPartida(id_partida);
+        var objFinal = partida.finalizarPartida();
+        //var partidas = getTodasLasPartidas();
+        console.log("tiene que dar 0 porque se ha borrado la partida: " + partidas.length);
+		return objFinal;
+    },
     
 
 });
+
 
 Meteor.startup(function(){
 	console.log("Arrancado servidor");

@@ -5,6 +5,10 @@ body {
          background-image: url("images/fondo.png");
 }
 
+#waiting_matches{
+         background-image: url("images/partidas.png");
+}
+
   </style>
 </head>
 
@@ -43,22 +47,28 @@ body {
                      {{> options}}                
                     </div>
         </div>            
-               
-       <!--        
+                      
        <div id="container" class="span7">
              {{> alien_invasion}}      
        </div>
-        -->
+        
            
 
       <div id="gamecontainer" class="span7">
                  {{> froot_wars}}      
       </div>
 
-	  <div class="span2">
+      <div id="scoreFW" class="span2">
 				{{> best_players }}
-	  </div>
+      </div>
+	  
+      <div id="scoreCC" class="span2">
+				{{> best_players_cc }}
+      </div>
+	  
    </div>
+   
+   
   <script src='client/game.js'></script>
   <script src='client/engine.js'></script>
 
@@ -145,7 +155,7 @@ body {
 <template name="best_players">
 	{{#if none }}
 	<h3> Best players overall </h3>
-	{{else}}
+	{{else}}-->
 	<h3> Best players {{gameName}} </h3>
 	{{/if}}
 
@@ -162,22 +172,43 @@ body {
 	</table>
 </template>
 
+<template name="best_players_cc">
+
+	<h3> Best players Carcason </h3>
+
+
+	<table id="rooms" class="table table-striped">
+		<tbody>
+		
+		{{#each list_players_cc}}
+			<tr>
+				<td><strong>{{name}}</strong> ({{game}}): </td>
+				<td>{{score}}</td>
+			</tr>
+		{{/each}}
+		</tbody>
+	</table>
+</template>
+
 <template name="draw_matches">
     <div id='display_matches'>    
         {{#each matches_Wait}}
         <ol class="breadcrumb estilopartida">
-            <li id= "match_name">{{nombre_partida}}</li>
-            <li>|</li>
+            <li id= "match_name"><b>Name:</b>{{nombre_partida}}</li>
+            |
             <span class="glyphicon glyphicon-user">: </span>        
             <li id= "match_players">{{num_jug}}</li>
-            <li>| Host: </li>                         
+            | <b>Host:</b>                          
             <li id= "match_owner">{{propietario}}</li>
             <button id={{nombre_partida}}&{{num_jug}} type="button" class="btn btn-default play_game_button">&nbsp;▶</button>             
         </ol>
         {{/each}}    
     </div>
 
-    <div id='player_joined'>    
+
+
+
+    <!--<div id='player_joined'>    
         <ol class="breadcrumb estilopartida">
             <li id= "Status">Te has unido a una partida</li> 
         </ol> 
@@ -188,7 +219,7 @@ body {
             <li id= "Status">Empezada!!</li>
             <button type="button" class="btn btn-default play_game">Terminar Partida??</button>             
         </ol>
-    </div>
+    </div>-->
 </template>
 
 <template name="join_match"></template>

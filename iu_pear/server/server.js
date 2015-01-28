@@ -28,6 +28,10 @@ var partidaPrueba;
         return Matches_games.find ({}, {fields: {match_name:1,num_players:1,difficulty:1,owner:1,owner_name:1,score:1,status:1,players_array:1}});  
     });
 
+    Meteor.publish('users_score_cc', function() {
+        return Users_score_cc.find ({}, {fields: {user:1, score:1}});  
+    });
+    
     Meteor.publish("users_score", function(current_game){
 		
 			game_criteria = {game_id: current_game};
@@ -37,7 +41,6 @@ var partidaPrueba;
 			{limit:5, sort: {points:-1}});
 	});
 
-    /*
 	Meteor.methods({
 		matchFinish: function (game, points) {
 		// Don't insert in the Matches collection a match if the user
@@ -50,8 +53,7 @@ var partidaPrueba;
 			});
 		}
 	});
-    */
-    
+
     Messages_games.allow({
     	insert: function(userId, doc){
 		// Only authenticated users can insert messages
@@ -389,7 +391,7 @@ Meteor.methods ({
     */
     //pre: id_partida, id_jugador; post: fichaIU (tipo, escudo y numFicha)
     dameFicha: function(id_partida){
-        
+        /*
         var partida = getPartida (id_partida);
         var fichaIU;
              var ficha = partida.tablero.dameFicha();
@@ -399,8 +401,8 @@ Meteor.methods ({
                 numFicha: ficha.numFicha
              };
         return fichaIU;
-        
-        //return null;
+        */
+        return null;
     },
    
     ponerFicha: function(id_partida,giro,posFicha){

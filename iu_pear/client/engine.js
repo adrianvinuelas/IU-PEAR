@@ -8,6 +8,7 @@ Game = new function() {
 	  this.height= this.canvas.height;
 	  this.ctxt = this.canvas.getContext && this.canvas.getContext('2d');
 	  if(!this.ctxt) { return alert("Please upgrade your browser to play"); }
+	  //this.ctxt.save();
       //Modificamos las propiedades del canvas
       //Pantalla que va a aparecer ANTES de pulsar espacio (En el caso de que se necesite)
       this.setupInput();

@@ -5,7 +5,7 @@
   width:480px;
 }
 #tablero{
-	background-color: white;
+	background-color: black;
 }
 #messages {
   position: relative;
@@ -36,11 +36,11 @@
 } 
 
 #game_features{
- background: white;
+ background: #ADD8E6;
  padding:100px;
 }
 
-#points{
+#points_id{
  background: white;
 }
 #start_game{
@@ -101,7 +101,7 @@
  border-radius: 10px;  
 }
 #rooms{
- width: 150px;
+ width: 140px;
 }
 .play_game{
  border: 2px solid #003B62;
@@ -109,7 +109,11 @@
  float: right;
  background: #00FFFF;
 }
-
+#play_game_button{
+ position:relative;
+ float: right;
+ 
+}
 .tamano {
  width: 218px;
  height: 40px;
@@ -128,7 +132,9 @@
  position:relative;
  float: right;
 }
-
+#waiting_gif{
+ margin-left: 20%; 
+}
 #wait_cancel{
  position:relative;
  float: left;
@@ -146,6 +152,13 @@
  border-style: solid:
  border-radius: 5px;
 }
+
+/*.btn-defaultplay_game_button{
+ margin-left:87%;
+ margin-right:0%;
+ margin-top:-10%;
+} */
+
 .AlienFroot{
  position: relative:
  float: left;
@@ -154,15 +167,15 @@
  height: 30%;
 }
 #gamecontainer{
-  	margin-left: 15%; 
+ margin-left: 10%; 
 }
 .ajustar{
-       width: 150px;
-       float: left;
-       word-wrap: break-word;
+ width: 115px;
+ float: left;
+ word-wrap: break-word;
 }
 #waiting_for_players{
  margin: 20% auto;
- width: 40%;
+ width: 32%;
  height: 30%;
 } /* CSS declarations go here */

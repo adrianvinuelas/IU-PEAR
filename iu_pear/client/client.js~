@@ -6,11 +6,10 @@ Subscripcion de las listas o bases de datos creadas en el servidor
     Meteor.subscribe("users_data"); 
     Meteor.subscribe("userNames");
 
-
-
     Tracker.autorun(function(){
         var current_game = Session.get("current_game");
 		Meteor.subscribe("users_score", current_game);
+	    Meteor.subscribe("users_score_cc", current_game);
         Meteor.subscribe("messages_current_game", current_game); // Mensajes del chat del juego
         Meteor.subscribe("matches_game", current_game); // Marcador de las partidas
     });
@@ -24,7 +23,8 @@ Subscripcion de las listas o bases de datos creadas en el servidor
 		    
 		 //CONTAINER = ALIEN INVASION
 		 //TABLERO = CARCASONE
-		
+		$('#scoreFW').hide();
+	    $('#scoreCC').hide();
         $('#gamecontainer').hide();
         $('#container').hide();
         $('#waiting_matches').hide();
@@ -32,6 +32,7 @@ Subscripcion de las listas o bases de datos creadas en el servidor
         $('#game_features').hide();
         $('#display_match_started').hide();
         $('#tablero').hide();
+		Busy_tablero = false
 		$('#points').hide();
 		console.log("HIDE A TODO");
         $(document).on("click", ".alert .close", function(e) {
@@ -40,7 +41,7 @@ Subscripcion de las listas o bases de datos creadas en el servidor
         
     });
 
-    var Busy = {OnlyBusy:false,Busy_playing:false,Busy_joined:false};
+    var Busy = {OnlyBusy:false,Busy_playing:false,Busy_joined:false,Busy_tablero:false};
     var match_name;   
     
 
@@ -90,6 +91,7 @@ Subscripcion de las listas o bases de datos creadas en el servidor
 		        });
 
 			    Busy.OnlyBusy = true;
+				$('#display_matches').hide();
                 $('#waiting_for_players').show();
 		                //Meteor.call('add_player',match_name);
              }
@@ -106,12 +108,12 @@ Subscripcion de las listas o bases de datos creadas en el servidor
 
 	    'click #wait_cancel': function () {
             $('#waiting_for_players').hide();
-            $('#display_matches').show();
+            $('#display_matches').hide();
 
 		    match_id = Matches_games.findOne({match_name:match_name});
 
 		    Matches_games.remove(match_id._id)
-            alert("Su partida ha sido cancelada satisfactoriamente.");
+            alert("Your match was canceled succesfully.");
 		    Busy.OnlyBusy = false;
         },
 
@@ -134,6 +136,7 @@ Subscripcion de las listas o bases de datos creadas en el servidor
                 //Aqui le pasamos el objeto partida a IA
 				$('#waiting_matches').hide();
 				$('#tablero').show();
+				Busy_tablero = true
 			    console.log("////////////////////////////yiiiiiiiiiiiiiiiiaaAAAAAAAA");
 				console.log(partida);
 				Meteor.call("generarPartidaPL",partida, function(error){
@@ -182,18 +185,35 @@ Subscripcion de las listas o bases de datos creadas en el servidor
 		conole.log("PPPPPPPPPPPPPPPPP" + puntuations)  ;      
 		return puntuations;    
     }*/
+	/*
+	PARTIDA = {	idPartida : 
+				arrayJugadores: [{nombreJugador: kevin, puntuacion: 2},{}]
+				
+	
+	
+	*/
 
-    function partidaTerminada(partida){
-        var registroPuntuacion = Object.create(Object.prototype);
+
+	partidaTerminada = function partidaTerminada(partida){
+        $('#tablero').hide();
+        alert("Match finished");
+        OnlyBusy = false;
+        Busy_playing = false;
+        Busy_joined = false;
+        Busy_tablero = false;
         for(i= 0; i< partida.arrayJugadores.length; i++ ){
-            users_score.insert({player_name:Partida.arrayJugadores[i].nombreJugador, score: Partida.arrayJugadores[i].puntuacion});
+            Users_score_cc.insert({user:partida.arrayJugadores[i].nombreJugador, score: partida.arrayJugadores[i].puntuacion, });
         }
+        Matches_games.remove(partida.idPartida);
     }
 
     Template.menu_bar.events = {
         'click #AI_button': function () {
             if(!Busy.OnlyBusy){
+            	$('#scoreFW').show();
+	        	$('#scoreCC').hide();
 				$('#tablero').hide();
+				Busy_tablero = false;
                 //$('#container').show();
                 $('#gamecontainer').hide();
                 $('#waiting_matches').hide();
@@ -205,7 +225,10 @@ Subscripcion de las listas o bases de datos creadas en el servidor
         },
         'click #FW_button': function () {
 		    if(!Busy.OnlyBusy){
+		    	$('#scoreFW').show();
+	        	$('#scoreCC').hide();
 				$('#tablero').hide();
+				Busy_tablero = false;
 		        $('#container').hide();
 			    $('#gamecontainer').show();
 			    $('#waiting_matches').hide();
@@ -216,27 +239,36 @@ Subscripcion de las listas o bases de datos creadas en el servidor
         },
 	    'click #CC_button': function () {
 	        if(!Busy.OnlyBusy && !Busy.Busy_joined){
+	        	$('#scoreFW').hide();
+	        	$('#scoreCC').show();
 		        $('#container').hide();
 			    $('#waiting_for_players').hide()
 			    $('#gamecontainer').hide();
 			    $('#waiting_matches').show();
 			    $('#display_matches').show();
-				$('#tablero').show();
+				if (Busy_tablero = false){
+					$('#tablero').show();
+					Busy_tablero = true
+				}
+				
 			    $('#game_features').hide();
-				$('#points').show();
-				console.log("SHOW TABLERO: CARCASONE (IF)");
+				$('#points_id').show();
 			    var game = Games.findOne({g_name:"Carcason"});
 			    Session.set("current_game", game._id);
             }else if(Busy.Busy_joined){
+            	$('#scoreFW').hide();
+	        	$('#scoreCC').show();
                 $('#container').hide();
 		        $('#waiting_for_players').hide()
 			    $('#gamecontainer').hide();
 			    $('#waiting_matches').show();
 			    $('#display_matches').show();
 			    $('#game_features').hide();
-				$('#tablero').show();
+				if (Busy_tablero = false){
+					$('#tablero').show();
+					Busy_tablero = true
+				}
                 $('#player_joined').show();
-                console.log("SHOW TABLERO: CARCASONE (ELSE)");
 			    var game = Games.findOne({g_name:"Carcason"});
 			    Session.set("current_game", game._id);
             }
@@ -244,13 +276,16 @@ Subscripcion de las listas o bases de datos creadas en el servidor
         'click #New_G': function () {
             if(!Busy.OnlyBusy && !Busy.Busy_Playing && !Busy.Busy_joined){
                 if(Meteor.userId()){
+                	$('#scoreFW').hide();
+	        		$('#scoreCC').show();
 					$('#tablero').hide();
+					Busy_tablero = false
                     $('#container').hide();
                     $('#gamecontainer').hide();
 				    $('#game_features').show();
 				    $('#waiting_matches').show();
 				    $('#waiting_for_players').hide()
-		            $('#display_matches').show();	
+		            $('#display_matches').hide();		
 					$('#points').hide();			
 					console.log("NEW G");	
 		            var game = Games.findOne({g_name:"Carcason"});
@@ -284,7 +319,7 @@ Subscripcion de las listas o bases de datos creadas en el servidor
                 jugadoresMax= Matches_games.findOne({match_name:nombrePartida}).num_players;
                 if(jugadoresActual < jugadoresMax ){				
 			        $('#display_matches').hide();
-					$('#player_joined').show();	
+					$('#waiting_matches').hide();	
 					var id_insert= Meteor.userId();
 					Busy.Busy_joined = true;					     
 					var jugador= Object.create(Object.prototype);
@@ -349,6 +384,20 @@ Subscripcion de las listas o bases de datos creadas en el servidor
 		return game_name;
 	}
 	
+	Template.best_players.list_players_cc = function (){
+   	
+		var matches_cc = Users_score_cc.find({}, {limit:5, sort: {score:-1}});
+		var users_data = [];
+		matches_cc.forEach (function (m) {
+			var user = Meteor.users.findOne({_id: m.user_id});
+			if (user){
+					console.log("AAAAAAAAIAIIIIAIAIIAIAIAIAIAIIAIAIAIIA");
+					var game = Games.findOne({_id: m.game_id});
+					users_data.push({name: user.username, game: game.g_name, points: m.score});
+				}
+			});
+		return users_data;
+	}
 
    Template.best_players.list_players = function (){
    	
@@ -363,6 +412,8 @@ Subscripcion de las listas o bases de datos creadas en el servidor
 			});
 		return users_data;
 	}
+	
+	
     
     
    // Mostrar la puntuación de cada jugador, a partir de la base de datos de users_data
@@ -413,6 +464,7 @@ Tracker.autorun(function(){
    
         if(m.Comando === "EmpezarPartida" && m.ladoscroll == ""){
             console.log("1111");
+            $('#tablero').show();
             EmpezarTodo(m.ID_Partida, m.Jugadores, m.User_id);
         }
         if(Meteor.userId() != User_IdIA){
@@ -476,6 +528,10 @@ Tracker.autorun(function(){
 			        var seguidor = new Seguidor (m.posxseg, m.posyseg,verColorSeg(), m.casillaX, m.casillaY);
 			        board.add (seguidor);
 			    
+			    
+			    }else if (m.Comando === "FinPartida"){
+			        console.log("10000000");
+			        Game.setBoard(6,new final(m.resumenFinal));   
 			    
 			    }
 		    }else{

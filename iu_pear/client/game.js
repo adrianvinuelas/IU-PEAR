@@ -102,6 +102,7 @@ resumenFinal = [];
 finalizarPartida = false;
 arrayFinalConstruido = [];
 var startGame = function() {
+    
     Game.setBoard(0,new cuadricula());
     Game.setBoard(1,new Jugadores(JugadoresIA));       
     //board.add ();
@@ -148,8 +149,9 @@ function pintaResumen(resumenFinal){
 
     Turno.update(obj._id,{$set: {Comando:"FinPartida", resumenFinal: arrayFinalConstruido}}); 
     
+    
     board.add(new finalPL(resumenFinal));
-
+    
 };
 
 function finalizarPartidaHumano (){
@@ -1388,6 +1390,7 @@ finalPL = function(array) {
             partida.arrayJugadores = arrayJugs;
 
             partidaTerminada(partida);
+            //Game.ctxt.restore();
         }
     };
 
@@ -1399,9 +1402,9 @@ finalPL = function(array) {
 
 EmpezarTodo = function (id_partida, arrayJugadores, user_Id) {
 
-    //ctxt.save();    
+       
     Game.initialize("gameC",sprites,startGame);
-    
+     
     JugadoresIA = arrayJugadores;
     User_IdIA = user_Id;
     Id_Partida = id_partida;
