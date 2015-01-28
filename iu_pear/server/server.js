@@ -37,6 +37,7 @@ var partidaPrueba;
 			{limit:5, sort: {points:-1}});
 	});
 
+    /*
 	Meteor.methods({
 		matchFinish: function (game, points) {
 		// Don't insert in the Matches collection a match if the user
@@ -49,7 +50,8 @@ var partidaPrueba;
 			});
 		}
 	});
-
+    */
+    
     Messages_games.allow({
     	insert: function(userId, doc){
 		// Only authenticated users can insert messages

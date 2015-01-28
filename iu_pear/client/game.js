@@ -101,12 +101,11 @@ giroCuadricula = false;
 resumenFinal = [];
 finalizarPartida = false;
 arrayFinalConstruido = [];
-
 var startGame = function() {
-
     Game.setBoard(0,new cuadricula());
     Game.setBoard(1,new Jugadores(JugadoresIA));       
-    board.add (new AyudaScreen("Pulsa espacio para ayuda"));
+    //board.add ();
+    Game.setBoard(3,new AyudaScreen("Pulsa espacio para ayuda"));
     console.log("Pintada pieza madre");
     board.add(new PiezaMadre("1", 5*64, 5*64)); //Pieza madre que siempre esta puesta cuando empieza el juego
     console.log(Meteor.userId());
@@ -137,7 +136,7 @@ playGame = function() {
 function pintaResumen(resumenFinal){
 
     resumenFinal.forEach(function (e, i) {		
-	        console.log(e);				
+	        //console.log(e);				
 	        var stringFinalPartida;
             stringFinalPartida = "Nombre del jugador: " + e.nombre + "  ----------->  " + "Puntos: " + e.puntos;
             arrayFinalConstruido.push(stringFinalPartida);
@@ -148,6 +147,8 @@ function pintaResumen(resumenFinal){
     obj = Turno.findOne({});
 
     Turno.update(obj._id,{$set: {Comando:"FinPartida", resumenFinal: arrayFinalConstruido}}); 
+    
+    board.add(new finalPL(resumenFinal));
 
 };
 
@@ -156,7 +157,7 @@ function finalizarPartidaHumano (){
     Meteor.call("finalizarPartida", Id_Partida, function ( error, result) {
             resumenFinal = result;
             console.log("se hace el meteor.call de finalizar partida");
-            console.log(resumenFinal[0]);
+            //console.log(resumenFinal[0]);
             pintaResumen(result);
     });
 
@@ -969,6 +970,8 @@ var ColocarSeguidor = function(x, y, idx, idy) {
 	        obj = Turno.findOne({});
 
             Turno.update(obj._id,{$set: {Comando:"FinPartida", resumenFinal: arrayFinalConstruido}}); 
+            
+            board.add(new finalPL(resumenFinal));
 		    
 		
 		}
@@ -1360,11 +1363,45 @@ borrarSeguidor = function (idx, idy){
 
 };
 
+
+finalPL = function(array) {
+
+    var fin = false;
+    this.step = function (dt) {
+ 
+        if(!Game.keys['fin']) fin = true;
+        if(fin && Game.keys['fin']) {
+            fin = false;
+            var arrayJugs = [];
+            var partida = {};
+            console.log("IDDDDDDDDDDDDDDD" + Id_Partida);
+            partida.idPartida = Id_Partida;
+            
+             for(i = 0; i< array.length; i++ ){
+                var obj = {};
+                obj.nombreJugador = array[i].nombre;
+                obj.puntuacion = array[i].puntos;
+                arrayJugs.push(obj);
+                console.log(arrayJugs[i].nombreJugador);
+             }
+             
+            partida.arrayJugadores = arrayJugs;
+
+            partidaTerminada(partida);
+        }
+    };
+
+    this.draw = function(ctxt) {
+    
+    };
+
+};
+
 EmpezarTodo = function (id_partida, arrayJugadores, user_Id) {
 
-    //ctxt.save();
-
-    Game.initialize("gameC",sprites,startGame);       
+    //ctxt.save();    
+    Game.initialize("gameC",sprites,startGame);
+    
     JugadoresIA = arrayJugadores;
     User_IdIA = user_Id;
     Id_Partida = id_partida;

@@ -1,5 +1,3 @@
-
-
 Game = new function() {                                                                  
 
   // Inicializa el juego
@@ -23,7 +21,7 @@ Game = new function() {
     // Gestión de la entrada (teclas solo espacio de momento para prueba tonta)
     var KEY_CODES = { 32 :'espacio', 82: 'giro', 13: 'pedirficha', 39:'right', 37:'left', 38:'up', 40:'down',83 : 'seguidor', 
                       48: 'pos0', 49: 'pos1', 50: 'pos2', 51: 'pos3', 52: 'pos4', 53: 'pos5', 54: 'pos6', 55: 'pos7', 56: 'pos8',
-                      57: 'pos9', 81: 'pos10', 87: 'pos11', 69: 'pos12', 78: 'NOSeguidor'};
+                      57: 'pos9', 81: 'pos10', 87: 'pos11', 69: 'pos12', 78: 'NOSeguidor', 70: 'fin'};
     this.keys = {};
 
     this.setupInput = function() {
@@ -58,12 +56,15 @@ Game = new function() {
 	      }
 	    }
       // Ejecutar dentro de 30 ms
-	    setTimeout(Game.loop,100);
+           
+	         setTimeout(Game.loop,100);
+	  
     };
     // Para cambiar el panel activo en el juego.
     // Son capas: se dibujan de menor num a mayor
     // Cada capa tiene que tener en su interfaz step() y draw()
     this.setBoard = function(num,board) { boards[num] = board; };
+    
 };
 
 SpriteSheet = new function() {

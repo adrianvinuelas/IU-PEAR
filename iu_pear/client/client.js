@@ -183,11 +183,20 @@ Subscripcion de las listas o bases de datos creadas en el servidor
 		return puntuations;    
     }*/
 
-    function partidaTerminada(partida){
+    partidaTerminada = function partidaTerminada(resumen){
+        console.log("PARTIDA MANDADA A PLATAFORMA: " + resumen.idPartida);
+        
+        for(i= 0; i< resumen.arrayJugadores.length; i++ ){
+            console.log("RESUMEN MANDADADO A PL: " + resumen.arrayJugadores[i].nombreJugador + " " + resumen.arrayJugadores[i].puntuacion);    
+        }
+        
+        
+        /*
         var registroPuntuacion = Object.create(Object.prototype);
         for(i= 0; i< partida.arrayJugadores.length; i++ ){
             users_score.insert({player_name:Partida.arrayJugadores[i].nombreJugador, score: Partida.arrayJugadores[i].puntuacion});
         }
+        */
     }
 
     Template.menu_bar.events = {

@@ -11,7 +11,6 @@ empezarPartida = function(id_partida, arrayJug, user_Id) {
 	console.log("user_ID: " + user_Id); 
     
     Turno.remove({});
-    
     Turno.insert({Comando: "EmpezarPartida",
                   ID_Partida: id_partida,
                   Jugadores: arrayJug,
