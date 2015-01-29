@@ -155,7 +155,7 @@ body {
 <template name="best_players">
 	{{#if none }}
 	<h3> Best players overall </h3>
-	{{else}}-->
+	{{else}}
 	<h3> Best players {{gameName}} </h3>
 	{{/if}}
 
@@ -197,7 +197,7 @@ body {
             <li id= "match_name"><b>Name:</b>{{nombre_partida}}</li>
             |
             <span class="glyphicon glyphicon-user">: </span>        
-            <li id= "match_players">{{num_jug}}</li>
+            <li id= "match_players"><b>Players:</b>{{num_jug}}</li>
             | <b>Host:</b>                          
             <li id= "match_owner">{{propietario}}</li>
             <button id={{nombre_partida}}&{{num_jug}} type="button" class="btn btn-default play_game_button">&nbsp;▶</button>             
