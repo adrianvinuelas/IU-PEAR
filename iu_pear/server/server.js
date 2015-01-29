@@ -391,7 +391,7 @@ Meteor.methods ({
     */
     //pre: id_partida, id_jugador; post: fichaIU (tipo, escudo y numFicha)
     dameFicha: function(id_partida){
-        /*
+        
         var partida = getPartida (id_partida);
         var fichaIU;
              var ficha = partida.tablero.dameFicha();
@@ -401,8 +401,6 @@ Meteor.methods ({
                 numFicha: ficha.numFicha
              };
         return fichaIU;
-        */
-        return null;
         
     },
    

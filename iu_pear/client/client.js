@@ -522,14 +522,15 @@ Tracker.autorun(function(){
 				    Game.setBoard(1,new Jugadores(JugadoresIA));
 				    
 			    }else if (m.Comando === "JugadaIA") {
-			        console.log("8888888");
+			        
 			        var piezaNueva = new pieza (m.nombrePieza, m.posx, m.posy, true, m.numRotacion, true);
 	                board.add(piezaNueva);
 					numcolor = m.numColor;
-					console.log("PPPPPPPPPPPPP: " + m.casillaX + " " + m.casillaY + " " + m.posyseg + " " + m.posxseg);
-			        var seguidor = new Seguidor (m.posxseg, m.posyseg,verColorSeg(), m.casillaX, m.casillaY);
-			        board.add (seguidor);
-			    
+					if (m.posxseg !=0 && m.posyseg !=0){
+			            var seguidor = new Seguidor (m.posxseg, m.posyseg,verColorSeg(), m.casillaX, m.casillaY);
+			            board.add (seguidor);
+		            }
+			        console.log("8888888");
 			    
 			    }else if (m.Comando === "FinPartida"){
 			        console.log("10000000");

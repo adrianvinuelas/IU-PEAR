@@ -303,8 +303,8 @@ pieza = function (nombre, x, y, colocadaRec, giroRec, dejarGiro){
                     if(mX<373||mX>947 ||mY<433.5 || mY>946){
 					    alert('No puedes colocar la pieza ahí!');
 			        }else{
-				        cX =(Math.floor((mX-5)/64)) - 5;
-				        cY = (Math.floor((mY-114)/64)) - 4;						   
+				        cX =(Math.floor((mX+18)/64)) - 5;
+				        cY = (Math.floor((mY-83)/64)) - 4;						   
 				        x = (cX *64);
 				        y = (cY * 64);
 
@@ -957,7 +957,10 @@ var ColocarSeguidor = function(x, y, idx, idy) {
 		    if (numIAs === iGlobal){
 			    BorrarSegIAlocal = false;
 			    console.log("ULTIMA IA");
-                ActualizarTurnoGlobal = true;
+			    setTimeout(function(){
+ 					ActualizarTurnoGlobal = true;
+        		},1000);
+                
 			}			
 		}else if(finalizarPartida && finalizarPartidalocal){
 	        finalizarPartida = false;
@@ -1171,7 +1174,7 @@ function gestionTurnoIA (result){
         	IATurno = true;
         	numcolor++;
         	pintarInfoIA(result[1]);
-        	},1500);
+        	},2000);
         }
         if(result[2] != undefined){
         	setTimeout(function(){
@@ -1180,7 +1183,7 @@ function gestionTurnoIA (result){
         	IATurno = true;
         	numcolor++;
         	pintarInfoIA(result[2]);
-        	},2500);
+        	},4000);
         	
         }
         if(result[3] != undefined){
@@ -1190,22 +1193,22 @@ function gestionTurnoIA (result){
         	IATurno = true;
         	numcolor++;
         	pintarInfoIA(result[3]);
-        	},3500);
+        	},6000);
         	
         }
         if(result[4] != undefined){
         	setTimeout(function(){
         	console.log("entra a 4");
-        	iGlobal = 3;
+        	iGlobal = 4;
         	IATurno = true;
         	numcolor++;
         	pintarInfoIA(result[4]);
-        	},4500);
+        	},8000);
         	
         }
         setTimeout(function(){
         	IATurno = false;
-        },6500);
+        },10000);
 }
 
 function pintarInfoIA (ObjetoIA){
