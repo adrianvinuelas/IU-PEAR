@@ -29,7 +29,8 @@ empezarPartida = function(id_partida, arrayJug, user_Id) {
 	          ladoscroll: "",
 	          contador: 0,
 	          numColor: 0,
-	          resumenFinal : []});
+	          resumenFinal : [],
+	          objetoPL : {}});
                   
     console.log("insertado EmpiezaPartida"); 
 }

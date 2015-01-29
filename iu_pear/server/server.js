@@ -403,6 +403,7 @@ Meteor.methods ({
         return fichaIU;
         */
         return null;
+        
     },
    
     ponerFicha: function(id_partida,giro,posFicha){

@@ -526,6 +526,7 @@ Tracker.autorun(function(){
 			        var piezaNueva = new pieza (m.nombrePieza, m.posx, m.posy, true, m.numRotacion, true);
 	                board.add(piezaNueva);
 					numcolor = m.numColor;
+					console.log("PPPPPPPPPPPPP: " + m.casillaX + " " + m.casillaY + " " + m.posyseg + " " + m.posxseg);
 			        var seguidor = new Seguidor (m.posxseg, m.posyseg,verColorSeg(), m.casillaX, m.casillaY);
 			        board.add (seguidor);
 			    
@@ -533,6 +534,10 @@ Tracker.autorun(function(){
 			    }else if (m.Comando === "FinPartida"){
 			        console.log("10000000");
 			        Game.setBoard(6,new final(m.resumenFinal));   
+			    
+			    }else if (m.Comando === "FinPL"){
+			        console.log("11000000");
+			        partidaTerminada(m.objetoPL);
 			    
 			    }
 		    }else{

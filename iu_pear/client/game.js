@@ -485,7 +485,7 @@ var cuadricula = function(){
 
 final = function(array){
     this.step = function(dt) {
-       
+      
     };
     this.draw = function(ctxt) {
  
@@ -493,24 +493,27 @@ final = function(array){
         var img2 = new Image();
         img1.src = 'background.jpg';
         Game.ctxt.drawImage(img1, 50, 50, 900, 650);
-       
-        ctxt.save(); 
-        var b = 2.2;
+      
+        ctxt.save();
+        var b = 2.6;
         ctxt.fillStyle = '#9C1B14';
-        ctxt.fillRect(120,90,520,320);
+        ctxt.fillRect(120,90,520,420);
         ctxt.strokeStyle="black";
-        ctxt.strokeRect(120,90,520,320);
+        ctxt.strokeRect(120,90,520,420);
         for (i = 0; i<array.length; i++){
             ctxt.font = "bold 18pt sans-serif";
             ctxt.fillText("RESUMEN FINAL DE LA PARTIDA :", 2.1 *64,1.8*64 ) ;
+            ctxt.font = "10pt sans-serif";
+            ctxt.fillStyle = "black";
+            ctxt.fillText("(Pulsa f si quieres terminar la partida)", 2.1 * 64, 2.1 * 64) ;
             ctxt.fillStyle = "black";
             ctxt.font = "italic bold 15pt courier" ;
             ctxt.strokeStyle="black";
-            ctxt.fillText(array[i],2.1*64,b*64,300);          
+            ctxt.fillText(array[i],2.1*64,b*64,300);         
             b = b+1;
         }
         ctxt.restore();
-    };   
+    };  
 }
 
 var ColocarSeguidor = function(x, y, idx, idy) {
@@ -1202,32 +1205,7 @@ function gestionTurnoIA (result){
         }
         setTimeout(function(){
         	IATurno = false;
-        },6000);
-        /*for (i = 1; i< tamañoArray; i++){
-        	iGlobal = i;
-        	setTimeout(function(i){
-        		console.log("funcion set time out");
-	            /*console.log("METEEEE2222");
-	            IATurno = true;
-	            console.log("color: " + numcolor)
-	            numcolor++;
-	            console.log("color2: " + numcolor)
-	            //if(numcolor == longitudcolor){
-	                
-	               // numcolor = 0;
-	            //}
-	            
-	            //gestionBorrarSeguidor(result[i]);     ----> ponerlo luego lo ultimo
-	            console.log("iGlobalsettimeout = "+iGlobal);
-	            pintarInfoIA(result[iGlobal]);
-		    	BorrarSegIA = true;
-	        	},3000);
-			
-            
-        }*/
-        
-        
-
+        },6500);
 }
 
 function pintarInfoIA (ObjetoIA){
@@ -1390,7 +1368,10 @@ finalPL = function(array) {
             partida.arrayJugadores = arrayJugs;
 
             partidaTerminada(partida);
-            //Game.ctxt.restore();
+            
+            obj = Turno.findOne({});
+        	Turno.update(obj._id,{$set: {Comando:"FinPL", objetoPL: partida, scroll:false }});
+                        
         }
     };
 
